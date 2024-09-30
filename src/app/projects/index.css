@@ -1,0 +1,74 @@
+.elevate {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor:pointer !important;  
+    min-width: 25vw;
+    min-height: 60vh;
+    display: inline-block;
+    position: relative;
+}
+
+@media (max-width: 1024px) {
+  .elevate {
+    min-width: 40vw;
+    min-height: 50vh;
+    background-size: cover ;
+  }
+}
+
+@media (max-width: 768px) {
+    .elevate {
+      min-width: 40vw;
+      max-width: 60vw;
+      min-height: 50vh;
+      background-size: cover ;
+    }
+}
+
+@media (max-width: 500px) {
+  .elevate {
+    width: 70vw;
+    background-size: cover;
+    min-height: 50vh;
+  }
+}
+
+.elevate:hover {
+    transform: translateY(-25px);
+    box-shadow: 20px 20px 25px var( --accent-box-strong);
+  }
+
+  .overlay-text {
+    position: relative;
+    z-index: 3 !important;
+  }
+
+  .project-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: center;
+    z-index: 1;
+    border-radius: 26px;
+  }
+
+  .project-content {
+    position: relative;
+    z-index: 2;
+    background-color: var(--card-text-background);
+    border-radius: 26px;
+    padding: 16px;
+    max-height: 50%;
+  }
+
+  .project-description {
+    padding-top: 8px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; 
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    padding-top: 0;
+  }
