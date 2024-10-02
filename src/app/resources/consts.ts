@@ -50,7 +50,7 @@ export const projects = [{
     name:"Chess Bellator",
     description: "Developed and optimized a chess engine using Monte Carlo Tree Search(MCTS) to enhance move decision-making.",
     githubLink: "https://github.com/Rakshith-Reddy-K/Chess-MCTS",
-    imageUrl: "/images/chess.webp"
+    imageUrl: "/images/chess.png"
   },{
     name:"Image Processing Application",
     description: "An image processing application with a text-based interface, allowing users to perform various image manipulations such as flipping, brightening, and blurring, while supporting common formats like JPG, PNG, and ASCII PPM.",
@@ -73,10 +73,10 @@ export const projects = [{
     githubLink: "https://github.com/Rakshith-Reddy-K/Shopping-App",
     imageUrl:  "/images/shopping.webp"
   },{
-    name:"Project 6",
-    description: "Description 6",
-    githubLink: "",
-    imageUrl:  "/images/chess.png"
+    name:"Forest Fire Detection",
+    description: "Developed a Machine Learning model that detects forest fires in their early stages by analyzing environmental data (such as temperature, humidity, and wind speed) to provide critical fire alerts to forestry services and local authorities.",
+    githubLink: "https://github.com/Rakshith-Reddy-K/Forest-fires",
+    imageUrl:  "/images/forest_fires.webp"
   }]
 
 export const shuffleArray = (array:any) => {
