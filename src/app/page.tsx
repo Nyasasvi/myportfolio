@@ -37,7 +37,7 @@ export default function Home() {
 								onTrigger={(eventHandler) => {
 									setTimeout(() => {
 										eventHandler();
-									}, 2500)
+									}, 6000)
 								}}
 								speed='medium'>
 								{homepageData.description}

@@ -124,6 +124,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
                         style={{ 
                             objectFit: isEnlarged ? 'contain' : objectFit,
                         }}
+                        priority
                     />
                 )}
             </Flex>
@@ -173,6 +174,7 @@ const SmartImage: React.FC<SmartImageProps> = ({
                                 fill
                                 sizes="90vw"
                                 style={{ objectFit: 'contain' }}
+                                priority
                             />
                         )}
                     </Flex>

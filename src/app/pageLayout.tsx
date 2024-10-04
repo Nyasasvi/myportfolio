@@ -39,7 +39,7 @@ export default function PageLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const [theme, setTheme] = useState("");
+	const [theme, setTheme] = useState('dark');
 	const [loading, setLoading] = useState(true);
 	useEffect(() => {
 		if (typeof window !== 'undefined') {
@@ -53,7 +53,7 @@ export default function PageLayout({
 		localStorage.setItem('theme', theme == "dark" ? "light" : "dark");
 	}
 	return (
-
+		
 		<Flex
 			as="html" lang="en"
 			fillHeight background="page"
@@ -73,7 +73,12 @@ export default function PageLayout({
 				code.variable,
 				'root')}
 			justifyContent="center">
-
+			<link rel="preload" as="image" href="/images/chess.png"/>
+			<link rel="preload" as="image" href="/images/canvas.webp"/>
+			<link rel="preload" as="image" href="/images/forest_fires.webp"/>
+			<link rel="preload" as="image" href="/images/image_processing.webp"/>
+			<link rel="preload" as="image" href="/images/sales_predictor.webp"/>
+			<link rel="preload" as="image" href="/images/shopping.webp"/>
 			<Flex
 				style={{ width: "80%" }}
 				as="body"
