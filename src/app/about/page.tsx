@@ -19,7 +19,7 @@ export default function Page() {
                     variant="heading-strong-xl"
                     style={{ fontSize: "32px" }}
                     onBackground="accent-medium"
-                    marginBottom="m"
+                    marginBottom="s"
                 >
                     WORK EXPERIENCE
                 </Text>
@@ -32,13 +32,14 @@ export default function Page() {
                         fillWidth
                         justifyContent="space-between"
                         alignItems="flex-end"
-                        marginBottom="4">
-                        <Text
+                        marginBottom="4"
+                        style={{margin: "8px 0px 8px 0px"}}>
+                        <Text style={{marginRight: 16}}
                             id={experience.company}
                             variant="heading-strong-m">
                             {experience.company}
                         </Text>
-                        <Text
+                        <Text style={{marginLeft: 16}}
                             variant="heading-default-xs"
                             onBackground="neutral-weak">
                             {experience.timeframe}
