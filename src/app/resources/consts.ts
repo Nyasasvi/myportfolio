@@ -74,7 +74,7 @@ export const homepageData = {
 export const projects = [{
     name:"Chess Bellator",
     description: "Developed and optimized a chess engine using Monte Carlo Tree Search(MCTS) to enhance move decision-making.",
-    githubLink: "https://github.com/Rakshith-Reddy-K/Chess-MCTS",
+    githubLink: "https://github.com/Rakshith-Reddy-K/Chess-Bellator",
     imageUrl: "/images/chess.png"
   },{
     name:"Image Processing Application",
