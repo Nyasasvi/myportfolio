@@ -6,7 +6,7 @@ export const footerButtonLinks = [{
 {
     label : "Linkedin",
     icon: "linkedin",
-    href: "https://www.linkedin.com/in/rakshith-reddy-b65a43168/",
+    href: "https://www.linkedin.com/in/rakshith-reddy-kokonda-b65a43168/",
 },
 {
     label : "Mail",
@@ -19,19 +19,44 @@ export const footerButtonLinks = [{
     href: "https://www.instagram.com/rakshith_reddy_4?igsh=MWczNmp4eWxnaDJuZA==",
 }]
 
+export const aboutMe = "Computer science enthusiast with a passion for learning and drive to make a meaningful impact. I am a computer science graduate at Northeastern University. I spent two years as a full stack developer building, scaling and maintaining various robust services and websites. Known among colleagues and peers as a driven, positive and quick learning individual."
 export const experience =[ {
-    company: "SOFTWARE ENGINEER II",
-    role:"Zemoso Technologies",
-    timeframe:"2021-2023",
-    achievements: [
-    "Developed and maintained a scalable backend system using NestJS and DynamoDB, building RESTful APIs to securely manage UI component configurations for a builder app, enabling seamless customization.",
-    "Implemented payment dispute system features to achieve business objectives and support the payment streaming pipeline at eBay, resulting in a 10% increase in customer satisfaction.",
-]
-
+  "role": "Software Engineer II",
+  "company": "ZeMoSo Technologies Pvt. Ltd",
+  "location": "Hyderabad, India",
+  "timeframe": "Jan 2023 - Aug 2023",
+  "achievements": [
+    "Enhanced the payment dispute system to support the payment streaming pipeline at eBay, while adhering to new policies, resulting in a 10% improvement in dispute resolution efficiency.",
+    "Seamlessly integrated front-end components with back-end services using MarkoJS, ReactJS, and SpringBoot to enhance eBay seller dashboards, achieving a 20% reduction in support inquiries.",
+    "Successfully migrated REST APIs in UserDAO to GraphQL calls, improving query response times by 25%."
+  ]
 },
 {
-company: "ML INTERN",
-    role:"SmartBridge",
+  "role": "Software Engineer I",
+  "company": "ZeMoSo Technologies Pvt. Ltd",
+  "location": "Hyderabad, India",
+  "timeframe": "Aug 2022 - Dec 2022",
+  "achievements": [
+    "Boosted performance in a microservice architecture by 15% through the adoption of a BFF framework.",
+    "Spearheaded the redesign of healthcare dashboards with UI/UX teams to ensure consistency and enhance usability across all user touchpoints, leading to a 20% increase in new user registrations.",
+    "Collaborated with product managers and cross-functional teams to design, create, and launch patient portals using React and AWS EC2 and Amplify."
+  ]
+},
+{
+  "role": "Associate Software Engineer",
+  "company": "ZeMoSo Technologies Pvt. Ltd",
+  "location": "Hyderabad, India",
+  "timeframe": "Mar 2021 - Jul 2022",
+  "achievements": [
+    "Developed and maintained a scalable backend system using NestJS and DynamoDB, building over 40 RESTful APIs to securely manage UI component configurations for a builder application.",
+    "Created a custom database migration software to version control incremental changes to DynamoDB, managing over 70,000 records.",
+    "Automated regression and unit tests using JUnit and Selenium, integrating them into CI/CD pipelines with Jenkins, enhancing test coverage by 40% and significantly accelerating deployment cycles.",
+    "Identified and resolved 70 critical bugs, refactored code for improved scalability, resulting in a 20% reduction in technical debt and enhanced overall system stability."
+  ]
+},
+{
+role: "ML INTERN",
+    company:"SmartBridge",
     timeframe:"2019",
     achievements: [
     "Worked on Handwriting Recognition using fully connected Convolutional Neural Networks, to recognize various handwritten characters and digits from images. Used ReLU activation for feature extraction.",

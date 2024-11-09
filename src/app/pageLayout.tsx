@@ -39,11 +39,11 @@ export default function PageLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const [theme, setTheme] = useState('dark');
+	const [theme, setTheme] = useState('light');
 	const [loading, setLoading] = useState(true);
 	useEffect(() => {
 		if (typeof window !== 'undefined') {
-			const storedTheme = localStorage.getItem('theme') || 'dark';
+			const storedTheme = localStorage.getItem('theme') || 'light';
 			setTheme(storedTheme);
 			setLoading(false)
 		}
