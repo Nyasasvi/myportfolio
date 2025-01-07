@@ -75,9 +75,9 @@ export default function PageLayout({
 			justifyContent="center">
 			<link rel="preload" as="image" href="/images/chess.png"/>
 			<link rel="preload" as="image" href="/images/canvas.webp"/>
-			<link rel="preload" as="image" href="/images/forest_fires.webp"/>
-			<link rel="preload" as="image" href="/images/image_processing.webp"/>
-			<link rel="preload" as="image" href="/images/sales_predictor.webp"/>
+			<link rel="preload" as="image" href="/images/ai-resume-editor.png.png"/>
+			<link rel="preload" as="image" href="/images/duffison_model.png.png"/>
+			<link rel="preload" as="image" href="/images/diet-ai-agent.png.png"/>
 			<link rel="preload" as="image" href="/images/shopping.webp"/>
 			<Flex
 				style={{ width: "80%" }}

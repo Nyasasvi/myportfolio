@@ -14,7 +14,7 @@ export default function Footer() {
 				<Flex key="copyright" justifyContent="center" alignItems="center" padding="s">
                 <Text
 					variant="body-default-s" onBackground="neutral-weak">
-						© 2024 Rakshith Reddy Kokonda. 
+						© 2025 Yasasvi Nellore. 
 				</Text>
                 </Flex>
                 

@@ -1,72 +1,75 @@
 export const footerButtonLinks = [{
     label : "Github",
     icon: "github",
-    href: "https://github.com/Rakshith-Reddy-K/",
+    href: "https://github.com/Nyasasvi/",
 },
 {
     label : "Linkedin",
     icon: "linkedin",
-    href: "https://www.linkedin.com/in/rakshith-reddy-kokonda-b65a43168/",
+    href: "https://www.linkedin.com/in/yasasvi-nellore/",
 },
 {
     label : "Mail",
     icon: "mail",
-    href: "mailto:kokonda.r@northeastern.edu",
+    href: "mailto:yasasvi.nellore@gmail.com",
 },
 {
     label : "Instagram",
     icon: "instagram",
-    href: "https://www.instagram.com/rakshith_reddy_4?igsh=MWczNmp4eWxnaDJuZA==",
+    href: "https://www.instagram.com/yasasvi_reddy/profilecard/",
 }]
 
-export const aboutMe = "Computer science enthusiast with a passion for learning and drive to make a meaningful impact. I am a computer science graduate at Northeastern University. I spent two years as a full stack developer building, scaling and maintaining various robust services and websites. Known among colleagues and peers as a driven, positive and quick learning individual."
+export const aboutMe = "Computer science enthusiast with a passion for learning and drive to make a meaningful impact. I have a Masters degree in Computer Science from The University of Texas at Arlington. I spent two years as a full stack and back end developer building, scaling and maintaining various robust services and websites. Known among colleagues and peers as a driven, positive and quick learning individual."
 export const experience =[ {
-  "role": "Software Engineer II",
-  "company": "ZeMoSo Technologies Pvt. Ltd",
-  "location": "Hyderabad, India",
-  "timeframe": "Jan 2023 - Aug 2023",
+  "role": "Senior Backend Engineer,Data",
+  "company": "FlowAI",
+  "location": "Texas, USA",
+  "timeframe": "Aug 2024 - Dec 2024",
   "achievements": [
-    "Enhanced the payment dispute system to support the payment streaming pipeline at eBay, while adhering to new policies, resulting in a 10% improvement in dispute resolution efficiency.",
-    "Seamlessly integrated front-end components with back-end services using MarkoJS, ReactJS, and SpringBoot to enhance eBay seller dashboards, achieving a 20% reduction in support inquiries.",
-    "Successfully migrated REST APIs in UserDAO to GraphQL calls, improving query response times by 25%."
+    "Developed and deployed AI-driven solutions to identify and deliver potential customer contacts, enhancing product sales and engagement. Spearheaded the implementation of a distributed microservices architecture",
+    "Configured Apache Spark Streaming for real-time data processing from Kafka to HDFS, designed ETL pipelines for seamless data integration from sources like Salesforce and SQL Server, and built scalable batch and real-time workflows using PySpark, Spark SQL, and Scala integrated with HBase.",
+    "Developed and integrated RESTful and SOAP web services, leveraging Spring Framework for efficient back-end functionality and implementing Servlets and JSPs based on the MVC pattern.",
+    "Designed optimized database schemas for high-traffic applications, reducing storage overhead through indexing and normalization. Worked extensively with NoSQL (MongoDB) and relational databases (Oracle 11g, SQL Server), writing advanced queries and triggers, and collaborated on seamless data migration from monolithic databases to microservices.",
+    "Designed and developed integrations with Gmail, LinkedIn, Salesforce, and sequencing tools, driving increased user engagement, while enhancing system reliability and scalability with secure authentication flows and persistent user data storage.",
+    "Created Python-based microservices for a platform with FastAPI, utilizing Pandas for data processing and transformation from various sources, including Excel and HBase.",
+    "Worked extensively with Spring modules, including Spring Boot, Spring MVC, Spring Security, and Spring Integration, to build and deploy scalable applications.",
+    "Managed message-driven architectures using RabbitMQ and JMS for seamless communication between distributed applications.",
+    "Designed and deployed Docker containers and orchestrated them using Kubernetes, implemented continuous integration and deployment processes using Maven, Jenkins, and Git, ensuring smooth production releases and code versioning.",
+    "Configured AWS services such as EC2 instances, VPCs, and S3 storage for deployment and maintenance of cloud-based applications.",
   ]
 },
 {
-  "role": "Software Engineer I",
-  "company": "ZeMoSo Technologies Pvt. Ltd",
-  "location": "Hyderabad, India",
-  "timeframe": "Aug 2022 - Dec 2022",
+  "role": "Software Engineer ",
+  "company": "The University of Texas at Arlington",
+  "location": "Texas, USA",
+  "timeframe": "Dec 2023 - May 2024",
   "achievements": [
-    "Boosted performance in a microservice architecture by 15% through the adoption of a BFF framework.",
-    "Spearheaded the redesign of healthcare dashboards with UI/UX teams to ensure consistency and enhance usability across all user touchpoints, leading to a 20% increase in new user registrations.",
-    "Collaborated with product managers and cross-functional teams to design, create, and launch patient portals using React and AWS EC2 and Amplify."
+    "Developed a web-based application to manage inventory, track sales, and handle payment processing for multiple university food courts, including Marketplace, Subway, Panda Express and Connections. The system ensures real-time inventory updates, accurate sales tracking, and secure payment handling, tailored to meet the needs of a dynamic university environment",
+    "Designed a responsive Single Page Application (SPA) using React with user-friendly dashboards and forms utilizing JavaScript, TypeScript, and AJAX for dynamic functionality, implemented client-side validations with jQuery, and developed cross-platform desktop applications using Electron.js for seamless food court operations.",
+    "Developed backend logic in Node.js, creating modules across multiple food courts. Built and deployed RESTful APIs with Express.js for seamless frontend-backend communication, implemented middleware for secure API requests, role-based access control, and logging, and integrated third-party libraries like Axios for real-time data synchronization.",
+    "Designed interactive dashboards with React and Chart.js for administrators to monitor real-time sales, inventory levels, and payment statuses. Created SQL views and aggregation queries to provide analytics on sales performance, peak hours, and best-selling products.",
+    "Streamlined development with Node Package Manager (NPM) for managing dependencies, automated builds and deployments using Jenkins, and deployed the application on AWS EC2 instances and Docker containers, ensuring high availability and scalability for university-wide operations.",
+    "Led the development of a reusable Node.js and JSON Web Token (JWT) framework for Single Sign-On (SSO) to secure user authentication for administrators and food court staff."
   ]
 },
 {
-  "role": "Associate Software Engineer",
-  "company": "ZeMoSo Technologies Pvt. Ltd",
+  "role": "Java Developer",
+  "company": "Red Cloud Technologies",
   "location": "Hyderabad, India",
-  "timeframe": "Mar 2021 - Jul 2022",
+  "timeframe": "Aug 2021 - May 2022",
   "achievements": [
-    "Developed and maintained a scalable backend system using NestJS and DynamoDB, building over 40 RESTful APIs to securely manage UI component configurations for a builder application.",
-    "Created a custom database migration software to version control incremental changes to DynamoDB, managing over 70,000 records.",
-    "Automated regression and unit tests using JUnit and Selenium, integrating them into CI/CD pipelines with Jenkins, enhancing test coverage by 40% and significantly accelerating deployment cycles.",
-    "Identified and resolved 70 critical bugs, refactored code for improved scalability, resulting in a 20% reduction in technical debt and enhanced overall system stability."
+    "A comprehensive web-based application designed to manage employee details, attendance, payroll, and performance reviews. This system automates routine HR tasks, ensuring efficient data management and seamless user interactions.",
+    "Developed a responsive Single Page Application (SPA) using AngularJS, incorporating user controls and web forms for managing employee data, attendance tracking, and performance reviews, with JavaScript and jQuery enabling seamless client-side validations to ensure consistent and accurate data entry.",
+    "Designed and implemented backend business logic using Core Java, developing modules for payroll, attendance, and performance management, along with base and utility classes featuring customized exception handling for robust error management, and built REST APIs to enable seamless communication between frontend and backend components.",
+    "Designed and maintained relational database schemas using SQL for employee, attendance, and payroll data, optimizing queries for performance, developing stored procedures for payroll and attendance automation.",
+    "Automated payroll generation and performance review notifications using SQL triggers and scheduled tasks, developed interactive dashboards for actionable insights, and automated the distribution of critical reports via email.",
+    "Streamlined development with NPM for dependency management and applied modular design principles to improve code maintainability and scalability."
   ]
-},
-{
-role: "ML INTERN",
-    company:"SmartBridge",
-    timeframe:"2019",
-    achievements: [
-    "Worked on Handwriting Recognition using fully connected Convolutional Neural Networks, to recognize various handwritten characters and digits from images. Used ReLU activation for feature extraction.",
-"    Trained and tested the model with a large NIST handwritten image dataset, achieving an accuracy of ~95%"
-
-    ]}
+}
 ]
 
 export const homepageData = {
-    description: "Hi There!!! I'm Rakshith Reddy Kokonda, Software Developer ",
+    description: "Hi There!!! I'm Yasasvi Nellore, Software Developer ",
     aboutButtonText : "About Me",
     resumeButtonText : "Download Resume"
 }
@@ -74,34 +77,34 @@ export const homepageData = {
 export const projects = [{
     name:"Chess Bellator",
     description: "Developed and optimized a chess engine using Monte Carlo Tree Search(MCTS) to enhance move decision-making.",
-    githubLink: "https://github.com/Rakshith-Reddy-K/Chess-Bellator",
+    githubLink: "https://github.com/Nyasasvi/chess-bellator",
     imageUrl: "/images/chess.png"
   },{
-    name:"Image Processing Application",
-    description: "An image processing application with a text-based interface, allowing users to perform various image manipulations such as flipping, brightening, and blurring, while supporting common formats like JPG, PNG, and ASCII PPM.",
-    githubLink: "https://github.com/Rakshith-Reddy-K/Image-Processing-Application",
-    imageUrl:  "/images/image_processing.webp"
+    name:"Diffusion-Model-To-Generate-Faces",
+    description: "Created a diffusion model using the Huggingface Diffusers library. Trained a UNet2D model from scratch on the MetFaces dataset using Google Colab Pro to generate human faces resembling works of art.",
+    githubLink: "https://github.com/Nyasasvi/Diffusion-Model-To-Generate-Faces",
+    imageUrl:  "/images/duffison_model.png.png"
   },{
-    name:"Sales Predictor",
-    description: "A sales prediction model to forecast product sales in retail outlets using various features, helping in areas like inventory management and marketing strategies.",
-    githubLink: "https://github.com/Rakshith-Reddy-K/Sales-predictor",
-    imageUrl:  "/images/sales_predictor.webp"
+    name:"AI Resume Editor",
+    description: "Generates a resume specific to a job description.give user's professional summary and job description.",
+    githubLink: "https://github.com/Nyasasvi/AI_Resume_Generator",
+    imageUrl:  "/images/ai-resume-editor.png.png"
   },
   {
     name:"Canvas Clone",
     description: "Web application that replicates the core functionality of the Canvas learning management system.",
-    githubLink: "https://github.com/Rakshith-Reddy-K/kanbas-react-web-app",
+    githubLink: "https://github.com/Nyasasvi/canvas-react-web-app-",
     imageUrl:  "/images/canvas.webp"
   },{
     name:"Shopping App",
     description: "Built a sleek, easy-to-navigate e-commerce web application with a modern user interface. Users can explore products, engage with sellers, and provide feedback through reviews, all while enjoying a seamless and interactive experience.",
-    githubLink: "https://github.com/Rakshith-Reddy-K/Shopping-App",
+    githubLink: "https://github.com/Nyasasvi/Shopping-App",
     imageUrl:  "/images/shopping.webp"
   },{
-    name:"Forest Fire Detection",
-    description: "Developed a Machine Learning model that detects forest fires in their early stages by analyzing environmental data (such as temperature, humidity, and wind speed) to provide critical fire alerts to forestry services and local authorities.",
-    githubLink: "https://github.com/Rakshith-Reddy-K/Forest-fires",
-    imageUrl:  "/images/forest_fires.webp"
+    name:"Diet-AI-Agent",
+    description: "AI Agent for diet management. Created a simple node express js server and linked it with postgresql database to track the diet of users.",
+    githubLink: "https://github.com/Nyasasvi/diet-ai-agent",
+    imageUrl:  "/images/diet-ai-agent.png.png"
   }]
 
 export const shuffleArray = (array:any) => {
