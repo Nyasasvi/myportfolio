@@ -19,54 +19,78 @@ export const footerButtonLinks = [{
     href: "https://www.instagram.com/yasasvi_reddy/profilecard/",
 }]
 
-export const aboutMe = "Computer science enthusiast with a passion for learning and drive to make a meaningful impact. I have a Masters degree in Computer Science from The University of Texas at Arlington. I spent two years as a full stack and back end developer building, scaling and maintaining various robust services and websites. Known among colleagues and peers as a driven, positive and quick learning individual."
-export const experience =[ {
-  "role": "Senior Backend Engineer,Data",
-  "company": "FlowAI",
-  "location": "Texas, USA",
-  "timeframe": "Aug 2024 - Dec 2024",
-  "achievements": [
-    "Developed and deployed AI-driven solutions to identify and deliver potential customer contacts, enhancing product sales and engagement. Spearheaded the implementation of a distributed microservices architecture",
-    "Configured Apache Spark Streaming for real-time data processing from Kafka to HDFS, designed ETL pipelines for seamless data integration from sources like Salesforce and SQL Server, and built scalable batch and real-time workflows using PySpark, Spark SQL, and Scala integrated with HBase.",
-    "Developed and integrated RESTful and SOAP web services, leveraging Spring Framework for efficient back-end functionality and implementing Servlets and JSPs based on the MVC pattern.",
-    "Designed optimized database schemas for high-traffic applications, reducing storage overhead through indexing and normalization. Worked extensively with NoSQL (MongoDB) and relational databases (Oracle 11g, SQL Server), writing advanced queries and triggers, and collaborated on seamless data migration from monolithic databases to microservices.",
-    "Designed and developed integrations with Gmail, LinkedIn, Salesforce, and sequencing tools, driving increased user engagement, while enhancing system reliability and scalability with secure authentication flows and persistent user data storage.",
-    "Created Python-based microservices for a platform with FastAPI, utilizing Pandas for data processing and transformation from various sources, including Excel and HBase.",
-    "Worked extensively with Spring modules, including Spring Boot, Spring MVC, Spring Security, and Spring Integration, to build and deploy scalable applications.",
-    "Managed message-driven architectures using RabbitMQ and JMS for seamless communication between distributed applications.",
-    "Designed and deployed Docker containers and orchestrated them using Kubernetes, implemented continuous integration and deployment processes using Maven, Jenkins, and Git, ensuring smooth production releases and code versioning.",
-    "Configured AWS services such as EC2 instances, VPCs, and S3 storage for deployment and maintenance of cloud-based applications.",
-  ]
-},
-{
-  "role": "Software Engineer ",
-  "company": "The University of Texas at Arlington",
-  "location": "Texas, USA",
-  "timeframe": "Dec 2023 - May 2024",
-  "achievements": [
-    "Developed a web-based application to manage inventory, track sales, and handle payment processing for multiple university food courts, including Marketplace, Subway, Panda Express and Connections. The system ensures real-time inventory updates, accurate sales tracking, and secure payment handling, tailored to meet the needs of a dynamic university environment",
-    "Designed a responsive Single Page Application (SPA) using React with user-friendly dashboards and forms utilizing JavaScript, TypeScript, and AJAX for dynamic functionality, implemented client-side validations with jQuery, and developed cross-platform desktop applications using Electron.js for seamless food court operations.",
-    "Developed backend logic in Node.js, creating modules across multiple food courts. Built and deployed RESTful APIs with Express.js for seamless frontend-backend communication, implemented middleware for secure API requests, role-based access control, and logging, and integrated third-party libraries like Axios for real-time data synchronization.",
-    "Designed interactive dashboards with React and Chart.js for administrators to monitor real-time sales, inventory levels, and payment statuses. Created SQL views and aggregation queries to provide analytics on sales performance, peak hours, and best-selling products.",
-    "Streamlined development with Node Package Manager (NPM) for managing dependencies, automated builds and deployments using Jenkins, and deployed the application on AWS EC2 instances and Docker containers, ensuring high availability and scalability for university-wide operations.",
-    "Led the development of a reusable Node.js and JSON Web Token (JWT) framework for Single Sign-On (SSO) to secure user authentication for administrators and food court staff."
-  ]
-},
-{
-  "role": "Java Developer",
-  "company": "Red Cloud Technologies",
-  "location": "Hyderabad, India",
-  "timeframe": "Aug 2021 - May 2022",
-  "achievements": [
-    "A comprehensive web-based application designed to manage employee details, attendance, payroll, and performance reviews. This system automates routine HR tasks, ensuring efficient data management and seamless user interactions.",
-    "Developed a responsive Single Page Application (SPA) using AngularJS, incorporating user controls and web forms for managing employee data, attendance tracking, and performance reviews, with JavaScript and jQuery enabling seamless client-side validations to ensure consistent and accurate data entry.",
-    "Designed and implemented backend business logic using Core Java, developing modules for payroll, attendance, and performance management, along with base and utility classes featuring customized exception handling for robust error management, and built REST APIs to enable seamless communication between frontend and backend components.",
-    "Designed and maintained relational database schemas using SQL for employee, attendance, and payroll data, optimizing queries for performance, developing stored procedures for payroll and attendance automation.",
-    "Automated payroll generation and performance review notifications using SQL triggers and scheduled tasks, developed interactive dashboards for actionable insights, and automated the distribution of critical reports via email.",
-    "Streamlined development with NPM for dependency management and applied modular design principles to improve code maintainability and scalability."
-  ]
-}
+export const aboutMe = "Full-Stack Engineer specializing in Java 17/Spring Boot microservices and React/TypeScript front ends, with 5+ years building cloud-native, event-driven systems on AWS. Proficient in developing RESTful and GraphQL APIs, optimizing relational and NoSQL databases (PostgreSQL, MongoDB), and deploying scalable applications. Passionate about leveraging user feedback and Open-Source technologies to drive continuous product improvement and operational excellence."
+
+export const experience = [
+  {
+    "role": "Software Engineer",
+    "company": "Twisted X Global Brands",
+    "location": "Texas, USA",
+    "timeframe": "Dec 2024 - Present",
+    "achievements": [
+      "Integrated custom React/Node.js applications and built a Python-based forecasting model (Prophet, scikit-learn) to automate inventory workflows, cutting manual tracking by 40% and boosting system uptime to 99.9%.",
+      "Prototyped MCP (Model Context Protocol) integration with NetSuite ERP and internal React/Node.js tools using WebSockets and context-aware APIs, demonstrating AI-powered task automation with Claude Code and multi-agent orchestration in Claude Desktop.",
+      "Deployed a real-time Python anomaly detection system using Isolation Forest & DBSCAN, streaming data through Kafka and processing with Pandas/NumPy to flag inconsistencies and cut manual reconciliation by 30%.",
+      "Implemented RESTful and GraphQL APIs for ERP and e-commerce systems, improving production schedules and data accuracy by syncing supplier/logistics APIs with Node.js, MongoDB, and Oracle.",
+      "Revamped React.js front end with code-splitting and lazy loading in Webpack, slashing page-load times from 3s to 1.8s.",
+      "Optimized Docker and Kubernetes for scaling and reduced infra costs, cutting system errors by 35% with Postman/Jest automation."
+    ]
+  },
+  {
+    "role": "Software Engineer",
+    "company": "JP Morgan Chase",
+    "location": "Texas, USA",
+    "timeframe": "Dec 2023 - Dec 2024",
+    "achievements": [
+      "Architected scalable Spring Boot microservices on AWS EKS handling 5M+ events/day with zero downtime, following domain-driven design and OpenAPI standards.",
+      "Developed and reviewed Java 17 and React TypeScript code with OWASP checks and SonarQube gates, catching 30+ critical defects before production.",
+      "Automated remediation with Spring Boot health checks and Kubernetes operators, eliminating 80% of recurring incidents and boosting uptime to 99.99%.",
+      "Provisioned/tuned Elasticsearch and MongoDB clusters indexing 50M+ documents, improving query performance by 70%.",
+      "Streamed 1M+ ingestion events/day via Kafka + Spark Structured Streaming, orchestrating AI enrichment tasks with K8s Jobs under 200ms SLA.",
+      "Introduced circuit-breakers, API rate-limiting, JWT/OAuth2 across microservices, achieving 99.99% uptime with Prometheus/Grafana alerts.",
+      "Led TDD and Agile adoption, delivering 95% of milestones on time with a 15% drop in post-deployment defects."
+    ]
+  },
+  {
+    "role": "Graduate Research Assistant",
+    "company": "University of Texas at Arlington",
+    "location": "Texas, USA",
+    "timeframe": "Jun 2023 - Dec 2023",
+    "achievements": [
+      "Conducted performance analysis of Digital Twin models for wireless networks, identifying optimization strategies that improved simulated network efficiency by 28%.",
+      "Fine-tuned LLMs using NLP techniques to automate insight extraction and improve predictive accuracy by 15% on wireless communication datasets.",
+      "Developed scalable Python pipelines with Pandas and NumPy to process large-scale network data, reducing processing time by 35%.",
+      "Leveraged TensorFlow and PyTorch models to forecast network load and traffic patterns with 92% accuracy.",
+      "Deployed models on AWS SageMaker and GCP Vertex AI, accelerating training workflows and cutting iteration cycles by 40%."
+    ]
+  },
+  {
+    "role": "Java Developer",
+    "company": "Red Cloud Technologies",
+    "location": "Hyderabad, India",
+    "timeframe": "Jan 2021 - May 2022",
+    "achievements": [
+      "Delivered Java/J2EE solutions with Oracle/MySQL in Agile teams, reducing turnaround by 15% and boosting CPU efficiency by 20%.",
+      "Strengthened throughput with Spring MVC microservices, multithreading, and caching, cutting API response from 200ms to 160ms at 1,000 RPS.",
+      "Built ETL pipelines handling 500GB/day with Spark (batch), Kafka (streaming), and HDFS storage, cutting job latency by 30% and delivering 99.9% reliability.",
+      "Developed RESTful/SOAP APIs consumed by React.js UI, improving client rendering and reducing load times by 25%.",
+      "Optimized performance with AWS CloudWatch monitoring, reducing server latency from 1.2s to 800ms under peak traffic."
+    ]
+  },
+  {
+    "role": "Web Developer Intern",
+    "company": "Nivee Properties",
+    "location": "Hyderabad, India",
+    "timeframe": "Apr 2019 - Aug 2019",
+    "achievements": [
+      "Built 10+ React.js/D3.js dashboards visualizing KPIs for 200+ property managers, cutting reporting effort by 60%.",
+      "Developed RESTful Node.js/Express APIs with MySQL backends, boosting data retrieval by 40% for dashboards.",
+      "Configured React Router and Redux for role-based views and caching, improving UX consistency and reducing load variance.",
+      "Established CI/CD with Jest unit tests and Travis CI pipelines, hitting 85% coverage and catching 75% of regressions pre-merge."
+    ]
+  }
 ]
+
 
 export const homepageData = {
     description: "Hi There!!! I'm Yasasvi Nellore, Software Developer ",
