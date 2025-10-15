@@ -30,7 +30,7 @@ export interface Newsletter {
   id: string;
   edition: number;
   title: string;
-  publishedAt: string;
+  published_at: string;
   articles: AIArticle[];
   subscribers: number;
   status: 'draft' | 'published';
@@ -39,7 +39,7 @@ export interface Newsletter {
 export interface Subscriber {
   id: string;
   email: string;
-  subscribedAt: string;
+  subscribed_at: string;
   unsubscribed: boolean;
   interests: string[];
 }

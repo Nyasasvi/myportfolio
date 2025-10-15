@@ -108,7 +108,7 @@ export async function getAllSubscribers(): Promise<Subscriber[]> {
     const { data, error } = await supabase
       .from('subscribers')
       .select('*')
-      .order('subscribedAt', { ascending: false });
+      .order('subscribed_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching subscribers:', error);
@@ -128,7 +128,7 @@ export async function getActiveSubscribers(): Promise<Subscriber[]> {
       .from('subscribers')
       .select('*')
       .eq('unsubscribed', false)
-      .order('subscribedAt', { ascending: false });
+      .order('subscribed_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching active subscribers:', error);
@@ -161,7 +161,7 @@ export async function addSubscriber(email: string, interests: string[] = []): Pr
         .from('subscribers')
         .update({
           unsubscribed: false,
-          subscribedAt: new Date().toISOString(),
+          subscribed_at: new Date().toISOString(),
           interests
         })
         .eq('id', existing.id)
@@ -181,7 +181,7 @@ export async function addSubscriber(email: string, interests: string[] = []): Pr
     const newSubscriber: Subscriber = {
       id: Date.now().toString(),
       email,
-      subscribedAt: new Date().toISOString(),
+      subscribed_at: new Date().toISOString(),
       unsubscribed: false,
       interests
     };
@@ -237,7 +237,7 @@ export async function initializeSampleData(): Promise<void> {
         id: 'sample-1',
         edition: 1,
         title: 'AI Weekly #1: Top 10 Updates',
-        publishedAt: new Date().toISOString(),
+        published_at: new Date().toISOString(),
         articles: [],
         subscribers: 0,
         status: 'published'
@@ -252,7 +252,7 @@ export async function initializeSampleData(): Promise<void> {
       const sampleSubscriber: Subscriber = {
         id: 'sub-1',
         email: 'yasasvi.nellore@gmail.com',
-        subscribedAt: new Date().toISOString(),
+        subscribed_at: new Date().toISOString(),
         unsubscribed: false,
         interests: ['AI', 'Machine Learning']
       };

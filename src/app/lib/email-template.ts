@@ -90,7 +90,7 @@ export function generateNewsletterHTML(newsletter: Newsletter): string {
                 ${newsletter.title}
               </h1>
               <p style="margin: 12px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 14px;">
-                ${new Date(newsletter.publishedAt).toLocaleDateString('en-US', {
+                ${new Date(newsletter.published_at).toLocaleDateString('en-US', {
                   month: 'long',
                   day: 'numeric',
                   year: 'numeric'
@@ -201,7 +201,7 @@ Credibility: ${article.credibilityScore}/10
 
   return `
 🤖 ${newsletter.title}
-${new Date(newsletter.publishedAt).toLocaleDateString('en-US', {
+${new Date(newsletter.published_at).toLocaleDateString('en-US', {
     month: 'long',
     day: 'numeric',
     year: 'numeric'

@@ -47,7 +47,7 @@ export async function POST(request: Request) {
       id: Date.now().toString(),
       edition: newEdition,
       title: `AI Weekly #${newEdition}: Top 10 Updates`,
-      publishedAt: new Date().toISOString(),
+      published_at: new Date().toISOString(),
       articles: enhancedArticles,
       subscribers: activeSubscribers.length,
       status: 'published'
