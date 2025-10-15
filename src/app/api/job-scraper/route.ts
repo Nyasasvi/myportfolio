@@ -927,7 +927,8 @@ export async function POST(request: NextRequest) {
     console.log(`🔍 Starting job search for ${email} with filters:`, filters);
     
     // Step 1: Scrape jobs from various sources with filters
-    const allJobs = await scrapeJobs(filters || {});
+    const safeFilters = filters || {};
+    const allJobs = await scrapeJobs(safeFilters);
     console.log(`📥 Found ${allJobs.length} total jobs`);
     
     // Check if any jobs were found
@@ -939,7 +940,7 @@ export async function POST(request: NextRequest) {
         recentJobs: 0,
         suggestions: [
           'Use broader keywords (e.g., "engineer" instead of "junior entry level AI engineer")',
-          'Increase "Posted Within" to 7-30 days (currently: ' + (filters.maxDaysOld || 1) + ' days)',
+          'Increase "Posted Within" to 7-30 days (currently: ' + (safeFilters.maxDaysOld || 1) + ' days)',
           'Remove experience level filter',
           'Try "AI" or "machine learning" instead of very specific terms',
           'RemoteOK and GitHub Jobs APIs may have limited recent jobs',
@@ -976,7 +977,7 @@ export async function POST(request: NextRequest) {
     );
     
     // Step 4: Filter jobs based on user's minimum match percentage (default: 80%)
-    const minMatchPercentage = filters.minMatchPercentage || 80;
+    const minMatchPercentage = safeFilters.minMatchPercentage || 80;
     const fallbackPercentage = Math.max(30, Math.floor(minMatchPercentage / 2)); // Fallback is half of min, but at least 30%
     
     const primaryMatches = jobsWithScores
