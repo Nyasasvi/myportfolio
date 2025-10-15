@@ -1,5 +1,233 @@
 [
   {
+    "id": "1760537433764",
+    "edition": 4,
+    "title": "AI Weekly #4: Top 10 Updates",
+    "publishedAt": "2025-10-15T14:10:33.764Z",
+    "articles": [
+      {
+        "id": "17605374285920",
+        "rank": 1,
+        "title": "EAGLET boosts AI agent performance on longer-horizon tasks by generating custom plans",
+        "summary": "EAGLET introduces custom plan generation to enhance AI agent performance on long-horizon tasks, aligning with industry predictions for the rise of AI agents by",
+        "whyItMatters": "Large Language Models are transforming software development, content creation, and human-computer interaction. Understanding their capabilities and limitations is crucial for modern developers.",
+        "url": "https://venturebeat.com/ai/eaglet-boosts-ai-agent-performance-on-longer-horizon-tasks-by-generating",
+        "publishedDate": "Tue, 14 Oct 2025 22:27:00 GMT",
+        "references": [
+          {
+            "title": "EAGLET boosts AI agent performance on longer-horizon tasks by generating custom plans",
+            "url": "https://venturebeat.com/ai/eaglet-boosts-ai-agent-performance-on-longer-horizon-tasks-by-generating",
+            "source": "VentureBeat",
+            "publishedAt": "Tue, 14 Oct 2025 22:27:00 GMT"
+          }
+        ],
+        "credibilityScore": 9,
+        "tags": [
+          "LLMs",
+          "AI Companies",
+          "Research"
+        ]
+      },
+      {
+        "id": "17605374285921",
+        "rank": 2,
+        "title": "Salesforce bets on AI 'agents' to fix what it calls a $7 billion problem in enterprise software",
+        "summary": "Salesforce leverages AI agents to address a $7 billion issue in enterprise software, showcasing a strategic move at their Dreamforce conference to position AI as a solution in the industry.",
+        "whyItMatters": "Large Language Models are transforming software development, content creation, and human-computer interaction. Understanding their capabilities and limitations is crucial for modern developers.",
+        "url": "https://venturebeat.com/ai/salesforce-bets-on-ai-agents-to-fix-what-it-calls-a-usd7-billion-problem-in",
+        "publishedDate": "Mon, 13 Oct 2025 12:00:00 GMT",
+        "references": [
+          {
+            "title": "Salesforce bets on AI 'agents' to fix what it calls a $7 billion problem in enterprise software",
+            "url": "https://venturebeat.com/ai/salesforce-bets-on-ai-agents-to-fix-what-it-calls-a-usd7-billion-problem-in",
+            "source": "VentureBeat",
+            "publishedAt": "Mon, 13 Oct 2025 12:00:00 GMT"
+          }
+        ],
+        "credibilityScore": 9,
+        "tags": [
+          "LLMs",
+          "Robotics",
+          "AI Companies"
+        ]
+      },
+      {
+        "id": "17605374285932",
+        "rank": 3,
+        "title": "When dirt meets data: ScottsMiracle-Gro saved $150M using AI",
+        "summary": "ScottsMiracle-Gro's adoption of AI led to $150 million in savings, demonstrating the conversion of horticultural knowledge into a competitive advantage through data-driven insights.",
+        "whyItMatters": "Large Language Models are transforming software development, content creation, and human-computer interaction. Understanding their capabilities and limitations is crucial for modern developers.",
+        "url": "https://venturebeat.com/ai/when-dirt-meets-data-scottsmiracle-gro",
+        "publishedDate": "Sat, 11 Oct 2025 13:00:00 GMT",
+        "references": [
+          {
+            "title": "When dirt meets data: ScottsMiracle-Gro saved $150M using AI",
+            "url": "https://venturebeat.com/ai/when-dirt-meets-data-scottsmiracle-gro",
+            "source": "VentureBeat",
+            "publishedAt": "Sat, 11 Oct 2025 13:00:00 GMT"
+          }
+        ],
+        "credibilityScore": 9,
+        "tags": [
+          "LLMs",
+          "Computer Vision",
+          "Robotics"
+        ]
+      },
+      {
+        "id": "17605374285933",
+        "rank": 4,
+        "title": "Dr.LLM: Dynamic Layer Routing in LLMs",
+        "summary": "Dr.LLM proposes Dynamic Layer Routing in Large Language Models (LLMs) to optimize computation efficiency for varying query complexities, addressing the issue of unnecessary processing in transformer stacks.",
+        "whyItMatters": "Large Language Models are transforming software development, content creation, and human-computer interaction. Understanding their capabilities and limitations is crucial for modern developers.",
+        "url": "http://arxiv.org/abs/2510.12773v1",
+        "publishedDate": "2025-10-14T17:51:26Z",
+        "references": [
+          {
+            "title": "Dr.LLM: Dynamic Layer Routing in LLMs",
+            "url": "http://arxiv.org/abs/2510.12773v1",
+            "source": "ArXiv",
+            "publishedAt": "2025-10-14T17:51:26Z"
+          }
+        ],
+        "credibilityScore": 10,
+        "tags": [
+          "LLMs",
+          "Deep Learning"
+        ]
+      },
+      {
+        "id": "17605374285934",
+        "rank": 5,
+        "title": "DeepMMSearch-R1: Empowering Multimodal LLMs in Multimodal Web Search",
+        "summary": "DeepMMSearch-R1 enhances Multimodal Large Language Models (MLLMs) for web search applications by integrating external knowledge sources and ensuring adaptability to real-time information changes.",
+        "whyItMatters": "Large Language Models are transforming software development, content creation, and human-computer interaction. Understanding their capabilities and limitations is crucial for modern developers.",
+        "url": "http://arxiv.org/abs/2510.12801v1",
+        "publishedDate": "2025-10-14T17:59:58Z",
+        "references": [
+          {
+            "title": "DeepMMSearch-R1: Empowering Multimodal LLMs in Multimodal Web Search",
+            "url": "http://arxiv.org/abs/2510.12801v1",
+            "source": "ArXiv",
+            "publishedAt": "2025-10-14T17:59:58Z"
+          }
+        ],
+        "credibilityScore": 10,
+        "tags": [
+          "LLMs"
+        ]
+      },
+      {
+        "id": "17605374285935",
+        "rank": 6,
+        "title": "Detect Anything via Next Point Prediction",
+        "summary": "Next Point Prediction introduces an innovative approach to object detection by challenging traditional regression-based models with Multimodal Large Language Models (MLLMs) for improved accuracy and performance.",
+        "whyItMatters": "Large Language Models are transforming software development, content creation, and human-computer interaction. Understanding their capabilities and limitations is crucial for modern developers.",
+        "url": "http://arxiv.org/abs/2510.12798v1",
+        "publishedDate": "2025-10-14T17:59:54Z",
+        "references": [
+          {
+            "title": "Detect Anything via Next Point Prediction",
+            "url": "http://arxiv.org/abs/2510.12798v1",
+            "source": "ArXiv",
+            "publishedAt": "2025-10-14T17:59:54Z"
+          }
+        ],
+        "credibilityScore": 10,
+        "tags": [
+          "LLMs"
+        ]
+      },
+      {
+        "id": "17605374285936",
+        "rank": 7,
+        "title": "LLMs are getting better at character-level text manipulation",
+        "summary": "Recent advancements show Large Language Models (LLMs) are improving in character-level text manipulation, sparking interest and exploration by developers and AI practitioners.",
+        "whyItMatters": "Large Language Models are transforming software development, content creation, and human-computer interaction. Understanding their capabilities and limitations is crucial for modern developers.",
+        "url": "https://blog.burkert.me/posts/llm_evolution_character_manipulation/",
+        "publishedDate": "2025-10-13T19:39:14.000Z",
+        "references": [
+          {
+            "title": "LLMs are getting better at character-level text manipulation",
+            "url": "https://blog.burkert.me/posts/llm_evolution_character_manipulation/",
+            "source": "Hacker News",
+            "publishedAt": "2025-10-13T19:39:14.000Z"
+          }
+        ],
+        "credibilityScore": 8,
+        "tags": [
+          "LLMs",
+          "NLP"
+        ]
+      },
+      {
+        "id": "17605374285937",
+        "rank": 8,
+        "title": "Beliefs that are true for regular software but false when applied to AI",
+        "summary": "Discussions on misconceptions in applying beliefs from regular software to AI are gaining traction in the tech community, prompting critical analysis and awareness among developers and AI professionals.",
+        "whyItMatters": "This development impacts the AI ecosystem and has implications for developers building intelligent systems.",
+        "url": "https://boydkane.com/essays/boss",
+        "publishedDate": "2025-10-14T18:26:00.000Z",
+        "references": [
+          {
+            "title": "Beliefs that are true for regular software but false when applied to AI",
+            "url": "https://boydkane.com/essays/boss",
+            "source": "Hacker News",
+            "publishedAt": "2025-10-14T18:26:00.000Z"
+          }
+        ],
+        "credibilityScore": 9,
+        "tags": [
+          "AI News"
+        ]
+      },
+      {
+        "id": "17605374285938",
+        "rank": 9,
+        "title": "Why Is SQLite Coded In C",
+        "summary": "The tech community delves into the reasons behind SQLite being coded in C, sparking insightful discussions among developers and AI practitioners on the language choice for this popular database.",
+        "whyItMatters": "This development impacts the AI ecosystem and has implications for developers building intelligent systems.",
+        "url": "https://www.sqlite.org/whyc.html",
+        "publishedDate": "2025-10-14T20:32:32.000Z",
+        "references": [
+          {
+            "title": "Why Is SQLite Coded In C",
+            "url": "https://www.sqlite.org/whyc.html",
+            "source": "Hacker News",
+            "publishedAt": "2025-10-14T20:32:32.000Z"
+          }
+        ],
+        "credibilityScore": 9,
+        "tags": [
+          "AI News"
+        ]
+      },
+      {
+        "id": "17605374285939",
+        "rank": 10,
+        "title": "From Giants to Minis - The Emergence of Small Language Models",
+        "summary": "The tech landscape shifts towards the emergence of Small Language Models, veering away from the spotlight on giant models like GPT-4 and Gemini, showcasing a trend towards more compact and efficient language models.",
+        "whyItMatters": "Large Language Models are transforming software development, content creation, and human-computer interaction. Understanding their capabilities and limitations is crucial for modern developers.",
+        "url": "https://dev.to/rijultp/from-giants-to-minis-the-emergence-of-small-language-models-1mg4",
+        "publishedDate": "2025-10-14T18:32:01Z",
+        "references": [
+          {
+            "title": "From Giants to Minis - The Emergence of Small Language Models",
+            "url": "https://dev.to/rijultp/from-giants-to-minis-the-emergence-of-small-language-models-1mg4",
+            "source": "Dev.to",
+            "publishedAt": "2025-10-14T18:32:01Z"
+          }
+        ],
+        "credibilityScore": 7,
+        "tags": [
+          "LLMs"
+        ]
+      }
+    ],
+    "subscribers": 4,
+    "status": "published"
+  },
+  {
     "id": "1760409082181",
     "edition": 3,
     "title": "AI Weekly #3: Top 10 Updates",

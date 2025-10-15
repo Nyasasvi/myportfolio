@@ -1,6 +1,6 @@
 // Manual newsletter sending endpoint (for testing)
 import { NextRequest, NextResponse } from 'next/server';
-import { getNewsletterById, getActiveSubscribers } from '@/app/lib/newsletter-storage';
+import { getNewsletterById, getActiveSubscribers } from '@/app/lib/newsletter-storage-supabase';
 import { sendNewsletterToAllSubscribers } from '@/app/lib/email-template';
 
 export const dynamic = 'force-dynamic';
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get newsletter by ID
-    const newsletter = getNewsletterById(newsletterId);
+    const newsletter = await getNewsletterById(newsletterId);
     if (!newsletter) {
       return NextResponse.json(
         { error: 'Newsletter not found' },
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get active subscribers
-    const allSubscribers = getActiveSubscribers();
+    const allSubscribers = await getActiveSubscribers();
     let subscribersToSend = allSubscribers;
 
     // If test email is provided, send only to that email

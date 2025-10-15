@@ -74,13 +74,11 @@ export async function POST(request: NextRequest) {
         })
         */
 
-        // Option 3: Using NodeMailer (For any SMTP provider)
+        // Option 3: Using NodeMailer (For Gmail SMTP)
         const nodemailer = require('nodemailer')
         
         const transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST,
-            port: process.env.SMTP_PORT,
-            secure: true,
+            service: 'gmail', // Use Gmail service instead of custom SMTP
             auth: {
                 user: process.env.SMTP_USER,
                 pass: process.env.SMTP_PASS,

@@ -1,6 +1,6 @@
 // API route for newsletter operations
 import { NextResponse } from 'next/server';
-import { getAllNewsletters, getNewsletterById } from '@/app/lib/newsletter-storage';
+import { getAllNewsletters, getNewsletterById } from '@/app/lib/newsletter-storage-supabase';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,7 +11,7 @@ export async function GET(request: Request) {
     const id = searchParams.get('id');
 
     if (id) {
-      const newsletter = getNewsletterById(id);
+      const newsletter = await getNewsletterById(id);
       if (!newsletter) {
         return NextResponse.json(
           { error: 'Newsletter not found' },
@@ -21,7 +21,7 @@ export async function GET(request: Request) {
       return NextResponse.json(newsletter);
     }
 
-    const newsletters = getAllNewsletters();
+    const newsletters = await getAllNewsletters();
     
     return NextResponse.json({
       newsletters,

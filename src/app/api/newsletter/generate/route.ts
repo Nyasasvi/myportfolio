@@ -4,8 +4,9 @@ import {
   saveNewsletter, 
   getLatestEditionNumber,
   getActiveSubscribers,
-  Newsletter 
-} from '@/app/lib/newsletter-storage';
+  initializeSampleData
+} from '@/app/lib/newsletter-storage-supabase';
+import { Newsletter } from '@/app/lib/supabase-client';
 import { aggregateAINews, rankArticles, enhanceWithAI } from '@/app/lib/ai-news-curator';
 
 export const dynamic = 'force-dynamic';
@@ -14,6 +15,9 @@ export const dynamic = 'force-dynamic';
 export async function POST(request: Request) {
   try {
     console.log('Starting newsletter generation...');
+
+    // Initialize sample data if needed
+    await initializeSampleData();
 
     // Step 1: Aggregate news from free sources
     console.log('Aggregating AI news from Reddit...');
@@ -35,9 +39,9 @@ export async function POST(request: Request) {
     const enhancedArticles = await enhanceWithAI(top10Articles);
 
     // Step 4: Create newsletter
-    const latestEdition = getLatestEditionNumber();
+    const latestEdition = await getLatestEditionNumber();
     const newEdition = latestEdition + 1;
-    const activeSubscribers = getActiveSubscribers();
+    const activeSubscribers = await getActiveSubscribers();
 
     const newsletter: Newsletter = {
       id: Date.now().toString(),
@@ -50,7 +54,7 @@ export async function POST(request: Request) {
     };
 
     // Step 5: Save to storage
-    const saved = saveNewsletter(newsletter);
+    const saved = await saveNewsletter(newsletter);
 
     console.log(`Newsletter #${newEdition} generated successfully!`);
 

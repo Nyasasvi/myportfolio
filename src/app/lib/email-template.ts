@@ -1,5 +1,5 @@
 // Email template system (free - using plain HTML)
-import { Newsletter } from './newsletter-storage';
+import { Newsletter } from './supabase-client';
 
 export function generateNewsletterHTML(newsletter: Newsletter): string {
   const articlesHTML = newsletter.articles.map((article, index) => `
