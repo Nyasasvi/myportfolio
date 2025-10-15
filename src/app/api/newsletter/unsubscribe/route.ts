@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const email = searchParams.get('email');
 
     if (!email) {
-      return NextResponse.html(`
+      return new Response(`
         <!DOCTYPE html>
         <html>
         <head>
@@ -33,13 +33,15 @@ export async function GET(request: NextRequest) {
           </div>
         </body>
         </html>
-      `);
+      `, {
+        headers: { 'Content-Type': 'text/html' }
+      });
     }
 
     const success = unsubscribe(email);
 
     if (!success) {
-      return NextResponse.html(`
+      return new Response(`
         <!DOCTYPE html>
         <html>
         <head>
@@ -63,10 +65,12 @@ export async function GET(request: NextRequest) {
           </div>
         </body>
         </html>
-      `);
+      `, {
+        headers: { 'Content-Type': 'text/html' }
+      });
     }
 
-    return NextResponse.html(`
+    return new Response(`
       <!DOCTYPE html>
       <html>
       <head>
@@ -96,7 +100,7 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('❌ Unsubscribe error:', error);
-    return NextResponse.html(`
+    return new Response(`
       <!DOCTYPE html>
       <html>
       <head>

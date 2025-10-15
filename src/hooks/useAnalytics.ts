@@ -30,7 +30,7 @@ export const useAnalytics = () => {
   const trackPageView = (pagePath: string) => {
     track('page_view', {
       page: pagePath,
-      sessionId: sessionId.current,
+      sessionId: sessionId.current || 'unknown' || 'unknown',
       timestamp: new Date().toISOString()
     });
   };
@@ -39,7 +39,7 @@ export const useAnalytics = () => {
     track('page_exit', {
       page: pagePath,
       timeSpent: Math.round(timeSpent / 1000), // Convert to seconds
-      sessionId: sessionId.current
+      sessionId: sessionId.current || 'unknown'
     });
   };
   
@@ -48,14 +48,14 @@ export const useAnalytics = () => {
       project: projectName,
       url: projectUrl,
       page: pathname,
-      sessionId: sessionId.current
+      sessionId: sessionId.current || 'unknown'
     });
   };
   
   const trackResumeDownload = () => {
     track('resume_download', {
       page: pathname,
-      sessionId: sessionId.current,
+      sessionId: sessionId.current || 'unknown' || 'unknown',
       timestamp: new Date().toISOString()
     });
   };
@@ -64,7 +64,7 @@ export const useAnalytics = () => {
     track('contact_form', {
       type: formType,
       page: pathname,
-      sessionId: sessionId.current
+      sessionId: sessionId.current || 'unknown'
     });
   };
   
@@ -73,7 +73,7 @@ export const useAnalytics = () => {
       skill,
       score,
       page: pathname,
-      sessionId: sessionId.current
+      sessionId: sessionId.current || 'unknown'
     });
   };
   
@@ -82,21 +82,21 @@ export const useAnalytics = () => {
       jobTitle,
       matchScore,
       page: pathname,
-      sessionId: sessionId.current
+      sessionId: sessionId.current || 'unknown'
     });
   };
   
   const trackNewsletterSubscribe = () => {
     track('newsletter_subscribe', {
       page: pathname,
-      sessionId: sessionId.current
+      sessionId: sessionId.current || 'unknown'
     });
   };
   
   const trackNewsletterGenerate = () => {
     track('newsletter_generate', {
       page: pathname,
-      sessionId: sessionId.current
+      sessionId: sessionId.current || 'unknown'
     });
   };
   
@@ -104,7 +104,7 @@ export const useAnalytics = () => {
     track('ar_experience', {
       interaction,
       page: pathname,
-      sessionId: sessionId.current
+      sessionId: sessionId.current || 'unknown'
     });
   };
   
@@ -113,7 +113,7 @@ export const useAnalytics = () => {
       messageLength: message.length,
       responseLength: response.length,
       page: pathname,
-      sessionId: sessionId.current
+      sessionId: sessionId.current || 'unknown'
     });
   };
   
@@ -122,7 +122,7 @@ export const useAnalytics = () => {
       button: buttonName,
       location,
       page: pathname,
-      sessionId: sessionId.current
+      sessionId: sessionId.current || 'unknown'
     });
   };
   
@@ -130,7 +130,7 @@ export const useAnalytics = () => {
     track('scroll_depth', {
       depth,
       page: pathname,
-      sessionId: sessionId.current
+      sessionId: sessionId.current || 'unknown'
     });
   };
   
@@ -138,7 +138,7 @@ export const useAnalytics = () => {
     track('video_play', {
       video: videoName,
       page: pathname,
-      sessionId: sessionId.current
+      sessionId: sessionId.current || 'unknown'
     });
   };
   
@@ -147,7 +147,7 @@ export const useAnalytics = () => {
       url,
       linkText,
       page: pathname,
-      sessionId: sessionId.current
+      sessionId: sessionId.current || 'unknown'
     });
   };
   
@@ -156,7 +156,7 @@ export const useAnalytics = () => {
       query,
       results,
       page: pathname,
-      sessionId: sessionId.current
+      sessionId: sessionId.current || 'unknown'
     });
   };
   
@@ -165,11 +165,12 @@ export const useAnalytics = () => {
       error,
       context,
       page: pathname,
-      sessionId: sessionId.current
+      sessionId: sessionId.current || 'unknown'
     });
   };
   
   return {
+    track,
     trackProjectClick,
     trackResumeDownload,
     trackContactForm,
@@ -262,7 +263,7 @@ export const useHeatmapTracking = () => {
       // Send data every 10 seconds or when array gets too large
       if (mousePositions.length >= 50) {
         track('mouse_movements', {
-          positions: mousePositions,
+          positions: JSON.stringify(mousePositions),
           page: window.location.pathname
         });
         mousePositions = [];
@@ -272,7 +273,7 @@ export const useHeatmapTracking = () => {
     const interval = setInterval(() => {
       if (mousePositions.length > 0) {
         track('mouse_movements', {
-          positions: mousePositions,
+          positions: JSON.stringify(mousePositions),
           page: window.location.pathname
         });
         mousePositions = [];

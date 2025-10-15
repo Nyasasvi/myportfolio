@@ -33,6 +33,7 @@ export async function POST(request: NextRequest) {
     // If test email is provided, send only to that email
     if (testEmail) {
       subscribersToSend = [{ 
+        id: 'test-' + Date.now(),
         email: testEmail, 
         subscribedAt: new Date().toISOString(), 
         unsubscribed: false, 

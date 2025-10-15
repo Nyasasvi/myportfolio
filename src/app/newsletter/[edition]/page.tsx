@@ -122,7 +122,7 @@ export default function NewsletterDetailPage() {
       >
         <Button
           href="/newsletter"
-          variant="ghost"
+          variant="secondary"
           size="s"
           prefixIcon="chevronLeft"
           className="back-button"
@@ -336,7 +336,7 @@ export default function NewsletterDetailPage() {
           )}
           <Button
             href="/newsletter"
-            variant="ghost"
+            variant="secondary"
           >
             View All Editions
           </Button>
