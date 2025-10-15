@@ -97,6 +97,11 @@ export default function JobMatchPage() {
       return;
     }
 
+    if (jobDescription.length > 50000) {
+      setError('Job description is too long. Please limit to 50,000 characters.');
+      return;
+    }
+
     if (useCustomResume && !resume.trim()) {
       setError('Please paste your resume or uncheck "Use My Resume" to use default profile');
       return;
@@ -104,6 +109,11 @@ export default function JobMatchPage() {
 
     if (useCustomResume && resume.length < 100) {
       setError('Resume seems too short. Please provide more details.');
+      return;
+    }
+
+    if (useCustomResume && resume.length > 50000) {
+      setError('Resume is too long. Please limit to 50,000 characters.');
       return;
     }
 
@@ -124,13 +134,21 @@ export default function JobMatchPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to analyze job description');
+        const errorData = await response.json().catch(() => ({}));
+        if (response.status === 408) {
+          throw new Error(errorData.error || 'Analysis timed out. Please try with a shorter job description.');
+        } else if (response.status === 400) {
+          throw new Error(errorData.error || 'Invalid input. Please check your job description.');
+        } else {
+          throw new Error(errorData.error || 'Failed to analyze job description');
+        }
       }
 
       const data = await response.json();
       setResult(data);
     } catch (err) {
-      setError('Failed to analyze job description. Please try again.');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to analyze job description. Please try again.';
+      setError(errorMessage);
       console.error(err);
     } finally {
       setLoading(false);

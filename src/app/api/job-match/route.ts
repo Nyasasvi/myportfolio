@@ -128,6 +128,11 @@ Important:
 - Make the learning path practical and achievable`;
 
     console.log('🤖 Calling OpenAI API for job matching...');
+    
+    // Create AbortController for timeout handling
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 45000); // 45 second timeout
+    
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -150,7 +155,10 @@ Important:
         max_tokens: 2000,
         response_format: { type: "json_object" }
       }),
+      signal: controller.signal,
     });
+    
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       const errorData = await response.text();
@@ -177,7 +185,14 @@ Important:
 
   } catch (error) {
     console.error('❌ Error calling OpenAI API:', error);
-    console.log('⚠️ Falling back to rule-based analysis');
+    
+    // Handle timeout specifically
+    if (error instanceof Error && (error.name === 'AbortError' || error.message.includes('timeout'))) {
+      console.log('⏰ OpenAI API timeout - falling back to rule-based analysis');
+      return performRuleBasedAnalysis(jobDescription, userSkills, customResume);
+    }
+    
+    console.log('⚠️ OpenAI API error - falling back to rule-based analysis');
     return performRuleBasedAnalysis(jobDescription, userSkills, customResume);
   }
 }
@@ -402,6 +417,8 @@ function performRuleBasedAnalysis(
   };
 }
 
+export const maxDuration = 60; // 60 seconds for Vercel Pro, 10s for Hobby
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -421,9 +438,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Add size limits to prevent timeout
+    if (jobDescription.length > 50000) {
+      return NextResponse.json(
+        { error: 'Job description is too long. Please limit to 50,000 characters.' },
+        { status: 400 }
+      );
+    }
+
     if (resume && typeof resume !== 'string') {
       return NextResponse.json(
         { error: 'Invalid resume format' },
+        { status: 400 }
+      );
+    }
+
+    if (resume && resume.length > 50000) {
+      return NextResponse.json(
+        { error: 'Resume is too long. Please limit to 50,000 characters.' },
         { status: 400 }
       );
     }
@@ -435,6 +467,18 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Job match API error:', error);
+    
+    // Handle timeout errors specifically
+    if (error instanceof Error && error.message.includes('timeout')) {
+      return NextResponse.json(
+        { 
+          error: 'Analysis timed out. The job description may be too complex. Please try with a shorter description.',
+          message: 'Request timeout'
+        },
+        { status: 408 }
+      );
+    }
+    
     return NextResponse.json(
       { 
         error: 'Failed to analyze job description',
