@@ -1,0 +1,697 @@
+[
+  {
+    "id": "1760409082181",
+    "edition": 3,
+    "title": "AI Weekly #3: Top 10 Updates",
+    "publishedAt": "2025-10-14T02:31:22.181Z",
+    "articles": [
+      {
+        "id": "17604090774240",
+        "rank": 1,
+        "title": "Salesforce bets on AI 'agents' to fix what it calls a $7 billion problem in enterprise software",
+        "summary": "Salesforce is leveraging AI agents to address a $7 billion issue in enterprise software, highlighting its commitment to artificial intelligence at the Dreamforce conference.",
+        "whyItMatters": "Large Language Models are transforming software development, content creation, and human-computer interaction. Understanding their capabilities and limitations is crucial for modern developers.",
+        "url": "https://venturebeat.com/ai/salesforce-bets-on-ai-agents-to-fix-what-it-calls-a-usd7-billion-problem-in",
+        "publishedDate": "Mon, 13 Oct 2025 12:00:00 GMT",
+        "references": [
+          {
+            "title": "Salesforce bets on AI 'agents' to fix what it calls a $7 billion problem in enterprise software",
+            "url": "https://venturebeat.com/ai/salesforce-bets-on-ai-agents-to-fix-what-it-calls-a-usd7-billion-problem-in",
+            "source": "VentureBeat",
+            "publishedAt": "Mon, 13 Oct 2025 12:00:00 GMT"
+          }
+        ],
+        "credibilityScore": 9,
+        "tags": [
+          "LLMs",
+          "Robotics",
+          "AI Companies"
+        ]
+      },
+      {
+        "id": "17604090774251",
+        "rank": 2,
+        "title": "When dirt meets data: ScottsMiracle-Gro saved $150M using AI",
+        "summary": "ScottsMiracle-Gro's adoption of AI led to $150 million in savings, showcasing how the integration of data analytics transformed traditional horticultural practices.",
+        "whyItMatters": "Large Language Models are transforming software development, content creation, and human-computer interaction. Understanding their capabilities and limitations is crucial for modern developers.",
+        "url": "https://venturebeat.com/ai/when-dirt-meets-data-scottsmiracle-gro",
+        "publishedDate": "Sat, 11 Oct 2025 13:00:00 GMT",
+        "references": [
+          {
+            "title": "When dirt meets data: ScottsMiracle-Gro saved $150M using AI",
+            "url": "https://venturebeat.com/ai/when-dirt-meets-data-scottsmiracle-gro",
+            "source": "VentureBeat",
+            "publishedAt": "Sat, 11 Oct 2025 13:00:00 GMT"
+          }
+        ],
+        "credibilityScore": 9,
+        "tags": [
+          "LLMs",
+          "Computer Vision",
+          "Robotics"
+        ]
+      },
+      {
+        "id": "17604090774262",
+        "rank": 3,
+        "title": "Self-improving language models are becoming reality with MIT's updated SEAL technique",
+        "summary": "MIT's SEAL technique is advancing self-improving language models, enhancing large language models like ChatGPT by enabling continuous learning and improvement.",
+        "whyItMatters": "Large Language Models are transforming software development, content creation, and human-computer interaction. Understanding their capabilities and limitations is crucial for modern developers.",
+        "url": "https://venturebeat.com/ai/self-improving-language-models-are-becoming-reality-with-mits-updated-seal",
+        "publishedDate": "Mon, 13 Oct 2025 22:51:00 GMT",
+        "references": [
+          {
+            "title": "Self-improving language models are becoming reality with MIT's updated SEAL technique",
+            "url": "https://venturebeat.com/ai/self-improving-language-models-are-becoming-reality-with-mits-updated-seal",
+            "source": "VentureBeat",
+            "publishedAt": "Mon, 13 Oct 2025 22:51:00 GMT"
+          }
+        ],
+        "credibilityScore": 9,
+        "tags": [
+          "LLMs",
+          "Computer Vision",
+          "Robotics"
+        ]
+      },
+      {
+        "id": "17604090774263",
+        "rank": 4,
+        "title": "American solar farms",
+        "summary": "Trending discussion in the tech community around American solar farms, attracting attention from developers and AI practitioners for potential technological implications.",
+        "whyItMatters": "This development impacts the AI ecosystem and has implications for developers building intelligent systems.",
+        "url": "https://tech.marksblogg.com/american-solar-farms.html",
+        "publishedDate": "2025-10-13T10:02:40.000Z",
+        "references": [
+          {
+            "title": "American solar farms",
+            "url": "https://tech.marksblogg.com/american-solar-farms.html",
+            "source": "Hacker News",
+            "publishedAt": "2025-10-13T10:02:40.000Z"
+          }
+        ],
+        "credibilityScore": 8,
+        "tags": [
+          "AI News"
+        ]
+      },
+      {
+        "id": "17604090774264",
+        "rank": 5,
+        "title": "Dutch government takes control of Chinese-owned chipmaker Nexperia",
+        "summary": "The Dutch government's intervention in the Chinese-owned chipmaker Nexperia has sparked interest among developers and AI practitioners, prompting discussions on the impact of such actions on the technology industry.",
+        "whyItMatters": "This development impacts the AI ecosystem and has implications for developers building intelligent systems.",
+        "url": "https://www.cnbc.com/2025/10/13/dutch-government-takes-control-of-chinese-owned-chipmaker-nexperia.html",
+        "publishedDate": "2025-10-13T10:03:11.000Z",
+        "references": [
+          {
+            "title": "Dutch government takes control of Chinese-owned chipmaker Nexperia",
+            "url": "https://www.cnbc.com/2025/10/13/dutch-government-takes-control-of-chinese-owned-chipmaker-nexperia.html",
+            "source": "Hacker News",
+            "publishedAt": "2025-10-13T10:03:11.000Z"
+          }
+        ],
+        "credibilityScore": 9,
+        "tags": [
+          "AI News"
+        ]
+      },
+      {
+        "id": "17604090774265",
+        "rank": 6,
+        "title": "Fastmail desktop app",
+        "summary": "The Fastmail desktop app is a hot topic in the tech community, drawing significant interest from developers and AI practitioners for its potential features and functionality.",
+        "whyItMatters": "This development impacts the AI ecosystem and has implications for developers building intelligent systems.",
+        "url": "https://www.fastmail.com/blog/desktop-app/",
+        "publishedDate": "2025-10-13T04:14:29.000Z",
+        "references": [
+          {
+            "title": "Fastmail desktop app",
+            "url": "https://www.fastmail.com/blog/desktop-app/",
+            "source": "Hacker News",
+            "publishedAt": "2025-10-13T04:14:29.000Z"
+          }
+        ],
+        "credibilityScore": 8,
+        "tags": [
+          "AI News"
+        ]
+      },
+      {
+        "id": "17604090774266",
+        "rank": 7,
+        "title": "Prompting Test-Time Scaling Is A Strong LLM Reasoning Data Augmentation",
+        "summary": "Prompting Test-Time Scaling proves to be a potent data augmentation strategy for enhancing large language models' reasoning capabilities, demonstrating significant advancements in AI reasoning.",
+        "whyItMatters": "Large Language Models are transforming software development, content creation, and human-computer interaction. Understanding their capabilities and limitations is crucial for modern developers.",
+        "url": "http://arxiv.org/abs/2510.09599v1",
+        "publishedDate": "2025-10-10T17:57:04Z",
+        "references": [
+          {
+            "title": "Prompting Test-Time Scaling Is A Strong LLM Reasoning Data Augmentation",
+            "url": "http://arxiv.org/abs/2510.09599v1",
+            "source": "ArXiv",
+            "publishedAt": "2025-10-10T17:57:04Z"
+          }
+        ],
+        "credibilityScore": 10,
+        "tags": [
+          "LLMs"
+        ]
+      },
+      {
+        "id": "17604090774267",
+        "rank": 8,
+        "title": "LiveOIBench: Can Large Language Models Outperform Human Contestants in   Informatics Olympiads?",
+        "summary": "LiveOIBench explores whether large language models can outperform human contestants in Informatics Olympiads, providing valuable insights into the coding capabilities of LLMs through competitive programming problems.",
+        "whyItMatters": "Large Language Models are transforming software development, content creation, and human-computer interaction. Understanding their capabilities and limitations is crucial for modern developers.",
+        "url": "http://arxiv.org/abs/2510.09595v1",
+        "publishedDate": "2025-10-10T17:54:24Z",
+        "references": [
+          {
+            "title": "LiveOIBench: Can Large Language Models Outperform Human Contestants in   Informatics Olympiads?",
+            "url": "http://arxiv.org/abs/2510.09595v1",
+            "source": "ArXiv",
+            "publishedAt": "2025-10-10T17:54:24Z"
+          }
+        ],
+        "credibilityScore": 10,
+        "tags": [
+          "LLMs"
+        ]
+      },
+      {
+        "id": "17604090774268",
+        "rank": 9,
+        "title": "Automated Evolutionary Optimization for Resource-Efficient Neural   Network Training",
+        "summary": "Automated Evolutionary Optimization offers a solution to optimizing neural network training by addressing challenges such as distributed computing and compression techniques, improving resource efficiency in model training for various applications.",
+        "whyItMatters": "Deep learning innovations improve model efficiency, accuracy, and capabilities, making AI more practical for real-world applications.",
+        "url": "http://arxiv.org/abs/2510.09566v1",
+        "publishedDate": "2025-10-10T17:17:49Z",
+        "references": [
+          {
+            "title": "Automated Evolutionary Optimization for Resource-Efficient Neural   Network Training",
+            "url": "http://arxiv.org/abs/2510.09566v1",
+            "source": "ArXiv",
+            "publishedAt": "2025-10-10T17:17:49Z"
+          }
+        ],
+        "credibilityScore": 10,
+        "tags": [
+          "Deep Learning"
+        ]
+      },
+      {
+        "id": "17604090774269",
+        "rank": 10,
+        "title": "Avataar AI handholds LLMs in India’s AI mission",
+        "summary": "Avataar AI CEO Sravanth Aluru is pioneering task-specialized AI models to support India's AI mission, emphasizing the practical applications of AI technology in solving real-world industry challenges.",
+        "whyItMatters": "Large Language Models are transforming software development, content creation, and human-computer interaction. Understanding their capabilities and limitations is crucial for modern developers.",
+        "url": "https://www.thehindubusinessline.com/specials/emerging-entrepreneurs/avataar-ai-handholds-llms-in-indias-ai-mission/article70152211.ece",
+        "publishedDate": "2025-10-13T01:00:00Z",
+        "references": [
+          {
+            "title": "Avataar AI handholds LLMs in India’s AI mission",
+            "url": "https://www.thehindubusinessline.com/specials/emerging-entrepreneurs/avataar-ai-handholds-llms-in-indias-ai-mission/article70152211.ece",
+            "source": "BusinessLine",
+            "publishedAt": "2025-10-13T01:00:00Z"
+          }
+        ],
+        "credibilityScore": 6,
+        "tags": [
+          "LLMs"
+        ]
+      }
+    ],
+    "subscribers": 4,
+    "status": "published"
+  },
+  {
+    "id": "1760385285094",
+    "edition": 2,
+    "title": "AI Weekly #2: Top 10 Updates",
+    "publishedAt": "2025-10-13T19:54:45.094Z",
+    "articles": [
+      {
+        "id": "17603852832620",
+        "rank": 1,
+        "title": "He's absolutely right",
+        "summary": "He's absolutely right. This development represents a significant advancement in artificial intelligence technology, with potential implications for software development and real-world applications.",
+        "whyItMatters": "This development impacts the broader AI ecosystem and software development practices.",
+        "url": "https://i.redd.it/ek2qafr8uvuf1.png",
+        "publishedDate": "2025-10-13T13:39:14.000Z",
+        "references": [
+          {
+            "title": "He's absolutely right",
+            "url": "https://i.redd.it/ek2qafr8uvuf1.png",
+            "source": "Reddit r/artificial",
+            "publishedAt": "2025-10-13T13:39:14.000Z"
+          }
+        ],
+        "credibilityScore": 10,
+        "tags": [
+          "AI News"
+        ]
+      },
+      {
+        "id": "17603852832621",
+        "rank": 2,
+        "title": "Will Smith eating spaghetti - 2.5 years later",
+        "summary": "Will Smith eating spaghetti - 2.5 years later. This development represents a significant advancement in artificial intelligence technology, with potential implications for software development and real-world applications.",
+        "whyItMatters": "This development impacts the broader AI ecosystem and software development practices.",
+        "url": "https://v.redd.it/h81gyilej2uf1",
+        "publishedDate": "2025-10-09T11:06:47.000Z",
+        "references": [
+          {
+            "title": "Will Smith eating spaghetti - 2.5 years later",
+            "url": "https://v.redd.it/h81gyilej2uf1",
+            "source": "Reddit r/artificial",
+            "publishedAt": "2025-10-09T11:06:47.000Z"
+          }
+        ],
+        "credibilityScore": 10,
+        "tags": [
+          "AI News"
+        ]
+      },
+      {
+        "id": "17603852832622",
+        "rank": 3,
+        "title": "Hey look guys, the virus i’ve been working on is going to kill the world. I’ve been warning for ages, ah, only if there is something i could do.",
+        "summary": "Hey look guys, the virus i’ve been working on is going to kill the world. I’ve been warning for ages, ah, only if there is something i could do.. This development represents a significant advancement in artificial intelligence technology, with potential implications for software development and real-world applications.",
+        "whyItMatters": "This development impacts the broader AI ecosystem and software development practices.",
+        "url": "https://i.redd.it/3axklov658uf1.jpeg",
+        "publishedDate": "2025-10-10T05:57:44.000Z",
+        "references": [
+          {
+            "title": "Hey look guys, the virus i’ve been working on is going to kill the world. I’ve been warning for ages, ah, only if there is something i could do.",
+            "url": "https://i.redd.it/3axklov658uf1.jpeg",
+            "source": "Reddit r/artificial",
+            "publishedAt": "2025-10-10T05:57:44.000Z"
+          }
+        ],
+        "credibilityScore": 10,
+        "tags": [
+          "AI News"
+        ]
+      },
+      {
+        "id": "17603852832623",
+        "rank": 4,
+        "title": "\"Hey Claude, draw anything you want, no need to justify it\"",
+        "summary": "\"Hey Claude, draw anything you want, no need to justify it\". This development represents a significant advancement in artificial intelligence technology, with potential implications for software development and real-world applications.",
+        "whyItMatters": "This development impacts the broader AI ecosystem and software development practices.",
+        "url": "https://i.redd.it/r88wsk2z7wtf1.png",
+        "publishedDate": "2025-10-08T13:52:02.000Z",
+        "references": [
+          {
+            "title": "\"Hey Claude, draw anything you want, no need to justify it\"",
+            "url": "https://i.redd.it/r88wsk2z7wtf1.png",
+            "source": "Reddit r/artificial",
+            "publishedAt": "2025-10-08T13:52:02.000Z"
+          }
+        ],
+        "credibilityScore": 9,
+        "tags": [
+          "AI News"
+        ]
+      },
+      {
+        "id": "17603852832624",
+        "rank": 5,
+        "title": "Ai generated content should be legally required to be tagged.",
+        "summary": "Ai generated content should be legally required to be tagged.. This development represents a significant advancement in artificial intelligence technology, with potential implications for software development and real-world applications.",
+        "whyItMatters": "This development impacts the broader AI ecosystem and software development practices.",
+        "url": "https://www.reddit.com/r/artificial/comments/1o4gu2c/ai_generated_content_should_be_legally_required/",
+        "publishedDate": "2025-10-12T05:25:21.000Z",
+        "references": [
+          {
+            "title": "Ai generated content should be legally required to be tagged.",
+            "url": "https://www.reddit.com/r/artificial/comments/1o4gu2c/ai_generated_content_should_be_legally_required/",
+            "source": "Reddit r/artificial",
+            "publishedAt": "2025-10-12T05:25:21.000Z"
+          }
+        ],
+        "credibilityScore": 6,
+        "tags": [
+          "AI News"
+        ]
+      },
+      {
+        "id": "17603852832625",
+        "rank": 6,
+        "title": "Sora 2 was a massive mistake and AI needs to regress.",
+        "summary": "Sora 2 was a massive mistake and AI needs to regress.. This development represents a significant advancement in artificial intelligence technology, with potential implications for software development and real-world applications.",
+        "whyItMatters": "This development impacts the broader AI ecosystem and software development practices.",
+        "url": "https://www.reddit.com/gallery/1o5kb52",
+        "publishedDate": "2025-10-13T13:52:44.000Z",
+        "references": [
+          {
+            "title": "Sora 2 was a massive mistake and AI needs to regress.",
+            "url": "https://www.reddit.com/gallery/1o5kb52",
+            "source": "Reddit r/artificial",
+            "publishedAt": "2025-10-13T13:52:44.000Z"
+          }
+        ],
+        "credibilityScore": 6,
+        "tags": [
+          "AI News"
+        ]
+      },
+      {
+        "id": "17603852832626",
+        "rank": 7,
+        "title": "LLMs can get addicted to gambling",
+        "summary": "LLMs can get addicted to gambling. This development represents a significant advancement in artificial intelligence technology, with potential implications for software development and real-world applications.",
+        "whyItMatters": "Large Language Models are revolutionizing how we interact with AI systems, with applications in code generation, content creation, and intelligent assistants.",
+        "url": "https://i.redd.it/tlp2azqap9uf1.png",
+        "publishedDate": "2025-10-10T11:12:57.000Z",
+        "references": [
+          {
+            "title": "LLMs can get addicted to gambling",
+            "url": "https://i.redd.it/tlp2azqap9uf1.png",
+            "source": "Reddit r/artificial",
+            "publishedAt": "2025-10-10T11:12:57.000Z"
+          }
+        ],
+        "credibilityScore": 7,
+        "tags": [
+          "LLMs"
+        ]
+      },
+      {
+        "id": "17603852832627",
+        "rank": 8,
+        "title": "[D] Bad Industry research gets cited and published at top venues. (Rant/Discussion)",
+        "summary": "[D] Bad Industry research gets cited and published at top venues. (Rant/Discussion). This development represents a significant advancement in artificial intelligence technology, with potential implications for software development and real-world applications.",
+        "whyItMatters": "Academic research pushes the boundaries of what's possible with AI technology.",
+        "url": "https://www.reddit.com/r/MachineLearning/comments/1o1jdd7/d_bad_industry_research_gets_cited_and_published/",
+        "publishedDate": "2025-10-08T18:51:10.000Z",
+        "references": [
+          {
+            "title": "[D] Bad Industry research gets cited and published at top venues. (Rant/Discussion)",
+            "url": "https://www.reddit.com/r/MachineLearning/comments/1o1jdd7/d_bad_industry_research_gets_cited_and_published/",
+            "source": "Reddit r/MachineLearning",
+            "publishedAt": "2025-10-08T18:51:10.000Z"
+          }
+        ],
+        "credibilityScore": 7,
+        "tags": [
+          "Research"
+        ]
+      },
+      {
+        "id": "17603852832628",
+        "rank": 9,
+        "title": "Holy shit...Google built an AI that learns from its own mistakes in real time.",
+        "summary": "Holy shit...Google built an AI that learns from its own mistakes in real time.. This development represents a significant advancement in artificial intelligence technology, with potential implications for software development and real-world applications.",
+        "whyItMatters": "This development impacts the broader AI ecosystem and software development practices.",
+        "url": "https://i.redd.it/piot2nx79ouf1.png",
+        "publishedDate": "2025-10-12T12:08:55.000Z",
+        "references": [
+          {
+            "title": "Holy shit...Google built an AI that learns from its own mistakes in real time.",
+            "url": "https://i.redd.it/piot2nx79ouf1.png",
+            "source": "Reddit r/artificial",
+            "publishedAt": "2025-10-12T12:08:55.000Z"
+          }
+        ],
+        "credibilityScore": 6,
+        "tags": [
+          "AI News"
+        ]
+      },
+      {
+        "id": "17603852832629",
+        "rank": 10,
+        "title": "100 million jobs could be wiped out from the U.S. alone thanks to AI, warns Senator Bernie Sanders | Fortune",
+        "summary": "100 million jobs could be wiped out from the U.S. alone thanks to AI, warns Senator Bernie Sanders | Fortune. This development represents a significant advancement in artificial intelligence technology, with potential implications for software development and real-world applications.",
+        "whyItMatters": "This development impacts the broader AI ecosystem and software development practices.",
+        "url": "https://fortune.com/2025/10/07/100-million-jobs-at-risk-of-elimination-senator-bernie-sanders-report-ai-kill-40-hour-workweek/",
+        "publishedDate": "2025-10-07T16:10:33.000Z",
+        "references": [
+          {
+            "title": "100 million jobs could be wiped out from the U.S. alone thanks to AI, warns Senator Bernie Sanders | Fortune",
+            "url": "https://fortune.com/2025/10/07/100-million-jobs-at-risk-of-elimination-senator-bernie-sanders-report-ai-kill-40-hour-workweek/",
+            "source": "Reddit r/artificial",
+            "publishedAt": "2025-10-07T16:10:33.000Z"
+          }
+        ],
+        "credibilityScore": 6,
+        "tags": [
+          "AI News"
+        ]
+      }
+    ],
+    "subscribers": 1,
+    "status": "published"
+  },
+  {
+    "id": "1704672000000",
+    "edition": 1,
+    "title": "AI Weekly #1: Top 10 Updates",
+    "publishedAt": "2024-01-08T09:00:00.000Z",
+    "subscribers": 42,
+    "status": "published",
+    "articles": [
+      {
+        "id": "1704672000001",
+        "rank": 1,
+        "title": "GPT-4 Turbo with Vision Now Available in Production",
+        "summary": "OpenAI has officially released GPT-4 Turbo with enhanced vision capabilities, allowing developers to build applications that can process both text and images. The model features improved accuracy in image understanding, lower pricing, and faster response times compared to the previous version.",
+        "whyItMatters": "This development enables developers to create more sophisticated multimodal AI applications, from medical image analysis to automated content moderation, with better performance and cost efficiency.",
+        "url": "https://openai.com/blog/gpt-4-turbo-vision",
+        "publishedDate": "2024-01-05T10:00:00.000Z",
+        "references": [
+          {
+            "title": "OpenAI announces GPT-4 Turbo with Vision capabilities",
+            "url": "https://techcrunch.com/2024/01/05/openai-gpt-4-turbo-vision",
+            "source": "TechCrunch",
+            "publishedAt": "2024-01-05T11:30:00.000Z"
+          },
+          {
+            "title": "GPT-4 Vision API goes live for developers",
+            "url": "https://theverge.com/2024/01/05/openai-gpt4-vision",
+            "source": "The Verge",
+            "publishedAt": "2024-01-05T12:00:00.000Z"
+          }
+        ],
+        "credibilityScore": 10,
+        "tags": [
+          "LLMs",
+          "Computer Vision",
+          "AI Companies"
+        ]
+      },
+      {
+        "id": "1704672000002",
+        "rank": 2,
+        "title": "Google DeepMind Releases Gemini 1.5 with 1M Token Context Window",
+        "summary": "Google's DeepMind has unveiled Gemini 1.5, featuring a groundbreaking 1 million token context window. This allows the model to process and understand approximately 700,000 words or 11 hours of audio in a single prompt, surpassing previous limitations significantly.",
+        "whyItMatters": "The extended context window enables developers to build applications that can analyze entire codebases, long documents, or extended conversations without losing context, opening new possibilities for AI-powered analysis tools.",
+        "url": "https://deepmind.google/gemini-1.5",
+        "publishedDate": "2024-01-04T14:00:00.000Z",
+        "references": [
+          {
+            "title": "Google Gemini 1.5 breaks records with 1M token window",
+            "url": "https://venturebeat.com/ai/google-gemini-1-5-context",
+            "source": "VentureBeat",
+            "publishedAt": "2024-01-04T15:00:00.000Z"
+          },
+          {
+            "title": "Gemini 1.5: Google's answer to GPT-4",
+            "url": "https://wired.com/story/google-gemini-15",
+            "source": "Wired",
+            "publishedAt": "2024-01-04T16:30:00.000Z"
+          }
+        ],
+        "credibilityScore": 9,
+        "tags": [
+          "LLMs",
+          "AI Companies",
+          "Research"
+        ]
+      },
+      {
+        "id": "1704672000003",
+        "rank": 3,
+        "title": "Anthropic's Claude 3 Achieves Human-Level Performance on Complex Reasoning",
+        "summary": "Anthropic has released Claude 3, which demonstrates human-level performance on complex reasoning tasks, outperforming GPT-4 on several benchmarks. The model shows particular strength in mathematical reasoning, code generation, and nuanced language understanding.",
+        "whyItMatters": "This advancement in AI reasoning capabilities suggests we're approaching a threshold where AI systems can handle increasingly sophisticated intellectual tasks, potentially transforming fields like scientific research and software development.",
+        "url": "https://anthropic.com/claude-3",
+        "publishedDate": "2024-01-03T09:00:00.000Z",
+        "references": [
+          {
+            "title": "Claude 3 sets new benchmarks in AI reasoning",
+            "url": "https://techcrunch.com/2024/01/03/anthropic-claude-3",
+            "source": "TechCrunch",
+            "publishedAt": "2024-01-03T10:00:00.000Z"
+          }
+        ],
+        "credibilityScore": 9,
+        "tags": [
+          "LLMs",
+          "AI Companies",
+          "Deep Learning"
+        ]
+      },
+      {
+        "id": "1704672000004",
+        "rank": 4,
+        "title": "Meta Releases Code Llama 70B for Advanced Code Generation",
+        "summary": "Meta has unveiled Code Llama 70B, a specialized large language model designed for code generation and understanding. The model demonstrates impressive performance on coding benchmarks and supports multiple programming languages including Python, C++, Java, and TypeScript.",
+        "whyItMatters": "Open-source code generation models like Code Llama democratize access to AI-powered development tools, enabling developers to build custom coding assistants and automate routine programming tasks without relying on proprietary APIs.",
+        "url": "https://ai.meta.com/blog/code-llama-70b",
+        "publishedDate": "2024-01-02T11:00:00.000Z",
+        "references": [
+          {
+            "title": "Meta's Code Llama 70B challenges GitHub Copilot",
+            "url": "https://zdnet.com/article/meta-code-llama-70b",
+            "source": "ZDNet",
+            "publishedAt": "2024-01-02T12:00:00.000Z"
+          }
+        ],
+        "credibilityScore": 8,
+        "tags": [
+          "LLMs",
+          "AI Companies",
+          "Research"
+        ]
+      },
+      {
+        "id": "1704672000005",
+        "rank": 5,
+        "title": "Breakthrough in AI-Powered Protein Folding Leads to New Drug Discoveries",
+        "summary": "Researchers using AlphaFold have identified three new potential drug candidates for treating Alzheimer's disease. The AI system predicted protein structures that were subsequently validated in laboratory tests, significantly accelerating the drug discovery process.",
+        "whyItMatters": "AI-driven protein folding represents a paradigm shift in pharmaceutical research, potentially reducing drug development timelines from years to months and opening new avenues for treating previously intractable diseases.",
+        "url": "https://deepmind.google/alphafold-drug-discovery",
+        "publishedDate": "2024-01-01T08:00:00.000Z",
+        "references": [
+          {
+            "title": "AlphaFold accelerates Alzheimer's drug discovery",
+            "url": "https://nature.com/articles/alphafold-alzheimers",
+            "source": "Nature",
+            "publishedAt": "2024-01-01T09:00:00.000Z"
+          }
+        ],
+        "credibilityScore": 10,
+        "tags": [
+          "Deep Learning",
+          "Research",
+          "AI Ethics"
+        ]
+      },
+      {
+        "id": "1704672000006",
+        "rank": 6,
+        "title": "OpenAI Introduces Custom GPTs Marketplace",
+        "summary": "OpenAI has launched an official marketplace for custom GPTs, allowing developers to monetize their specialized AI assistants. The platform includes revenue sharing, usage analytics, and quality controls to ensure high-quality user experiences.",
+        "whyItMatters": "The GPT marketplace creates a new economy around AI application development, enabling developers to build sustainable businesses on top of large language models and democratizing access to specialized AI tools.",
+        "url": "https://openai.com/blog/gpt-marketplace",
+        "publishedDate": "2023-12-30T10:00:00.000Z",
+        "references": [
+          {
+            "title": "OpenAI launches GPT App Store",
+            "url": "https://techcrunch.com/2023/12/30/openai-gpt-store",
+            "source": "TechCrunch",
+            "publishedAt": "2023-12-30T11:00:00.000Z"
+          }
+        ],
+        "credibilityScore": 9,
+        "tags": [
+          "LLMs",
+          "AI Companies"
+        ]
+      },
+      {
+        "id": "1704672000007",
+        "rank": 7,
+        "title": "Stability AI Releases Stable Video Diffusion for Text-to-Video Generation",
+        "summary": "Stability AI has released Stable Video Diffusion, an open-source model capable of generating high-quality videos from text descriptions. The model can create coherent video sequences up to 25 frames, maintaining temporal consistency and visual quality.",
+        "whyItMatters": "Text-to-video generation represents the next frontier in generative AI, with applications in content creation, education, and entertainment. Open-source availability accelerates innovation in this emerging field.",
+        "url": "https://stability.ai/blog/stable-video-diffusion",
+        "publishedDate": "2023-12-29T09:00:00.000Z",
+        "references": [
+          {
+            "title": "Stable Video Diffusion challenges proprietary video AI",
+            "url": "https://venturebeat.com/ai/stable-video-diffusion",
+            "source": "VentureBeat",
+            "publishedAt": "2023-12-29T10:00:00.000Z"
+          }
+        ],
+        "credibilityScore": 8,
+        "tags": [
+          "Computer Vision",
+          "AI Companies",
+          "Deep Learning"
+        ]
+      },
+      {
+        "id": "1704672000008",
+        "rank": 8,
+        "title": "EU AI Act Passes Final Vote, Setting Global Regulatory Standard",
+        "summary": "The European Parliament has passed the comprehensive AI Act, establishing the world's first major regulatory framework for artificial intelligence. The legislation categorizes AI systems by risk level and imposes strict requirements on high-risk applications.",
+        "whyItMatters": "The EU AI Act will likely influence AI regulation globally, similar to how GDPR shaped data privacy laws. Developers and companies must now consider compliance requirements when building and deploying AI systems.",
+        "url": "https://europa.eu/ai-act-2024",
+        "publishedDate": "2023-12-28T14:00:00.000Z",
+        "references": [
+          {
+            "title": "EU AI Act: What developers need to know",
+            "url": "https://techcrunch.com/2023/12/28/eu-ai-act-developers",
+            "source": "TechCrunch",
+            "publishedAt": "2023-12-28T15:00:00.000Z"
+          }
+        ],
+        "credibilityScore": 10,
+        "tags": [
+          "AI Ethics",
+          "Research"
+        ]
+      },
+      {
+        "id": "1704672000009",
+        "rank": 9,
+        "title": "Microsoft Copilot Integrates Advanced Reasoning with GPT-4 Turbo",
+        "summary": "Microsoft has upgraded Copilot across its product suite with GPT-4 Turbo integration, bringing enhanced reasoning capabilities to Office applications, GitHub, and Windows. The update includes improved code suggestions, document analysis, and natural language interactions.",
+        "whyItMatters": "As AI assistants become more deeply integrated into productivity tools, developers and knowledge workers gain access to more powerful automation and augmentation capabilities in their daily workflows.",
+        "url": "https://microsoft.com/copilot-gpt4-turbo",
+        "publishedDate": "2023-12-27T10:00:00.000Z",
+        "references": [
+          {
+            "title": "Microsoft Copilot gets major AI upgrade",
+            "url": "https://theverge.com/2023/12/27/microsoft-copilot-gpt4",
+            "source": "The Verge",
+            "publishedAt": "2023-12-27T11:00:00.000Z"
+          }
+        ],
+        "credibilityScore": 9,
+        "tags": [
+          "LLMs",
+          "AI Companies"
+        ]
+      },
+      {
+        "id": "1704672000010",
+        "rank": 10,
+        "title": "Researchers Achieve 99% Accuracy in AI-Powered Cancer Detection",
+        "summary": "A team at Stanford has developed an AI system that achieves 99% accuracy in detecting early-stage cancers from medical imaging, surpassing human radiologists in several categories. The system uses advanced deep learning techniques trained on millions of annotated medical images.",
+        "whyItMatters": "High-accuracy AI diagnostic tools can improve patient outcomes through earlier detection while reducing healthcare costs. This demonstrates AI's potential to augment medical professionals and save lives.",
+        "url": "https://stanford.edu/ai-cancer-detection",
+        "publishedDate": "2023-12-26T08:00:00.000Z",
+        "references": [
+          {
+            "title": "AI achieves breakthrough in cancer detection",
+            "url": "https://nature.com/articles/ai-cancer-99-accuracy",
+            "source": "Nature Medicine",
+            "publishedAt": "2023-12-26T09:00:00.000Z"
+          }
+        ],
+        "credibilityScore": 10,
+        "tags": [
+          "Computer Vision",
+          "Deep Learning",
+          "Research"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,118 @@
+.contact-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.form-input,
+.form-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--neutral-border-medium);
+    border-radius: 8px;
+    background: var(--neutral-alpha-weak);
+    color: var(--neutral-on-background-strong);
+    font-family: inherit;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+    border-color: var(--brand-strong);
+    background: var(--neutral-background-weak);
+}
+
+.form-input:disabled,
+.form-textarea:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.form-input.error,
+.form-textarea.error {
+    border-color: var(--danger-strong);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 120px;
+    font-family: inherit;
+}
+
+.error-text {
+    color: var(--danger-strong);
+    margin-top: 4px;
+}
+
+.status-message {
+    padding: 16px;
+    border-radius: 8px;
+    animation: slideIn 0.3s ease;
+}
+
+.status-message.success {
+    background: var(--success-alpha-weak);
+    border: 1px solid var(--success-strong);
+}
+
+.status-message.error {
+    background: var(--danger-alpha-weak);
+    border: 1px solid var(--danger-strong);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.contact-info-card,
+.calendly-card {
+    padding: 24px;
+    border: 2px solid var(--neutral-border-medium);
+    border-radius: 12px;
+    background: var(--neutral-alpha-weak);
+}
+
+.contact-link {
+    color: var(--brand-strong);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.contact-link:hover {
+    color: var(--brand-on-background-strong);
+    text-decoration: underline;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .contact-form {
+        gap: 20px;
+    }
+    
+    .form-input,
+    .form-textarea {
+        padding: 10px 14px;
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    .contact-info-card,
+    .calendly-card {
+        padding: 20px;
+    }
+}
+

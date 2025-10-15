@@ -34,6 +34,15 @@ import { RxAvatar } from "react-icons/rx";
 import { IoIosLink } from "react-icons/io";
 
 import { CgWorkAlt } from "react-icons/cg";
+import { 
+	HiSparkles, 
+	HiBolt, 
+	HiTrophy, 
+	HiMagnifyingGlass 
+} from "react-icons/hi2";
+import { 
+	HiTrendingUp 
+} from "react-icons/hi";
 
 export const iconLibrary: Record<string, IconType> = {
 	chevronUp: HiChevronUp,
@@ -89,5 +98,11 @@ export const iconLibrary: Record<string, IconType> = {
 	home : FaHome,
 	about : RxAvatar,
 	projects: CgWorkAlt,
-	githubLink: IoIosLink
+	githubLink: IoIosLink,
+	sparkles: HiSparkles,
+	zap: HiBolt,
+	"trending-up": HiTrendingUp,
+	award: HiTrophy,
+	cpu: HiSparkles,
+	search: HiMagnifyingGlass
 };

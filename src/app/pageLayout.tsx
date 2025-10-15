@@ -7,6 +7,9 @@ import "@/once-ui/styles/index.scss";
 import "@/once-ui/tokens/index.scss";
 import classNames from 'classnames';
 import { useEffect, useState } from "react";
+import EnhancedBackground from "./components/EnhancedBackground";
+import AIChatbot from "./components/AIChatbot";
+import { Analytics } from '@vercel/analytics/react';
 
 type FontConfig = {
 	variable: string;
@@ -39,11 +42,11 @@ export default function PageLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const [theme, setTheme] = useState('light');
+	const [theme, setTheme] = useState('dark');
 	const [loading, setLoading] = useState(true);
 	useEffect(() => {
 		if (typeof window !== 'undefined') {
-			const storedTheme = localStorage.getItem('theme') || 'light';
+			const storedTheme = localStorage.getItem('theme') || 'dark';
 			setTheme(storedTheme);
 			setLoading(false)
 		}
@@ -87,6 +90,7 @@ export default function PageLayout({
 
 			>
 				<Background />
+				<EnhancedBackground particleCount={25} enableOnMobile={false} theme={theme as 'light' | 'dark'} />
 				<Flex
 					fillWidth
 					minHeight="16">
@@ -99,12 +103,14 @@ export default function PageLayout({
 					<Flex
 						justifyContent="center"
 						fillWidth minHeight="0">
-
 						{children}
-
 					</Flex>
 				</Flex>
 				<Footer />
+				{/* AI-Powered Chatbot */}
+				<AIChatbot theme={theme as 'light' | 'dark'} />
+				{/* Vercel Analytics */}
+				<Analytics />
 			</Flex>
 		</Flex>
 	)

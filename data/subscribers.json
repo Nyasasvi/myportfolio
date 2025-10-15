@@ -1,0 +1,34 @@
+[
+  {
+    "id": "1704672000100",
+    "email": "demo@example.com",
+    "subscribedAt": "2024-01-01T10:00:00.000Z",
+    "unsubscribed": false,
+    "interests": [
+      "LLMs",
+      "AI Companies",
+      "Research"
+    ]
+  },
+  {
+    "id": "1760385411536",
+    "email": "nyashashavi@gmail.com",
+    "subscribedAt": "2025-10-13T19:56:51.536Z",
+    "unsubscribed": false,
+    "interests": []
+  },
+  {
+    "id": "1760385685423",
+    "email": "patlolla.sreeshma@gmail.com",
+    "subscribedAt": "2025-10-13T20:01:25.423Z",
+    "unsubscribed": false,
+    "interests": []
+  },
+  {
+    "id": "1760385718219",
+    "email": "yasasvireddy3@gmail.com",
+    "subscribedAt": "2025-10-13T20:01:58.219Z",
+    "unsubscribed": false,
+    "interests": []
+  }
+]
