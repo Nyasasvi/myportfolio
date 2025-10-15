@@ -4,8 +4,9 @@ import {
   saveNewsletter, 
   getLatestEditionNumber,
   getActiveSubscribers,
-  Newsletter 
-} from '@/app/lib/newsletter-storage';
+  initializeSampleData
+} from '@/app/lib/newsletter-storage-supabase';
+import { Newsletter } from '@/app/lib/supabase-client';
 import { aggregateAINews, rankArticles, enhanceWithAI } from '@/app/lib/ai-news-curator';
 import { sendNewsletterToAllSubscribers } from '@/app/lib/email-template';
 
@@ -27,14 +28,17 @@ export async function GET(request: Request) {
 
     console.log('🤖 Auto-generating weekly newsletter...');
 
+    // Initialize sample data if needed
+    await initializeSampleData();
+
     // Step 1: Check if we already generated this week
-    const latestEdition = getLatestEditionNumber();
+    const latestEdition = await getLatestEditionNumber();
     const latestNewsletter = await fetch(`${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/api/newsletter`)
       .then(r => r.json())
       .then(data => data.newsletters?.[0]);
 
     if (latestNewsletter) {
-      const lastPublished = new Date(latestNewsletter.publishedAt);
+      const lastPublished = new Date(latestNewsletter.published_at);
       const daysSinceLastPublished = (Date.now() - lastPublished.getTime()) / (1000 * 60 * 60 * 24);
       
       // If we published within the last 6 days, skip generation
@@ -65,20 +69,20 @@ export async function GET(request: Request) {
 
     // Step 3: Create newsletter
     const newEdition = latestEdition + 1;
-    const activeSubscribers = getActiveSubscribers();
+    const activeSubscribers = await getActiveSubscribers();
 
     const newsletter: Newsletter = {
       id: Date.now().toString(),
       edition: newEdition,
       title: `AI Weekly #${newEdition}: Top 10 Updates`,
-      publishedAt: new Date().toISOString(),
+      published_at: new Date().toISOString(),
       articles: enhancedArticles,
       subscribers: activeSubscribers.length,
       status: 'published'
     };
 
     // Step 4: Save to storage
-    const saved = saveNewsletter(newsletter);
+    const saved = await saveNewsletter(newsletter);
 
     console.log(`✅ Newsletter #${newEdition} auto-generated successfully!`);
     console.log(`📧 ${activeSubscribers.length} subscribers will be notified`);
