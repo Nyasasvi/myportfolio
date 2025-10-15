@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
       subscribersToSend = [{ 
         id: 'test-' + Date.now(),
         email: testEmail, 
-        subscribedAt: new Date().toISOString(), 
+        subscribed_at: new Date().toISOString(), 
         unsubscribed: false, 
         interests: [] 
       }];

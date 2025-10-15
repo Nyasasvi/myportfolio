@@ -281,7 +281,7 @@ export async function sendNewsletterEmail(
 // Function to send newsletter to all active subscribers
 export async function sendNewsletterToAllSubscribers(
   newsletter: Newsletter,
-  subscribers: Array<{ email: string; subscribedAt: string; unsubscribed: boolean; interests: string[] }>
+  subscribers: Array<{ email: string; subscribed_at: string; unsubscribed: boolean; interests: string[] }>
 ): Promise<{ sent: number; failed: number; errors: string[] }> {
   const activeSubscribers = subscribers.filter(sub => !sub.unsubscribed);
   const results = { sent: 0, failed: 0, errors: [] as string[] };
