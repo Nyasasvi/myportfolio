@@ -1,657 +1,215 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { 
-	Heading, 
-	Flex, 
-	Button, 
-	LetterFx, 
-	Avatar, 
-	Text, 
-	Grid,
-	Tag,
-	StatusIndicator,
-	Icon,
-	Background,
-	IconButton
-} from '@/once-ui/components';
-import { homepageData } from './resources/consts';
-import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
+import { useState } from 'react';
+import { ArrowUpRight, Check, Copy, FileText, Github, Linkedin } from 'lucide-react';
+import { experience } from './resources/consts';
+import { toolsNav, contactLinks } from './resources/navigation';
 import './homepage.css';
 
+const profilePhotos = [
+	{ src: '/images/profilePic.png', alt: 'Yasasvi at graduation' },
+	{ src: '/images/IMG_4940.jpg', alt: 'Yasasvi, portrait' },
+	{ src: '/images/IMG_7264.jpg', alt: 'Yasasvi, outdoors' },
+	{ src: '/images/IMG_7613.jpg', alt: 'Yasasvi, candid' },
+];
+
+const platformMetrics = [
+	{ value: '70%', label: 'less time spent on supply chain reporting' },
+	{ value: '15%', label: 'better order fulfillment' },
+	{ value: '40%', label: 'lower retrieval latency for MCP agents' },
+];
+
+const stack = [
+	'Python', 'TypeScript', 'Java', 'LangChain', 'LangGraph', 'RAG', 'MCP',
+	'React', 'Next.js', 'Spring Boot', 'Node.js', 'Snowflake', 'AWS', 'Docker', 'Kubernetes',
+];
+
+// Short year ranges for the compact timeline, derived from the about page data
+const yearRange = (timeframe: string) => {
+	const years = timeframe.match(/\d{4}/g) ?? [];
+	const end = /present/i.test(timeframe) ? 'Now' : years[1];
+	return years[0] === end ? years[0] : `${years[0]}–${end}`;
+};
+
 export default function Home() {
-	// Rotating photos array
-	const profilePhotos = [
-		'/images/profilePic.png',
-		'/images/IMG_4940.jpg',
-		'/images/IMG_7264.jpg',
-		'/images/IMG_7613.jpg'
-	];
+	const [photoIndex, setPhotoIndex] = useState(0);
+	const [copied, setCopied] = useState(false);
 
-	const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
-
-	// Auto-rotate photos every 4 seconds
-	useEffect(() => {
-		const interval = setInterval(() => {
-			setCurrentPhotoIndex((prev) => (prev + 1) % profilePhotos.length);
-		}, 4000);
-		return () => clearInterval(interval);
-	}, [profilePhotos.length]);
-
-	const topSkills = [
-		{ name: 'Java', icon: 'code', color: 'accent' },
-		{ name: 'Spring Boot', icon: 'server', color: 'accent' },
-		{ name: 'React', icon: 'components', color: 'info' },
-		{ name: 'TypeScript', icon: 'code', color: 'info' },
-		{ name: 'AWS', icon: 'cloud', color: 'success' },
-		{ name: 'Docker', icon: 'box', color: 'success' },
-		{ name: 'Kubernetes', icon: 'layers', color: 'success' },
-		{ name: 'AI/ML', icon: 'sparkles', color: 'warning' }
-	];
+	const copyEmail = async () => {
+		try {
+			await navigator.clipboard.writeText(contactLinks.email);
+			setCopied(true);
+			setTimeout(() => setCopied(false), 2000);
+		} catch {
+			window.location.href = `mailto:${contactLinks.email}`;
+		}
+	};
 
 	return (
-		<Flex
-			as="main"
-			direction="column" 
-			justifyContent="center"
-			fillWidth 
-			fillHeight 
-			padding="l" 
-			gap="l"
-			style={{ position: 'relative', overflow: 'hidden' }}
-		>
-			{/* Enhanced Background with Once UI */}
-			<Background
-				position="absolute"
-				style={{
-					top: 0,
-					left: 0,
-					right: 0,
-					bottom: 0,
-					zIndex: 0
-				}}
-			/>
-			<div className="homepage-background">
-				<div className="gradient-orb orb-1" />
-				<div className="gradient-orb orb-2" />
-				<div className="gradient-orb orb-3" />
-				<div className="grid-overlay" />
-			</div>
+		<main className="home">
+			<section className="home-hero" aria-labelledby="hero-title">
+				<div className="home-hero__text">
+					<p className="ds-status home-reveal" style={{ '--i': 0 } as React.CSSProperties}>
+						Open to AI and full-stack engineering roles
+					</p>
+					<h1 id="hero-title" className="home-hero__name ds-display home-reveal" style={{ '--i': 1 } as React.CSSProperties}>
+						Yasasvi<br />Nellore
+					</h1>
+					<p className="home-hero__lede home-reveal" style={{ '--i': 2 } as React.CSSProperties}>
+						I&apos;m a software engineer who builds agentic AI systems and the full-stack products around them.
+						Right now I&apos;m at Twisted X in Dallas, turning ERP, supplier and logistics data into an assistant planners actually use.
+					</p>
+					<div className="home-hero__actions home-reveal" style={{ '--i': 3 } as React.CSSProperties}>
+						<Link href="/projects" className="ds-btn ds-btn--primary">View projects</Link>
+						<a href={contactLinks.resume} target="_blank" rel="noopener noreferrer" className="ds-btn">
+							<FileText aria-hidden="true" />
+							Resume
+						</a>
+						<span className="home-hero__social">
+							<a href={contactLinks.github} target="_blank" rel="noopener noreferrer" className="ds-icon-btn" aria-label="GitHub">
+								<Github aria-hidden="true" />
+							</a>
+							<a href={contactLinks.linkedin} target="_blank" rel="noopener noreferrer" className="ds-icon-btn" aria-label="LinkedIn">
+								<Linkedin aria-hidden="true" />
+							</a>
+						</span>
+					</div>
+				</div>
 
-			<Grid
-				columns="1fr 1.5fr"
-				mobileColumns="1col"
-				tabletColumns="1col"
-				gap="48"
-				fillWidth
-				style={{ 
-					position: 'relative', 
-					zIndex: 1, 
-					alignItems: 'center',
-					background: 'transparent',
-					padding: '2rem'
-				}}
-			>
-				{/* Left Column - Avatar & Stats */}
-				<Flex
-					direction="column"
-					justifyContent="center"
-					alignItems="center"
-					gap="l"
-					paddingX="l"
-				>
-					{/* Rotating Avatar Carousel */}
-					<motion.div
-						initial={{ opacity: 0, scale: 0.8 }}
-						animate={{ opacity: 1, scale: 1 }}
-						transition={{ duration: 0.6, ease: "easeOut" }}
-					>
-						<motion.div
-							animate={{ y: [0, -12, 0] }}
-							transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-							className="avatar-container"
-						>
-							<AnimatePresence mode="wait">
-								<motion.div
-									key={currentPhotoIndex}
-									initial={{ opacity: 0, scale: 0.9, rotateY: -90 }}
-									animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-									exit={{ opacity: 0, scale: 0.9, rotateY: 90 }}
-									transition={{ duration: 0.6, ease: "easeInOut" }}
-									style={{ position: 'relative' }}
-								>
-									<Avatar
-										size="xl"
-										src={profilePhotos[currentPhotoIndex]}
-										style={{ 
-											boxShadow: '0 20px 60px rgba(102, 126, 234, 0.4)',
-											border: '4px solid rgba(102, 126, 234, 0.3)',
-											position: 'relative',
-											zIndex: 2
-										}}
-									/>
-								</motion.div>
-							</AnimatePresence>
-							<div className="avatar-ring" />
-							<div className="avatar-pulse" />
-							
-							{/* Photo Indicators */}
-							<div className="photo-indicators">
-								{profilePhotos.map((_, index) => (
-									<button
-										key={index}
-										className={`photo-indicator ${index === currentPhotoIndex ? 'active' : ''}`}
-										onClick={() => setCurrentPhotoIndex(index)}
-										aria-label={`View photo ${index + 1}`}
-									/>
-								))}
+				<figure className="home-hero__photo home-reveal" style={{ '--i': 2 } as React.CSSProperties}>
+					<div className="home-hero__frame">
+						{profilePhotos.map((photo, index) => (
+							// eslint-disable-next-line @next/next/no-img-element
+							<img
+								key={photo.src}
+								src={photo.src}
+								alt={index === photoIndex ? photo.alt : ''}
+								aria-hidden={index !== photoIndex}
+								className={index === photoIndex ? 'is-active' : ''}
+								loading={index === 0 ? 'eager' : 'lazy'}
+								decoding="async"
+							/>
+						))}
+					</div>
+					<div className="home-hero__switcher" role="group" aria-label="Choose photo">
+						{profilePhotos.map((photo, index) => (
+							<button
+								key={photo.src}
+								type="button"
+								aria-label={`Photo ${index + 1} of ${profilePhotos.length}`}
+								aria-pressed={index === photoIndex}
+								onClick={() => setPhotoIndex(index)}
+							/>
+						))}
+					</div>
+				</figure>
+			</section>
+
+			<section className="home-section" aria-labelledby="now-title">
+				<div className="home-section__head">
+					<h2 id="now-title" className="ds-h2">What I&apos;m working on</h2>
+					<Link href="/about" className="home-link">Full experience</Link>
+				</div>
+
+				<div className="home-bento">
+					<article className="ds-card home-bento__platform">
+						<p className="ds-meta">Twisted X Global Brands, since Dec 2024</p>
+						<h3 className="ds-h3">An agentic supply chain assistant</h3>
+						<p className="ds-body-text">
+							Built with LangChain, LangGraph and RAG over NetSuite ERP, supplier APIs and logistics data.
+							It plans multi-step questions, calls tools, and is checked by an eval harness before changes ship.
+						</p>
+						<dl className="home-metrics">
+							{platformMetrics.map((metric) => (
+								<div key={metric.label} className="home-metric">
+									<dt className="home-metric__value">{metric.value}</dt>
+									<dd className="home-metric__label">{metric.label}</dd>
+								</div>
+							))}
+						</dl>
+					</article>
+
+					<article className="ds-card home-bento__forecast" aria-labelledby="forecast-title">
+						<h3 id="forecast-title" className="ds-h3">Sharper demand forecasts</h3>
+						<p className="ds-body-text">
+							Replaced rolling 12-month averages with a fine-tuned Google TimesFM model. Error (WAPE) across SKUs dropped by about half.
+						</p>
+						<div className="home-forecast" role="img" aria-label="Forecast error fell from 24 to 31 percent with rolling averages to 11 to 21 percent with TimesFM">
+							<div className="home-forecast__row">
+								<span className="home-forecast__name">Rolling average</span>
+								<span className="home-forecast__track">
+									<span className="home-forecast__range is-before" style={{ left: '48%', width: '14%' }} />
+								</span>
+								<span className="home-forecast__value">24–31%</span>
 							</div>
-						</motion.div>
-					</motion.div>
-
-					{/* Status Indicator with Once UI */}
-					<motion.div
-						initial={{ opacity: 0, y: 10 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.5, delay: 0.3 }}
-					>
-						<Flex
-							alignItems="center"
-							gap="s"
-							padding="s"
-							paddingX="m"
-							radius="full"
-							style={{ 
-								backdropFilter: 'blur(8px) saturate(180%)',
-								background: 'rgba(16, 185, 129, 0.03)',
-								border: '1px solid rgba(16, 185, 129, 0.15)',
-								boxShadow: '0 2px 8px rgba(16, 185, 129, 0.05)'
-							}}
-						>
-							<StatusIndicator size="s" color="green" />
-							<Text variant="label-default-s" onBackground="success-strong">
-								Available for opportunities
-							</Text>
-						</Flex>
-					</motion.div>
-
-					{/* Quick Stats with Grid */}
-					<motion.div
-						initial={{ opacity: 0, y: 10 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.5, delay: 0.5 }}
-						style={{ width: '100%' }}
-					>
-						<Flex
-							direction="column"
-							gap="m"
-							padding="l"
-							radius="l"
-							border="neutral-medium"
-							borderStyle="solid-1"
-							style={{ 
-								backdropFilter: 'blur(10px) saturate(180%)',
-								background: 'rgba(255, 255, 255, 0.02)',
-								boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)',
-								border: '1px solid rgba(255, 255, 255, 0.05)'
-							}}
-						>
-							<Grid columns="3" gap="m" fillWidth>
-								<Flex direction="column" alignItems="center" gap="xs">
-									<Text variant="display-strong-s" style={{ color: '#667eea' }}>
-										5+
-									</Text>
-									<Text variant="label-default-xs" onBackground="neutral-weak" align="center">
-										Years
-									</Text>
-								</Flex>
-								<Flex direction="column" alignItems="center" gap="xs">
-									<Text variant="display-strong-s" style={{ color: '#3b82f6' }}>
-										50+
-									</Text>
-									<Text variant="label-default-xs" onBackground="neutral-weak" align="center">
-										Tech
-									</Text>
-								</Flex>
-								<Flex direction="column" alignItems="center" gap="xs">
-									<Text variant="display-strong-s" style={{ color: '#10b981' }}>
-										8
-									</Text>
-									<Text variant="label-default-xs" onBackground="neutral-weak" align="center">
-										Projects
-									</Text>
-								</Flex>
-							</Grid>
-						</Flex>
-					</motion.div>
-
-					{/* Social Links with IconButtons */}
-					<motion.div
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						transition={{ duration: 0.5, delay: 0.6 }}
-					>
-						<Flex gap="s" justifyContent="center">
-							<IconButton
-								icon="github"
-								href="https://github.com/Nyasasvi/"
-								variant="ghost"
-								size="m"
-								aria-label="GitHub Profile"
-							/>
-							<IconButton
-								icon="linkedin"
-								href="https://www.linkedin.com/in/yasasvi-nellore/"
-								variant="ghost"
-								size="m"
-								aria-label="LinkedIn Profile"
-							/>
-							<IconButton
-								icon="mail"
-								href="mailto:yasasvi.nellore@gmail.com"
-								variant="ghost"
-								size="m"
-								aria-label="Email Me"
-							/>
-						</Flex>
-					</motion.div>
-				</Flex>
-
-				{/* Right Column - Content */}
-				<Flex
-					direction="column"
-					justifyContent="center"
-					gap="l"
-					paddingX="l"
-				>
-					{/* Main Heading with LetterFx */}
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.5, delay: 0.2 }}
-					>
-						<Heading
-							wrap="balance"
-							variant="display-strong-s"
-							marginBottom="m"
-						>
-							<span className="font-code main-heading">
-								<LetterFx
-									charset={['0', '1']}
-									trigger="custom"
-									onTrigger={(eventHandler) => {
-										setTimeout(() => {
-											eventHandler();
-										}, 3000)
-									}}
-									speed='medium'>
-									{homepageData.description}
-								</LetterFx>
-							</span>
-						</Heading>
-					</motion.div>
-
-					{/* Professional Summary */}
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.5, delay: 0.3 }}
-					>
-						<Text 
-							variant="body-default-l"
-							onBackground="neutral-medium"
-							style={{ lineHeight: '1.7' }}
-						>
-							Full-Stack Engineer specializing in{' '}
-							<Text 
-								as="span" 
-								variant="body-strong-l"
-								style={{ 
-									background: 'linear-gradient(135deg, #667eea, #764ba2)',
-									WebkitBackgroundClip: 'text',
-									WebkitTextFillColor: 'transparent'
-								}}
-							>
-								Java/Spring Boot microservices
-							</Text>
-							{' '}and{' '}
-							<Text 
-								as="span" 
-								variant="body-strong-l"
-								style={{ 
-									background: 'linear-gradient(135deg, #3b82f6, #06b6d4)',
-									WebkitBackgroundClip: 'text',
-									WebkitTextFillColor: 'transparent'
-								}}
-							>
-								React/TypeScript
-							</Text>
-							, building cloud-native, AI-powered systems
-						</Text>
-					</motion.div>
-
-					{/* Top Skills with Tags */}
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.5, delay: 0.4 }}
-					>
-						<Flex direction="column" gap="m">
-							<Flex alignItems="center" gap="s">
-								<Icon name="sparkles" size="s" />
-								<Text variant="heading-strong-xs" onBackground="neutral-strong">
-									TOP SKILLS
-								</Text>
-							</Flex>
-							<Flex gap="xs" style={{ flexWrap: 'wrap' }}>
-								{topSkills.map((skill, index) => (
-									<motion.div
-										key={skill.name}
-										initial={{ opacity: 0, scale: 0.8 }}
-										animate={{ opacity: 1, scale: 1 }}
-										transition={{ duration: 0.3, delay: 0.4 + index * 0.05 }}
-									>
-										<Tag
-											label={skill.name}
-											variant={skill.color as any}
-											size="m"
-										/>
-									</motion.div>
-								))}
-							</Flex>
-						</Flex>
-					</motion.div>
-
-					{/* Enhanced Key Achievements */}
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.5, delay: 0.5 }}
-					>
-						<Flex direction="column" gap="m">
-							<Flex alignItems="center" gap="s" style={{ marginBottom: '8px' }}>
-								<Icon name="sparkles" size="s" style={{ color: '#667eea' }} />
-								<Text variant="label-strong-s" onBackground="neutral-strong">
-									KEY ACHIEVEMENTS
-								</Text>
-							</Flex>
-							
-							<div className="achievements-container">
-								<motion.div
-									className="achievement-card"
-									initial={{ opacity: 0, scale: 0.8 }}
-									animate={{ opacity: 1, scale: 1 }}
-									transition={{ duration: 0.4, delay: 0.6 }}
-									whileHover={{ scale: 1.05, y: -5 }}
-								>
-									<div className="achievement-icon uptime-icon">
-										<Icon name="zap" size="l" />
-									</div>
-									<div className="achievement-content">
-										<Text variant="display-strong-xs" style={{ color: '#f59e0b', fontSize: '28px' }}>
-											99.99%
-										</Text>
-										<Text variant="label-strong-s" onBackground="neutral-medium">
-											Uptime
-										</Text>
-									</div>
-									<div className="achievement-glow" style={{ background: 'linear-gradient(135deg, #f59e0b20, #d9770620)' }} />
-								</motion.div>
-
-								<motion.div
-									className="achievement-card"
-									initial={{ opacity: 0, scale: 0.8 }}
-									animate={{ opacity: 1, scale: 1 }}
-									transition={{ duration: 0.4, delay: 0.7 }}
-									whileHover={{ scale: 1.05, y: -5 }}
-								>
-									<div className="achievement-icon events-icon">
-										<Icon name="trending-up" size="l" />
-									</div>
-									<div className="achievement-content">
-										<Text variant="display-strong-xs" style={{ color: '#10b981', fontSize: '28px' }}>
-											5M+
-										</Text>
-										<Text variant="label-strong-s" onBackground="neutral-medium">
-											Events/Day
-										</Text>
-									</div>
-									<div className="achievement-glow" style={{ background: 'linear-gradient(135deg, #10b98120, #05966920)' }} />
-								</motion.div>
-
-								<motion.div
-									className="achievement-card"
-									initial={{ opacity: 0, scale: 0.8 }}
-									animate={{ opacity: 1, scale: 1 }}
-									transition={{ duration: 0.4, delay: 0.8 }}
-									whileHover={{ scale: 1.05, y: -5 }}
-								>
-									<div className="achievement-icon aws-icon">
-										<Icon name="award" size="l" />
-									</div>
-									<div className="achievement-content">
-										<Text variant="display-strong-xs" style={{ color: '#3b82f6', fontSize: '28px' }}>
-											AWS
-										</Text>
-										<Text variant="label-strong-s" onBackground="neutral-medium">
-											Certified
-										</Text>
-									</div>
-									<div className="achievement-glow" style={{ background: 'linear-gradient(135deg, #3b82f620, #1d4ed820)' }} />
-								</motion.div>
-
-								<motion.div
-									className="achievement-card"
-									initial={{ opacity: 0, scale: 0.8 }}
-									animate={{ opacity: 1, scale: 1 }}
-									transition={{ duration: 0.4, delay: 0.9 }}
-									whileHover={{ scale: 1.05, y: -5 }}
-								>
-									<div className="achievement-icon ai-icon">
-										<Icon name="cpu" size="l" />
-									</div>
-									<div className="achievement-content">
-										<Text variant="display-strong-xs" style={{ color: '#8b5cf6', fontSize: '28px' }}>
-											AI/ML
-										</Text>
-										<Text variant="label-strong-s" onBackground="neutral-medium">
-											Expert
-										</Text>
-									</div>
-									<div className="achievement-glow" style={{ background: 'linear-gradient(135deg, #8b5cf620, #7c3aed20)' }} />
-								</motion.div>
+							<div className="home-forecast__row">
+								<span className="home-forecast__name">TimesFM</span>
+								<span className="home-forecast__track">
+									<span className="home-forecast__range is-after" style={{ left: '22%', width: '20%' }} />
+								</span>
+								<span className="home-forecast__value">11–21%</span>
 							</div>
-						</Flex>
-					</motion.div>
+							<div className="home-forecast__axis" aria-hidden="true">
+								<span>0%</span><span>25%</span><span>50%</span>
+							</div>
+						</div>
+					</article>
 
-					{/* CTA Buttons Grid */}
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.5, delay: 0.6 }}
-					>
-						<Grid 
-							columns="2"
-							mobileColumns="1col"
-							gap="m"
-						>
-							<motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-								<Button
-									href="/about"
-									suffixIcon="chevronRight"
-									variant="primary"
-									size="l"
-									style={{ 
-										width: '100%',
-										background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-										boxShadow: '0 4px 20px rgba(102, 126, 234, 0.4)'
-									}}
-								>
-									About Me
-								</Button>
-							</motion.div>
-							
-							<motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-								<Button
-									href="/skills"
-									suffixIcon="sparkles"
-									variant="primary"
-									size="l"
-									style={{ 
-										width: '100%',
-										background: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
-										boxShadow: '0 4px 20px rgba(59, 130, 246, 0.4)'
-									}}
-								>
-									View Skills
-								</Button>
-							</motion.div>
-							
-							<motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-								<Button
-									href="/projects"
-									suffixIcon="chevronRight"
-									variant="primary"
-									size="l"
-									style={{ 
-										width: '100%',
-										background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-										boxShadow: '0 4px 20px rgba(16, 185, 129, 0.4)'
-									}}
-								>
-									Projects
-								</Button>
-							</motion.div>
-							
-							<motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-								<Button
-									href="/newsletter"
-									suffixIcon="mail"
-									variant="primary"
-									size="l"
-									style={{ 
-										width: '100%',
-										background: 'linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)',
-										boxShadow: '0 4px 20px rgba(139, 92, 246, 0.4)'
-									}}
-								>
-									AI Newsletter
-								</Button>
-							</motion.div>
-							
-							<motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-								<Button
-									href="/job-match"
-									suffixIcon="search"
-									variant="primary"
-									size="l"
-									style={{ 
-										width: '100%',
-										background: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)',
-										boxShadow: '0 4px 20px rgba(245, 158, 11, 0.4)'
-									}}
-								>
-									Job Match
-								</Button>
-							</motion.div>
-							
-							<motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-								<Button
-									href="/skill-assessment"
-									suffixIcon="sparkles"
-									variant="primary"
-									size="l"
-									style={{ 
-										width: '100%',
-										background: 'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%)',
-										boxShadow: '0 4px 20px rgba(139, 92, 246, 0.4)'
-									}}
-								>
-									Skill Assessment
-								</Button>
-							</motion.div>
-							
-							<motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-								<Button
-									onClick={() => window.open("/assets/resume.pdf", '_blank')}
-									suffixIcon="download"
-									variant="secondary"
-									size="l"
-									style={{ 
-										width: '100%',
-										borderColor: '#667eea',
-										borderWidth: '2px'
-									}}
-								>
-									Resume
-								</Button>
-							</motion.div>
-						</Grid>
-					</motion.div>
+					<article className="ds-card home-bento__timeline">
+						<h3 className="ds-h3">Where I&apos;ve worked</h3>
+						<ol className="home-timeline">
+							{experience.map((job) => (
+								<li key={job.company}>
+									<span className="home-timeline__company">{job.company}</span>
+									<span className="home-timeline__role">{job.role}</span>
+									<span className="home-timeline__years">{yearRange(job.timeframe)}</span>
+								</li>
+							))}
+						</ol>
+					</article>
 
-					{/* Additional Quick Action */}
-					<motion.div
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						transition={{ duration: 0.5, delay: 0.7 }}
-					>
-						<Flex
-							justifyContent="space-between"
-							alignItems="center"
-							padding="m"
-							radius="m"
-							style={{ 
-								cursor: 'pointer',
-								background: 'rgba(255, 255, 255, 0.02)',
-								backdropFilter: 'blur(8px) saturate(180%)',
-								border: '1px solid rgba(255, 255, 255, 0.05)',
-								boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
-								transition: 'all 0.3s ease'
-							}}
-							onClick={() => window.location.href = '/contact'}
-							onMouseEnter={(e) => {
-								e.currentTarget.style.background = 'rgba(102, 126, 234, 0.05)';
-								e.currentTarget.style.borderColor = 'rgba(102, 126, 234, 0.15)';
-							}}
-							onMouseLeave={(e) => {
-								e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
-								e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.05)';
-							}}
-						>
-							<Flex alignItems="center" gap="m">
-								<Icon name="mail" size="m" />
-								<Flex direction="column" gap="2">
-									<Text variant="label-strong-s" onBackground="neutral-strong">
-										Ready to hire?
-									</Text>
-									<Text variant="body-default-xs" onBackground="neutral-weak">
-										Get in touch for opportunities
-									</Text>
-								</Flex>
-							</Flex>
-							<Icon name="chevronRight" size="m" />
-						</Flex>
-					</motion.div>
-				</Flex>
-			</Grid>
+					<article className="ds-card home-bento__stack">
+						<h3 className="ds-h3">Daily tools</h3>
+						<ul className="home-stack" role="list">
+							{stack.map((tool) => <li key={tool} className="ds-chip">{tool}</li>)}
+						</ul>
+						<Link href="/skills" className="home-link">All skills</Link>
+					</article>
+				</div>
+			</section>
 
-			{/* Scroll Indicator */}
-			<motion.div
-				initial={{ opacity: 0 }}
-				animate={{ opacity: 1 }}
-				transition={{ duration: 0.5, delay: 0.9 }}
-				className="scroll-indicator"
-			>
-				<motion.div
-					animate={{ y: [0, 8, 0] }}
-					transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-				>
-					<Icon name="chevronDown" size="m" />
-				</motion.div>
-				<Text variant="label-default-xs" onBackground="neutral-weak">
-					Scroll to explore
-				</Text>
-			</motion.div>
-		</Flex>
+			<section className="home-section" aria-labelledby="tools-title">
+				<div className="home-section__head">
+					<h2 id="tools-title" className="ds-h2">Try something</h2>
+					<p className="ds-body-text">Small tools I built into this site.</p>
+				</div>
+				<ul className="home-tools" role="list">
+					{toolsNav.filter((tool) => tool.href !== '/analytics').map((tool) => (
+						<li key={tool.href}>
+							<Link href={tool.href} className="ds-card home-tool">
+								<span className="home-tool__label">{tool.label}</span>
+								<span className="home-tool__desc">{tool.description}</span>
+								<ArrowUpRight className="home-tool__icon" aria-hidden="true" />
+							</Link>
+						</li>
+					))}
+				</ul>
+			</section>
+
+			<section className="home-contact" aria-labelledby="contact-title">
+				<div>
+					<h2 id="contact-title" className="ds-h2">Hiring for an AI or full-stack role?</h2>
+					<p className="ds-body-text">I usually reply within a day.</p>
+				</div>
+				<div className="home-contact__actions">
+					<Link href="/contact" className="ds-btn ds-btn--primary">Send a message</Link>
+					<button type="button" className="ds-btn" onClick={copyEmail} aria-live="polite">
+						{copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+						{copied ? 'Email copied' : 'Copy email'}
+					</button>
+				</div>
+			</section>
+		</main>
 	);
 }

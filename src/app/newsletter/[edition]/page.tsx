@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Flex, Text, Button, Spinner, Icon } from '@/once-ui/components';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { ArrowLeft, ArrowUpRight, Check, Link2, Linkedin } from 'lucide-react';
 import '../detail.css';
 
 interface AIArticle {
@@ -38,10 +38,11 @@ interface Newsletter {
 export default function NewsletterDetailPage() {
   const params = useParams();
   const edition = params.edition as string;
-  
+
   const [newsletter, setNewsletter] = useState<Newsletter | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     fetchNewsletter();
@@ -51,18 +52,18 @@ export default function NewsletterDetailPage() {
     try {
       const response = await fetch('/api/newsletter');
       const data = await response.json();
-      
+
       const found = data.newsletters.find(
         (n: Newsletter) => n.edition === parseInt(edition)
       );
-      
+
       if (found) {
         setNewsletter(found);
       } else {
-        setError('Newsletter not found');
+        setError(`Edition ${edition} doesn't exist.`);
       }
     } catch (err) {
-      setError('Failed to load newsletter');
+      setError('This edition couldn\'t be loaded.');
     } finally {
       setLoading(false);
     }
@@ -79,270 +80,149 @@ export default function NewsletterDetailPage() {
     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
   };
 
-  const copyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
-    alert('Link copied to clipboard!');
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
   };
 
   if (loading) {
     return (
-      <Flex justifyContent="center" alignItems="center" fillHeight padding="xl">
-        <Spinner size="l" />
-      </Flex>
+      <div className="nld" aria-busy="true" aria-label="Loading edition">
+        <span className="nl-skel nl-skel--sm" />
+        <span className="nl-skel nl-skel--lg" />
+        <span className="nl-skel nl-skel--md" />
+        {[0, 1].map((i) => (
+          <div key={i} className="nld-skel-block">
+            <span className="nl-skel nl-skel--lg" />
+            <span className="nl-skel" />
+            <span className="nl-skel" />
+            <span className="nl-skel nl-skel--md" />
+          </div>
+        ))}
+      </div>
     );
   }
 
   if (error || !newsletter) {
     return (
-      <Flex direction="column" alignItems="center" justifyContent="center" fillHeight padding="xl">
-        <Text variant="heading-strong-l" style={{ marginBottom: '16px' }}>
-          {error || 'Newsletter not found'}
-        </Text>
-        <Button href="/newsletter" variant="primary">
-          ← Back to Archive
-        </Button>
-      </Flex>
+      <div className="nld nld--empty">
+        <h1 className="ds-h2">{error || 'This edition doesn\'t exist.'}</h1>
+        <Link href="/newsletter" className="ds-btn">
+          <ArrowLeft aria-hidden="true" />
+          All editions
+        </Link>
+      </div>
     );
   }
 
   return (
-    <Flex
-      as="article"
-      direction="column"
-      justifyContent="normal"
-      fillWidth
-      padding="xs"
-      className="newsletter-detail"
-    >
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="detail-header"
-      >
-        <Button
-          href="/newsletter"
-          variant="secondary"
-          size="s"
-          prefixIcon="chevronLeft"
-          className="back-button"
-        >
-          Back to Archive
-        </Button>
+    <article className="nld">
+      <Link href="/newsletter" className="nld-back">
+        <ArrowLeft aria-hidden="true" />
+        All editions
+      </Link>
 
-        <div className="header-content">
-          <span className="edition-badge-large">
-            Edition #{newsletter.edition}
-          </span>
-          
-          <Text
-            variant="heading-strong-xl"
-            style={{
-              fontSize: '42px',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              marginBottom: '16px',
-              textAlign: 'center'
-            }}
-          >
-            {newsletter.title}
-          </Text>
+      <header className="nld-header">
+        <p className="ds-meta">
+          Edition {newsletter.edition}, published{' '}
+          <time dateTime={newsletter.publishedAt}>
+            {new Date(newsletter.publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+          </time>
+        </p>
+        <h1 className="ds-h1">{newsletter.title}</h1>
+        <p className="ds-body-text">{newsletter.articles.length} stories, read by {newsletter.subscribers} subscribers.</p>
 
-          <div className="header-meta">
-            <span className="meta-item">
-              📅 {new Date(newsletter.publishedAt).toLocaleDateString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric'
-              })}
-            </span>
-            <span className="meta-divider">•</span>
-            <span className="meta-item">
-              📝 {newsletter.articles.length} Articles
-            </span>
-            <span className="meta-divider">•</span>
-            <span className="meta-item">
-              👥 {newsletter.subscribers} Subscribers
-            </span>
-          </div>
-
-          {/* Share Buttons */}
-          <div className="share-buttons">
-            <button onClick={shareOnTwitter} className="share-btn twitter">
-              <span>𝕏</span>
-              Share on Twitter
-            </button>
-            <button onClick={shareOnLinkedIn} className="share-btn linkedin">
-              <span>in</span>
-              Share on LinkedIn
-            </button>
-            <button onClick={copyLink} className="share-btn copy">
-              <span>🔗</span>
-              Copy Link
-            </button>
-          </div>
+        <div className="nld-share" role="group" aria-label="Share this edition">
+          <button type="button" onClick={shareOnTwitter} className="ds-btn ds-btn--ghost">
+            <span aria-hidden="true" className="nld-x">𝕏</span>
+            Share on X
+          </button>
+          <button type="button" onClick={shareOnLinkedIn} className="ds-btn ds-btn--ghost">
+            <Linkedin aria-hidden="true" />
+            Share on LinkedIn
+          </button>
+          <button type="button" onClick={copyLink} className="ds-btn ds-btn--ghost" aria-live="polite">
+            {copied ? <Check aria-hidden="true" /> : <Link2 aria-hidden="true" />}
+            {copied ? 'Link copied' : 'Copy link'}
+          </button>
         </div>
-      </motion.div>
+      </header>
 
-      {/* Articles */}
-      <div className="articles-container">
-        {newsletter.articles.map((article, index) => (
-          <motion.section
-            key={article.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="article-card"
-          >
-            {/* Rank Badge */}
-            <div className="rank-badge-large">
-              <span className="rank-number">#{article.rank}</span>
-              <span className="rank-label">Top Story</span>
-            </div>
+      <ol className="nld-stories">
+        {newsletter.articles.map((article) => (
+          <li key={article.id} className="nld-story">
+            <span className="nld-story__rank" aria-hidden="true">{article.rank}</span>
+            <div className="nld-story__body">
+              <h2 className="ds-h3">
+                <span className="ds-visually-hidden">Story {article.rank}: </span>
+                {article.title}
+              </h2>
 
-            {/* Title */}
-            <Text
-              variant="heading-strong-l"
-              style={{ fontSize: '28px', marginBottom: '16px', lineHeight: '1.3' }}
-            >
-              {article.title}
-            </Text>
-
-            {/* Tags */}
-            <div className="tags-container">
-              {article.tags.map(tag => (
-                <span key={tag} className="tag">
-                  {tag}
+              <div className="nld-story__tags">
+                {article.tags.map((tag) => <span key={tag} className="ds-chip">{tag}</span>)}
+                <span className="ds-chip nld-cred" title="How many independent sources confirmed the story, scored out of 10">
+                  Credibility {article.credibilityScore}/10
                 </span>
-              ))}
-              <span className="credibility-badge">
-                ✓ Credibility: {article.credibilityScore}/10
-              </span>
-            </div>
-
-            {/* Summary */}
-            <div className="article-summary">
-              <Text
-                variant="body-default-l"
-                style={{ lineHeight: '1.7', marginBottom: '20px' }}
-              >
-                {article.summary}
-              </Text>
-            </div>
-
-            {/* Why It Matters */}
-            <div className="why-matters-box">
-              <div className="box-header">
-                <span className="box-icon">💡</span>
-                <Text variant="label-strong-m">Why It Matters</Text>
               </div>
-              <Text
-                variant="body-default-m"
-                style={{ lineHeight: '1.6' }}
-              >
-                {article.whyItMatters}
-              </Text>
-            </div>
 
-            {/* Original Source */}
-            <div className="article-source">
-              <Button
-                href={article.url}
-                target="_blank"
-                variant="primary"
-                suffixIcon="externalLink"
-                size="m"
-                style={{
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  width: '100%'
-                }}
-              >
-                Read Full Article
-              </Button>
-            </div>
+              <p className="nld-story__summary">{article.summary}</p>
 
-            {/* Verified References */}
-            <div className="references-section">
-              <div className="references-header">
-                <span className="verify-icon">✅</span>
-                <Text variant="label-strong-s">
-                  Verified by {article.references.length} {article.references.length === 1 ? 'source' : 'sources'}
-                </Text>
+              <div className="nld-why">
+                <p className="nld-why__label">Why it matters</p>
+                <p>{article.whyItMatters}</p>
               </div>
-              <ul className="references-list">
-                {article.references.map((ref, i) => (
-                  <li key={i} className="reference-item">
-                    <a 
-                      href={ref.url} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="reference-link"
-                    >
-                      <span className="ref-source">{ref.source}</span>
-                      <span className="ref-title">{ref.title}</span>
-                      <span className="ref-date">
-                        {new Date(ref.publishedAt).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric'
-                        })}
-                      </span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
+
+              <a href={article.url} target="_blank" rel="noopener noreferrer" className="ds-btn nld-story__read">
+                Read the full article
+                <ArrowUpRight aria-hidden="true" />
+              </a>
+
+              {article.references.length > 0 && (
+                <details className="nld-refs">
+                  <summary>
+                    Confirmed by {article.references.length} {article.references.length === 1 ? 'source' : 'sources'}
+                  </summary>
+                  <ul>
+                    {article.references.map((ref, i) => (
+                      <li key={i}>
+                        <a href={ref.url} target="_blank" rel="noopener noreferrer">
+                          <span className="nld-refs__source">{ref.source}</span>
+                          <span className="nld-refs__title">{ref.title}</span>
+                          <time className="nld-refs__date" dateTime={ref.publishedAt}>
+                            {new Date(ref.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                          </time>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              )}
             </div>
-          </motion.section>
+          </li>
         ))}
-      </div>
+      </ol>
 
-      {/* Footer CTA */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="detail-footer"
-      >
-        <div className="footer-cta">
-          <Text variant="heading-strong-l" style={{ marginBottom: '12px' }}>
-            Enjoyed this edition?
-          </Text>
-          <Text variant="body-default-m" onBackground="neutral-medium" style={{ marginBottom: '24px' }}>
-            Subscribe to receive weekly AI updates directly in your inbox
-          </Text>
-          <Button
-            href="/newsletter"
-            variant="primary"
-            size="l"
-            style={{
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              boxShadow: '0 4px 20px rgba(102, 126, 234, 0.4)'
-            }}
-          >
-            📧 Subscribe to AI Weekly
-          </Button>
+      <footer className="nld-footer">
+        <div>
+          <h2 className="ds-h3">Get the next edition by email</h2>
+          <p className="ds-body-text">One email a week with the ten stories worth your time.</p>
         </div>
-
-        {/* Navigation */}
-        <div className="edition-navigation">
+        <Link href="/newsletter" className="ds-btn ds-btn--primary">Subscribe</Link>
+        <nav className="nld-pager" aria-label="Editions">
           {newsletter.edition > 1 && (
-            <Button
-              href={`/newsletter/${newsletter.edition - 1}`}
-              variant="secondary"
-              prefixIcon="chevronLeft"
-            >
-              Edition #{newsletter.edition - 1}
-            </Button>
+            <Link href={`/newsletter/${newsletter.edition - 1}`} className="ds-btn ds-btn--ghost">
+              <ArrowLeft aria-hidden="true" />
+              Edition {newsletter.edition - 1}
+            </Link>
           )}
-          <Button
-            href="/newsletter"
-            variant="secondary"
-          >
-            View All Editions
-          </Button>
-        </div>
-      </motion.div>
-    </Flex>
+          <Link href="/newsletter" className="ds-btn ds-btn--ghost">All editions</Link>
+        </nav>
+      </footer>
+    </article>
   );
 }
-

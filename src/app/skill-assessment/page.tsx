@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { Flex, Text, Button, Spinner, Tag } from "@/once-ui/components";
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, MotionConfig } from 'framer-motion';
+import { Check, CheckCircle2, Lightbulb, Loader2, XCircle } from 'lucide-react';
 import './index.css';
 
 interface Challenge {
@@ -265,7 +265,7 @@ export default function SkillAssessmentPage() {
             console.error('Evaluation error:', error);
             setEvaluation({
                 passed: false,
-                feedback: 'Failed to evaluate solution. Please try again.',
+                feedback: 'Your solution couldn\'t be evaluated because the server didn\'t respond. Try again in a moment.',
                 recommendations: []
             });
         } finally {
@@ -273,399 +273,198 @@ export default function SkillAssessmentPage() {
         }
     };
 
-    const getDifficultyColor = (difficulty: string) => {
-        switch (difficulty) {
-            case 'Easy': return '#10b981';
-            case 'Medium': return '#f59e0b';
-            case 'Hard': return '#ef4444';
-            default: return '#667eea';
-        }
-    };
+    const isDone = (id: string) => userProgress.completedChallenges.includes(id);
 
     return (
-        <Flex
-            as="main"
-            direction="column"
-            justifyContent="normal"
-            fillWidth
-            fillHeight
-            padding="xs"
-            gap="l"
-        >
-            {/* Hero Section */}
-            <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-            >
-                <Flex
-                    direction="column"
-                    fillWidth
-                    gap="m"
-                    style={{ textAlign: 'center', marginBottom: '32px' }}
-                >
-                    <Text
-                        variant="heading-strong-xl"
-                        style={{
-                            fontSize: "48px",
-                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            marginBottom: '8px'
-                        }}
-                    >
-                        🎓 Skill Assessment Agent
-                    </Text>
-                    <Text
-                        variant="body-default-l"
-                        onBackground="neutral-medium"
-                        style={{ maxWidth: '700px', margin: '0 auto' }}
-                    >
-                        Practice coding challenges, get AI-powered feedback, and track your progress
-                    </Text>
-                </Flex>
-            </motion.div>
+        <MotionConfig reducedMotion="user">
+            <main className="sa">
+                <header className="sa-intro">
+                    <h1 className="ds-h1">Skill assessment</h1>
+                    <p className="ds-lede">
+                        Solve short coding challenges and get AI feedback on your solution. Progress is saved in this browser.
+                    </p>
+                </header>
 
-            {/* Progress Dashboard */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-            >
-                <Flex
-                    fillWidth
-                    gap="m"
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                        gap: '20px',
-                        marginBottom: '32px'
-                    }}
-                >
-                    <motion.div className="progress-stat-card" whileHover={{ scale: 1.05, y: -5 }}>
-                        <div className="stat-icon">🏆</div>
-                        <Text variant="display-strong-s" style={{ fontSize: '42px', color: '#667eea' }}>
-                            {userProgress.completedChallenges.length}
-                        </Text>
-                        <Text variant="body-default-m" onBackground="neutral-medium">
-                            Completed
-                        </Text>
-                    </motion.div>
-                    <motion.div className="progress-stat-card" whileHover={{ scale: 1.05, y: -5 }}>
-                        <div className="stat-icon">💻</div>
-                        <Text variant="display-strong-s" style={{ fontSize: '42px', color: '#10b981' }}>
-                            {userProgress.skillLevel['JavaScript']}%
-                        </Text>
-                        <Text variant="body-default-m" onBackground="neutral-medium">
-                            JavaScript
-                        </Text>
-                    </motion.div>
-                    <motion.div className="progress-stat-card" whileHover={{ scale: 1.05, y: -5 }}>
-                        <div className="stat-icon">⚡</div>
-                        <Text variant="display-strong-s" style={{ fontSize: '42px', color: '#f59e0b' }}>
-                            {userProgress.skillLevel['Algorithms']}%
-                        </Text>
-                        <Text variant="body-default-m" onBackground="neutral-medium">
-                            Algorithms
-                        </Text>
-                    </motion.div>
-                    <motion.div className="progress-stat-card" whileHover={{ scale: 1.05, y: -5 }}>
-                        <div className="stat-icon">🎯</div>
-                        <Text variant="display-strong-s" style={{ fontSize: '42px', color: '#8b5cf6' }}>
-                            {userProgress.totalAttempts}
-                        </Text>
-                        <Text variant="body-default-m" onBackground="neutral-medium">
-                            Total Attempts
-                        </Text>
-                    </motion.div>
-                </Flex>
-            </motion.div>
-
-            {/* Category Filter */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-            >
-                <Flex
-                    fillWidth
-                    gap="xs"
-                    style={{
-                        overflowX: 'auto',
-                        padding: '8px 0',
-                        justifyContent: 'center',
-                        flexWrap: 'wrap'
-                    }}
-                >
-                    {categories.map((category) => (
-                        <motion.button
-                            key={category.id}
-                            className={`category-pill ${activeCategory === category.id ? 'active' : ''}`}
-                            onClick={() => setActiveCategory(category.id)}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                        >
-                            <span className="category-icon">{category.icon}</span>
-                            <span>{category.label}</span>
-                            <span className="count-badge">{category.count}</span>
-                        </motion.button>
-                    ))}
-                </Flex>
-            </motion.div>
-
-            {/* Main Content Area */}
-            <Flex
-                fillWidth
-                gap="l"
-                direction="row"
-                mobileDirection="column"
-                style={{ alignItems: 'flex-start' }}
-            >
-                {/* Challenge List */}
-                <Flex
-                    direction="column"
-                    gap="m"
-                    style={{ flex: selectedChallenge ? '0 0 350px' : '1', minWidth: '300px' }}
-                >
-                    <Text variant="heading-strong-l" style={{ marginBottom: '8px' }}>
-                        Challenges
-                    </Text>
-                    
-                    <div className="challenge-list">
-                        <AnimatePresence mode="wait">
-                            {filteredChallenges.map((challenge, index) => (
-                                <motion.div
-                                    key={challenge.id}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: 20 }}
-                                    transition={{ duration: 0.3, delay: index * 0.05 }}
-                                    className={`challenge-item ${selectedChallenge?.id === challenge.id ? 'selected' : ''} ${userProgress.completedChallenges.includes(challenge.id) ? 'completed' : ''}`}
-                                    onClick={() => handleChallengeSelect(challenge)}
-                                >
-                                    <Flex alignItems="center" gap="m" fillWidth>
-                                        <div className="challenge-icon" style={{ background: challenge.color }}>
-                                            {challenge.icon}
-                                        </div>
-                                        <Flex direction="column" gap="xs" style={{ flex: 1 }}>
-                                            <Flex alignItems="center" gap="s">
-                                                <Text variant="body-strong-m">{challenge.title}</Text>
-                                                {userProgress.completedChallenges.includes(challenge.id) && (
-                                                    <span className="completed-badge">✓</span>
-                                                )}
-                                            </Flex>
-                                            <Flex gap="xs" alignItems="center">
-                                                <span
-                                                    className="difficulty-badge"
-                                                    style={{ background: getDifficultyColor(challenge.difficulty) }}
-                                                >
-                                                    {challenge.difficulty}
-                                                </span>
-                                                <Text variant="body-default-xs" onBackground="neutral-weak">
-                                                    {challenge.category}
-                                                </Text>
-                                            </Flex>
-                                        </Flex>
-                                    </Flex>
-                                </motion.div>
-                            ))}
-                        </AnimatePresence>
+                <dl className="sa-progress">
+                    <div>
+                        <dt>{userProgress.completedChallenges.length}<span>/{challenges.length}</span></dt>
+                        <dd>challenges solved</dd>
                     </div>
-                </Flex>
+                    <div>
+                        <dt>{userProgress.skillLevel['JavaScript']}</dt>
+                        <dd>JavaScript XP</dd>
+                    </div>
+                    <div>
+                        <dt>{userProgress.skillLevel['Algorithms']}</dt>
+                        <dd>Algorithms XP</dd>
+                    </div>
+                    <div>
+                        <dt>{userProgress.totalAttempts}</dt>
+                        <dd>attempts</dd>
+                    </div>
+                </dl>
 
-                {/* Challenge Detail & Code Editor */}
-                {selectedChallenge && (
-                    <motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.4 }}
-                        style={{ flex: 1, minWidth: 0 }}
-                    >
-                        <Flex direction="column" gap="m" fillWidth>
-                            {/* Challenge Header */}
-                            <div className="challenge-detail-card">
-                                <Flex direction="column" gap="m">
-                                    <Flex alignItems="center" gap="m">
-                                        <div className="challenge-icon-large" style={{ background: selectedChallenge.color }}>
-                                            {selectedChallenge.icon}
-                                        </div>
-                                        <Flex direction="column" gap="xs" style={{ flex: 1 }}>
-                                            <Text variant="heading-strong-l">{selectedChallenge.title}</Text>
-                                            <Flex gap="s" alignItems="center">
-                                                <span
-                                                    className="difficulty-badge"
-                                                    style={{ background: getDifficultyColor(selectedChallenge.difficulty) }}
-                                                >
-                                                    {selectedChallenge.difficulty}
-                                                </span>
-                                                <Tag label={selectedChallenge.category} variant="info" size="s" />
-                                            </Flex>
-                                        </Flex>
-                                    </Flex>
-
-                                    <Text variant="body-default-l" onBackground="neutral-medium">
-                                        {selectedChallenge.description}
-                                    </Text>
-
-                                    {/* Test Cases */}
-                                    <Flex direction="column" gap="xs">
-                                        <Text variant="label-strong-s" onBackground="neutral-strong">
-                                            TEST CASES:
-                                        </Text>
-                                        {selectedChallenge.testCases.map((testCase, i) => (
-                                            <div key={i} className="test-case">
-                                                <Text variant="body-default-s" style={{ fontFamily: 'monospace' }}>
-                                                    {testCase}
-                                                </Text>
-                                            </div>
-                                        ))}
-                                    </Flex>
-
-                                    {/* Hints Toggle */}
-                                    <Button
-                                        variant="secondary"
-                                        size="s"
-                                        onClick={() => setShowHints(!showHints)}
-                                        style={{ width: 'fit-content' }}
+                <div className={`sa-workspace${selectedChallenge ? ' has-selection' : ''}`}>
+                    <nav className="sa-list" aria-label="Challenges">
+                        <div className="ds-segmented" role="group" aria-label="Filter challenges">
+                            {categories.map((category) => {
+                                const active = activeCategory === category.id;
+                                return (
+                                    <button
+                                        key={category.id}
+                                        type="button"
+                                        className={`ds-segmented__btn${active ? ' is-active' : ''}`}
+                                        aria-pressed={active}
+                                        onClick={() => setActiveCategory(category.id)}
                                     >
-                                        {showHints ? '🔒 Hide Hints' : '💡 Show Hints'}
-                                    </Button>
-
-                                    {/* Hints */}
-                                    <AnimatePresence>
-                                        {showHints && (
-                                            <motion.div
-                                                initial={{ opacity: 0, height: 0 }}
-                                                animate={{ opacity: 1, height: 'auto' }}
-                                                exit={{ opacity: 0, height: 0 }}
-                                                transition={{ duration: 0.3 }}
-                                            >
-                                                <Flex direction="column" gap="xs" className="hints-container">
-                                                    <Text variant="label-strong-s" onBackground="neutral-strong">
-                                                        💡 HINTS:
-                                                    </Text>
-                                                    {selectedChallenge.hints.map((hint, i) => (
-                                                        <div key={i} className="hint-item">
-                                                            <Text variant="body-default-s">
-                                                                {i + 1}. {hint}
-                                                            </Text>
-                                                        </div>
-                                                    ))}
-                                                </Flex>
-                                            </motion.div>
+                                        {active && (
+                                            <motion.span
+                                                layoutId="sa-filter-indicator"
+                                                className="ds-segmented__indicator"
+                                                transition={{ type: 'spring', stiffness: 500, damping: 40 }}
+                                            />
                                         )}
-                                    </AnimatePresence>
-                                </Flex>
+                                        <span className="ds-segmented__label">{category.id === 'all' ? 'All' : category.label}</span>
+                                        <span className="ds-segmented__count">{category.count}</span>
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        <ul className="sa-challenges" role="list">
+                            {filteredChallenges.map((challenge) => {
+                                const selected = selectedChallenge?.id === challenge.id;
+                                return (
+                                    <li key={challenge.id}>
+                                        <button
+                                            type="button"
+                                            className={`sa-challenge${selected ? ' is-selected' : ''}`}
+                                            aria-current={selected ? 'true' : undefined}
+                                            onClick={() => handleChallengeSelect(challenge)}
+                                        >
+                                            <span className="sa-challenge__title">
+                                                {challenge.title}
+                                                {isDone(challenge.id) && (
+                                                    <span className="sa-done">
+                                                        <Check aria-hidden="true" />
+                                                        <span className="ds-visually-hidden">Solved</span>
+                                                    </span>
+                                                )}
+                                            </span>
+                                            <span className="sa-challenge__meta">
+                                                <span className={`sa-difficulty sa-difficulty--${challenge.difficulty.toLowerCase()}`}>{challenge.difficulty}</span>
+                                                {challenge.category}
+                                            </span>
+                                        </button>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </nav>
+
+                    {selectedChallenge ? (
+                        <section className="sa-detail" aria-labelledby="sa-challenge-title" key={selectedChallenge.id}>
+                            <div className="ds-card sa-brief">
+                                <div className="sa-brief__head">
+                                    <h2 id="sa-challenge-title" className="ds-h2">{selectedChallenge.title}</h2>
+                                    <span className={`sa-difficulty sa-difficulty--${selectedChallenge.difficulty.toLowerCase()}`}>{selectedChallenge.difficulty}</span>
+                                </div>
+                                <p className="sa-brief__desc">{selectedChallenge.description}</p>
+
+                                <div className="sa-tests">
+                                    <h3 className="sa-subhead">Test cases</h3>
+                                    <ul role="list">
+                                        {selectedChallenge.testCases.map((testCase, i) => (
+                                            <li key={i}><code>{testCase}</code></li>
+                                        ))}
+                                    </ul>
+                                </div>
+
+                                <details className="sa-hints" open={showHints} onToggle={(e) => setShowHints((e.target as HTMLDetailsElement).open)}>
+                                    <summary>
+                                        <Lightbulb aria-hidden="true" />
+                                        {showHints ? 'Hide hints' : `Show ${selectedChallenge.hints.length} hints`}
+                                    </summary>
+                                    <ol>
+                                        {selectedChallenge.hints.map((hint, i) => <li key={i}>{hint}</li>)}
+                                    </ol>
+                                </details>
                             </div>
 
-                            {/* Code Editor */}
-                            <div className="code-editor-card">
-                                <Flex direction="column" gap="m">
-                                    <Text variant="heading-strong-m">Your Solution</Text>
-                                    <textarea
-                                        className="code-editor"
-                                        value={userCode}
-                                        onChange={(e) => setUserCode(e.target.value)}
-                                        placeholder="Write your code here..."
-                                        spellCheck={false}
-                                    />
-                                    <Button
-                                        variant="primary"
-                                        size="l"
+                            <div className="ds-card sa-editor">
+                                <label htmlFor="sa-code" className="sa-subhead">Your solution</label>
+                                <textarea
+                                    id="sa-code"
+                                    className="sa-code"
+                                    value={userCode}
+                                    onChange={(e) => setUserCode(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        // Tab inserts two spaces instead of leaving the editor; Escape then Tab still moves focus out
+                                        if (e.key === 'Tab' && !e.shiftKey) {
+                                            e.preventDefault();
+                                            const el = e.currentTarget;
+                                            const { selectionStart: start, selectionEnd: end } = el;
+                                            const next = userCode.slice(0, start) + '  ' + userCode.slice(end);
+                                            setUserCode(next);
+                                            requestAnimationFrame(() => el.setSelectionRange(start + 2, start + 2));
+                                        }
+                                        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter' && !isEvaluating) {
+                                            e.preventDefault();
+                                            handleEvaluate();
+                                        }
+                                    }}
+                                    spellCheck={false}
+                                    autoCapitalize="off"
+                                    autoCorrect="off"
+                                    aria-describedby="sa-code-hint"
+                                />
+                                <div className="sa-editor__foot">
+                                    <p id="sa-code-hint" className="ds-meta">Tab indents. Press Ctrl or ⌘ + Enter to evaluate.</p>
+                                    <button
+                                        type="button"
+                                        className="ds-btn ds-btn--primary"
                                         onClick={handleEvaluate}
                                         disabled={isEvaluating}
-                                        style={{
-                                            width: '100%',
-                                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                                        }}
+                                        aria-busy={isEvaluating}
                                     >
-                                        {isEvaluating ? (
-                                            <Flex alignItems="center" gap="s">
-                                                <Spinner size="s" />
-                                                <span>Evaluating...</span>
-                                            </Flex>
-                                        ) : (
-                                            '🚀 Evaluate Solution'
-                                        )}
-                                    </Button>
-                                </Flex>
+                                        {isEvaluating ? <><Loader2 className="sa-spin" aria-hidden="true" />Evaluating</> : 'Evaluate solution'}
+                                    </button>
+                                </div>
                             </div>
 
-                            {/* Evaluation Results */}
-                            <AnimatePresence>
+                            <div aria-live="polite">
                                 {evaluation && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -20 }}
-                                        transition={{ duration: 0.4 }}
-                                        className={`evaluation-card ${evaluation.passed ? 'success' : 'error'}`}
-                                    >
-                                        <Flex direction="column" gap="m">
-                                            <Flex alignItems="center" gap="m">
-                                                <div className="evaluation-icon">
-                                                    {evaluation.passed ? '✅' : '❌'}
-                                                </div>
-                                                <Text variant="heading-strong-l">
-                                                    {evaluation.passed ? 'Great Job! 🎉' : 'Not Quite Right'}
-                                                </Text>
-                                            </Flex>
-
-                                            <Text variant="body-default-l" onBackground="neutral-medium">
-                                                {evaluation.feedback}
-                                            </Text>
-
-                                            {evaluation.recommendations && evaluation.recommendations.length > 0 && (
-                                                <Flex direction="column" gap="xs">
-                                                    <Text variant="label-strong-s" onBackground="neutral-strong">
-                                                        📚 LEARNING RECOMMENDATIONS:
-                                                    </Text>
-                                                    {evaluation.recommendations.map((rec: string, i: number) => (
-                                                        <div key={i} className="recommendation-item">
-                                                            <Text variant="body-default-s">
-                                                                • {rec}
-                                                            </Text>
-                                                        </div>
-                                                    ))}
-                                                </Flex>
-                                            )}
-
-                                            {evaluation.passed && (
-                                                <Text variant="body-default-s" onBackground="success-medium">
-                                                    🎓 +10 {selectedChallenge.category} XP earned!
-                                                </Text>
-                                            )}
-                                        </Flex>
-                                    </motion.div>
+                                    <div className={`sa-result ${evaluation.passed ? 'is-pass' : 'is-fail'}`}>
+                                        <h3 className="sa-result__title">
+                                            {evaluation.passed ? <CheckCircle2 aria-hidden="true" /> : <XCircle aria-hidden="true" />}
+                                            {evaluation.passed ? 'All tests passed' : 'Not passing yet'}
+                                        </h3>
+                                        <p className="sa-result__feedback">{evaluation.feedback}</p>
+                                        {evaluation.recommendations && evaluation.recommendations.length > 0 && (
+                                            <div>
+                                                <h4 className="sa-subhead">What to look at next</h4>
+                                                <ul className="sa-result__recs">
+                                                    {evaluation.recommendations.map((rec: string, i: number) => <li key={i}>{rec}</li>)}
+                                                </ul>
+                                            </div>
+                                        )}
+                                        {evaluation.passed && (
+                                            <p className="sa-result__xp">+10 {selectedChallenge.category} XP</p>
+                                        )}
+                                    </div>
                                 )}
-                            </AnimatePresence>
-                        </Flex>
-                    </motion.div>
-                )}
-
-                {/* Empty State */}
-                {!selectedChallenge && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.6, delay: 0.3 }}
-                        style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}
-                    >
-                        <Flex direction="column" gap="m" alignItems="center" style={{ textAlign: 'center', padding: '48px' }}>
-                            <Text variant="display-strong-l" style={{ fontSize: '64px' }}>
-                                🎯
-                            </Text>
-                            <Text variant="heading-strong-l" onBackground="neutral-strong">
-                                Select a Challenge to Begin
-                            </Text>
-                            <Text variant="body-default-l" onBackground="neutral-medium" style={{ maxWidth: '400px' }}>
-                                Choose from {challenges.length} coding challenges to practice your skills and get AI-powered feedback
-                            </Text>
-                        </Flex>
-                    </motion.div>
-                )}
-            </Flex>
-        </Flex>
+                            </div>
+                        </section>
+                    ) : (
+                        <div className="sa-empty">
+                            <h2 className="ds-h3">Pick a challenge to start</h2>
+                            <p className="ds-body-text">
+                                {challenges.length} challenges, from string basics to sorting. Your code is checked against the test cases and reviewed by AI.
+                            </p>
+                        </div>
+                    )}
+                </div>
+            </main>
+        </MotionConfig>
     );
 }
-

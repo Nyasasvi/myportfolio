@@ -1,39 +1,19 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { 
-  LineChart, 
-  Line, 
-  AreaChart, 
+import {
+  AreaChart,
   Area,
-  BarChart, 
-  Bar, 
-  PieChart, 
-  Pie, 
-  Cell,
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  ResponsiveContainer 
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  LabelList,
 } from 'recharts';
-import { 
-  Users, 
-  Eye, 
-  Clock, 
-  MousePointer, 
-  TrendingUp, 
-  Activity, 
-  Globe, 
-  BarChart3,
-  PieChart as PieChartIcon,
-  MapPin,
-  Calendar,
-  Download,
-  ExternalLink
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Activity, AlertCircle, Pause, RefreshCw } from 'lucide-react';
 import './analytics.css';
 
 // Real-time analytics data structure
@@ -79,55 +59,103 @@ interface AnalyticsData {
   };
 }
 
-const StatCard = ({ icon: Icon, title, value, change, color = 'blue' }: {
-  icon: any;
-  title: string;
-  value: string | number;
-  change?: string;
-  color?: string;
-}) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5 }}
-    className={`stat-card stat-card--${color}`}
-  >
-    <div className="stat-card__icon">
-      <Icon size={24} />
-    </div>
-    <div className="stat-card__content">
-      <h3 className="stat-card__title">{title}</h3>
-      <p className="stat-card__value">{value}</p>
-      {change && (
-        <p className="stat-card__change">
-          <TrendingUp size={16} />
-          {change}
-        </p>
-      )}
-    </div>
-  </motion.div>
-);
+const RANGES = [
+  { id: '1d', label: '24h' },
+  { id: '7d', label: '7d' },
+  { id: '30d', label: '30d' },
+  { id: '90d', label: '90d' },
+];
 
-const ChartCard = ({ title, children, icon: Icon }: {
+type ChartTheme = { mark: string; grid: string; text: string; muted: string; surface: string; border: string };
+
+// Recharts writes colors into SVG attributes, which can't resolve CSS variables, so read the tokens and follow theme changes
+function useChartTheme(): ChartTheme {
+  const read = (): ChartTheme => {
+    if (typeof window === 'undefined') {
+      return { mark: '#6f7ff0', grid: 'rgba(236,238,246,0.07)', text: '#eceef6', muted: '#7c839c', surface: '#1c2135', border: 'rgba(236,238,246,0.18)' };
+    }
+    const css = getComputedStyle(document.documentElement);
+    const v = (name: string) => css.getPropertyValue(name).trim();
+    return { mark: v('--ds-chart-1'), grid: v('--ds-chart-grid'), text: v('--ds-fg'), muted: v('--ds-fg-subtle'), surface: v('--ds-surface-2'), border: v('--ds-border-strong') };
+  };
+  const [theme, setTheme] = useState<ChartTheme>(read);
+  useEffect(() => {
+    setTheme(read());
+    const observer = new MutationObserver(() => setTheme(read()));
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    return () => observer.disconnect();
+  }, []);
+  return theme;
+}
+
+const formatDay = (value: string) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+function ChartTooltip({ active, payload, label, unit, labelFormatter }: any) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="an-tooltip">
+      <p className="an-tooltip__label">{labelFormatter ? labelFormatter(label) : label}</p>
+      <p className="an-tooltip__value">
+        <span className="an-tooltip__swatch" style={{ background: payload[0].color || payload[0].fill }} />
+        {Number(payload[0].value).toLocaleString()} {unit}
+      </p>
+    </div>
+  );
+}
+
+function ChartCard({ title, summary, table, children, wide }: {
   title: string;
+  summary?: string;
+  table: { columns: [string, string]; rows: Array<[string, string | number]> };
   children: React.ReactNode;
-  icon?: any;
-}) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.95 }}
-    animate={{ opacity: 1, scale: 1 }}
-    transition={{ duration: 0.5 }}
-    className="chart-card"
-  >
-    <div className="chart-card__header">
-      {Icon && <Icon size={20} className="chart-card__icon" />}
-      <h3 className="chart-card__title">{title}</h3>
-    </div>
-    <div className="chart-card__content">
-      {children}
-    </div>
-  </motion.div>
-);
+  wide?: boolean;
+}) {
+  return (
+    <section className={`ds-card an-chart${wide ? ' an-chart--wide' : ''}`} aria-label={title}>
+      <header className="an-chart__head">
+        <h2 className="an-chart__title">{title}</h2>
+        {summary && <p className="an-chart__summary">{summary}</p>}
+      </header>
+      <div className="an-chart__plot" aria-hidden="true">{children}</div>
+      <details className="an-chart__table">
+        <summary>View as table</summary>
+        <table>
+          <thead><tr><th scope="col">{table.columns[0]}</th><th scope="col">{table.columns[1]}</th></tr></thead>
+          <tbody>
+            {table.rows.map(([a, b], i) => (
+              <tr key={i}><td>{a}</td><td>{typeof b === 'number' ? b.toLocaleString() : b}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </details>
+    </section>
+  );
+}
+
+function HBarChart({ data, dataKey, nameKey, unit, theme }: { data: any[]; dataKey: string; nameKey: string; unit: string; theme: ChartTheme }) {
+  const sorted = [...data].sort((a, b) => b[dataKey] - a[dataKey]);
+  const height = Math.max(160, sorted.length * 36 + 16);
+  return (
+    <ResponsiveContainer width="100%" height={height}>
+      <BarChart data={sorted} layout="vertical" margin={{ top: 4, right: 48, bottom: 4, left: 4 }} barCategoryGap={8}>
+        <CartesianGrid horizontal={false} stroke={theme.grid} />
+        <XAxis type="number" hide />
+        <YAxis
+          dataKey={nameKey}
+          type="category"
+          width={110}
+          tickLine={false}
+          axisLine={false}
+          tick={{ fontSize: 12, fill: theme.muted }}
+        />
+        <Tooltip cursor={{ fill: theme.grid }} content={<ChartTooltip unit={unit} />} />
+        <Bar dataKey={dataKey} fill={theme.mark} radius={[0, 4, 4, 0]} maxBarSize={20} isAnimationActive={false}>
+          <LabelList dataKey={dataKey} position="right" style={{ fontSize: 12, fill: theme.text, fontVariantNumeric: 'tabular-nums' }} formatter={(v: React.ReactNode) => (typeof v === 'number' ? v.toLocaleString() : v)} />
+        </Bar>
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}
 
 export default function AnalyticsDashboard() {
   const [timeRange, setTimeRange] = useState('7d');
@@ -135,23 +163,26 @@ export default function AnalyticsDashboard() {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [updatedAt, setUpdatedAt] = useState<Date | null>(null);
+  const theme = useChartTheme();
 
   // Fetch real analytics data
   const fetchAnalyticsData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await fetch(`/api/analytics/dashboard?range=${timeRange}`);
-      
+
       if (!response.ok) {
-        throw new Error('Failed to fetch analytics data');
+        throw new Error('The analytics service returned an error.');
       }
-      
+
       const analyticsData = await response.json();
       setData(analyticsData);
+      setUpdatedAt(new Date());
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load analytics');
+      setError(err instanceof Error ? err.message : 'Analytics couldn\'t be loaded.');
       console.error('Analytics fetch error:', err);
     } finally {
       setLoading(false);
@@ -173,332 +204,175 @@ export default function AnalyticsDashboard() {
     return () => clearInterval(interval);
   }, [isLive, loading, fetchAnalyticsData]);
 
-  const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#00ff00'];
-
-  // Helper function to determine if we should show percentage changes
-  const shouldShowChange = (currentValue: number) => currentValue > 0;
+  const share = (part: number, total: number) => (total > 0 ? `${Math.round((part / total) * 100)}%` : '—');
+  // Keep showing the previous data during a background refresh so the layout doesn't jump
+  const showSkeleton = loading && !data;
 
   return (
-    <div className="analytics-dashboard">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="analytics-header"
-      >
-        <div className="analytics-header__content">
-          <div className="analytics-header__title">
-            <BarChart3 size={32} className="analytics-header__icon" />
-            <div>
-              <h1>Portfolio Analytics</h1>
-              <p>Real-time insights into your portfolio performance</p>
-            </div>
-          </div>
-          
-          <div className="analytics-header__controls">
-            <div className="time-range-selector">
-              {['1d', '7d', '30d', '90d'].map((range) => (
-                <button
-                  key={range}
-                  className={`time-range-btn ${timeRange === range ? 'active' : ''}`}
-                  onClick={() => setTimeRange(range)}
-                >
-                  {range}
-                </button>
-              ))}
-            </div>
-            
-            <div className="live-indicator">
+    <main className="an" aria-busy={loading}>
+      <header className="an-header">
+        <div className="an-header__text">
+          <h1 className="ds-h1">Analytics</h1>
+          <p className="ds-body-text">Traffic and engagement for this site, from Vercel Analytics.</p>
+        </div>
+        <div className="an-controls">
+          <div className="an-range" role="group" aria-label="Time range">
+            {RANGES.map((range) => (
               <button
-                className={`live-toggle ${isLive ? 'active' : ''}`}
-                onClick={() => setIsLive(!isLive)}
+                key={range.id}
+                type="button"
+                className={`an-range__btn${timeRange === range.id ? ' is-active' : ''}`}
+                aria-pressed={timeRange === range.id}
+                onClick={() => setTimeRange(range.id)}
               >
-                <Activity size={16} />
-                {isLive ? 'Live' : 'Paused'}
+                {range.label}
               </button>
-            </div>
+            ))}
           </div>
-        </div>
-      </motion.div>
-
-      {/* Loading State */}
-      {loading && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="loading-state"
-        >
-          <div className="loading-spinner"></div>
-          <p>Loading real-time analytics data...</p>
-        </motion.div>
-      )}
-
-      {/* Error State */}
-      {error && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="error-state"
-        >
-          <div className="error-icon">⚠️</div>
-          <h3>Unable to load analytics data</h3>
-          <p>{error}</p>
-          <button onClick={fetchAnalyticsData} className="retry-button">
-            Try Again
+          <button
+            type="button"
+            className={`an-live${isLive ? ' is-live' : ''}`}
+            aria-pressed={isLive}
+            onClick={() => setIsLive(!isLive)}
+            title={isLive ? 'Refreshing every 30 seconds. Click to pause.' : 'Paused. Click to refresh every 30 seconds.'}
+          >
+            {isLive ? <Activity size={15} aria-hidden="true" /> : <Pause size={15} aria-hidden="true" />}
+            {isLive ? 'Live' : 'Paused'}
           </button>
-        </motion.div>
-      )}
+        </div>
+      </header>
 
-      {/* Real-time Status */}
-      {data && !loading && !error && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="realtime-status"
-        >
-          <div className="realtime-status__item">
-            <Users size={20} />
-            <span>{data.realTimeData.activeUsers} active users</span>
+      {error && (
+        <div className="an-error" role="alert">
+          <AlertCircle aria-hidden="true" />
+          <div>
+            <p className="an-error__title">Analytics couldn&apos;t be loaded</p>
+            <p className="an-error__detail">{error}</p>
           </div>
-          <div className="realtime-status__item">
-            <Globe size={20} />
-            <span>Current: {data.realTimeData.currentPage}</span>
-          </div>
-          <div className="realtime-status__item">
-            <ExternalLink size={20} />
-            <span>Top referrer: {data.realTimeData.topReferrer}</span>
-          </div>
-          <div className="realtime-status__item">
-            <Clock size={20} />
-            <span>Avg load: {data.realTimeData.avgLoadTime}</span>
-          </div>
-        </motion.div>
-      )}
-
-      {/* Key Metrics */}
-      {data && !loading && !error && (
-        <div className="metrics-grid">
-          <StatCard
-            icon={Users}
-            title="Total Visitors"
-            value={data.overview.totalVisitors.toLocaleString()}
-            change={shouldShowChange(data.overview.totalVisitors) ? "+12.5%" : undefined}
-            color="blue"
-          />
-          <StatCard
-            icon={Eye}
-            title="Page Views"
-            value={data.overview.pageViews.toLocaleString()}
-            change={shouldShowChange(data.overview.pageViews) ? "+8.3%" : undefined}
-            color="green"
-          />
-          <StatCard
-            icon={Clock}
-            title="Avg. Session"
-            value={data.overview.avgSessionDuration}
-            change={shouldShowChange(data.overview.totalVisitors) ? "+5.2%" : undefined}
-            color="purple"
-          />
-          <StatCard
-            icon={MousePointer}
-            title="Bounce Rate"
-            value={`${data.overview.bounceRate}%`}
-            change={shouldShowChange(data.overview.totalVisitors) ? "-2.1%" : undefined}
-            color="orange"
-          />
+          <button type="button" onClick={fetchAnalyticsData} className="ds-btn">
+            <RefreshCw aria-hidden="true" />
+            Try again
+          </button>
         </div>
       )}
 
-      {/* Charts Grid */}
-      {data && !loading && !error && (
-        <div className="charts-grid">
-          {/* Visitor Trends */}
-          <ChartCard title="Visitor Trends" icon={TrendingUp}>
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={data.visitorTrends}>
-                <defs>
-                  <linearGradient id="visitorGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8884d8" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <XAxis 
-                  dataKey="date" 
-                  tick={{ fontSize: 12 }}
-                  tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                />
-                <YAxis tick={{ fontSize: 12 }} />
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)', 
-                    border: 'none', 
-                    borderRadius: '8px',
-                    color: 'white'
-                  }}
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="visitors" 
-                  stroke="#8884d8" 
-                  fillOpacity={1} 
-                  fill="url(#visitorGradient)" 
-                  strokeWidth={3}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </ChartCard>
-
-          {/* Top Pages */}
-          <ChartCard title="Top Pages" icon={Globe}>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={data.topPages} layout="horizontal">
-                <XAxis type="number" tick={{ fontSize: 12 }} />
-                <YAxis 
-                  dataKey="page" 
-                  type="category" 
-                  tick={{ fontSize: 12 }}
-                  width={80}
-                />
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)', 
-                    border: 'none', 
-                    borderRadius: '8px',
-                    color: 'white'
-                  }}
-                />
-                <Bar dataKey="views" fill="#82ca9d" radius={[0, 4, 4, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartCard>
-
-          {/* Traffic Sources */}
-          <ChartCard title="Traffic Sources" icon={PieChartIcon}>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={data.trafficSources}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percentage }) => `${name} ${percentage}%`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {data.trafficSources.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)', 
-                    border: 'none', 
-                    borderRadius: '8px',
-                    color: 'white'
-                  }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </ChartCard>
-
-          {/* Geographic Distribution */}
-          <ChartCard title="Geographic Distribution" icon={MapPin}>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={data.geographicData}>
-                <XAxis 
-                  dataKey="country" 
-                  tick={{ fontSize: 12 }}
-                  angle={-45}
-                  textAnchor="end"
-                  height={80}
-                />
-                <YAxis tick={{ fontSize: 12 }} />
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)', 
-                    border: 'none', 
-                    borderRadius: '8px',
-                    color: 'white'
-                  }}
-                />
-                <Bar dataKey="visitors" fill="#ffc658" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartCard>
+      {showSkeleton && (
+        <div className="an-skeleton" aria-label="Loading analytics">
+          <div className="an-metrics">
+            {[0, 1, 2, 3].map((i) => <div key={i} className="ds-card an-skel-tile"><span className="an-skel an-skel--sm" /><span className="an-skel an-skel--lg" /></div>)}
+          </div>
+          <div className="an-charts">
+            {[0, 1, 2, 3].map((i) => <div key={i} className={`ds-card an-skel-chart${i === 0 ? ' an-chart--wide' : ''}`}><span className="an-skel an-skel--sm" /><span className="an-skel an-skel--block" /></div>)}
+          </div>
         </div>
       )}
 
-      {/* Visitor Insights */}
-      {data && !loading && !error && (
-        <div className="insights-section">
-          <ChartCard title="Visitor Insights" icon={Users}>
-            <div className="insights-grid">
-              <div className="insight-item">
-                <div className="insight-item__value">{data.overview.newVisitors}</div>
-                <div className="insight-item__label">New Visitors</div>
-                <div className="insight-item__percentage">
-                  {data.overview.totalVisitors > 0 
-                    ? `${Math.round((data.overview.newVisitors / data.overview.totalVisitors) * 100)}%`
-                    : '0%'
-                  }
+      {data && !error && (
+        <>
+          <dl className="an-live-strip" aria-label="Right now">
+            <div><dt>Active now</dt><dd>{data.realTimeData.activeUsers}</dd></div>
+            <div><dt>Most viewed page</dt><dd>{data.realTimeData.currentPage}</dd></div>
+            <div><dt>Top referrer</dt><dd>{data.realTimeData.topReferrer}</dd></div>
+            <div><dt>Avg load time</dt><dd>{data.realTimeData.avgLoadTime}</dd></div>
+          </dl>
+
+          <dl className="an-metrics">
+            <div className="ds-card an-metric"><dt>Visitors</dt><dd>{data.overview.totalVisitors.toLocaleString()}</dd></div>
+            <div className="ds-card an-metric"><dt>Page views</dt><dd>{data.overview.pageViews.toLocaleString()}</dd></div>
+            <div className="ds-card an-metric"><dt>Avg session</dt><dd>{data.overview.avgSessionDuration}</dd></div>
+            <div className="ds-card an-metric"><dt>Bounce rate</dt><dd>{data.overview.bounceRate}%</dd></div>
+          </dl>
+
+          <div className="an-charts">
+            <ChartCard
+              wide
+              title="Visitors per day"
+              summary={`${data.visitorTrends.reduce((s, d) => s + d.visitors, 0).toLocaleString()} visitors in this range`}
+              table={{ columns: ['Date', 'Visitors'], rows: data.visitorTrends.map((d) => [formatDay(d.date), d.visitors]) }}
+            >
+              <ResponsiveContainer width="100%" height={260}>
+                <AreaChart data={data.visitorTrends} margin={{ top: 8, right: 8, bottom: 0, left: -12 }}>
+                  <defs>
+                    <linearGradient id="an-visitors-fill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={theme.mark} stopOpacity={0.22} />
+                      <stop offset="100%" stopColor={theme.mark} stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid vertical={false} stroke={theme.grid} />
+                  <XAxis dataKey="date" tickFormatter={formatDay} tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: theme.muted }} minTickGap={24} />
+                  <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: theme.muted }} allowDecimals={false} width={44} />
+                  <Tooltip
+                    cursor={{ stroke: theme.border, strokeWidth: 1 }}
+                    content={<ChartTooltip unit="visitors" labelFormatter={formatDay} />}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="visitors"
+                    stroke={theme.mark}
+                    strokeWidth={2}
+                    fill="url(#an-visitors-fill)"
+                    activeDot={{ r: 5, stroke: theme.surface, strokeWidth: 2, fill: theme.mark }}
+                    isAnimationActive={false}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </ChartCard>
+
+            <ChartCard
+              title="Top pages"
+              summary="Page views by path"
+              table={{ columns: ['Page', 'Views'], rows: data.topPages.map((p) => [p.page, p.views]) }}
+            >
+              <HBarChart data={data.topPages} dataKey="views" nameKey="page" unit="views" theme={theme} />
+            </ChartCard>
+
+            <ChartCard
+              title="Traffic sources"
+              summary="Where visitors came from"
+              table={{ columns: ['Source', 'Visits'], rows: data.trafficSources.map((s) => [s.name, s.value]) }}
+            >
+              <HBarChart data={data.trafficSources} dataKey="value" nameKey="name" unit="visits" theme={theme} />
+            </ChartCard>
+
+            <ChartCard
+              title="Countries"
+              summary="Visitors by country"
+              table={{ columns: ['Country', 'Visitors'], rows: data.geographicData.map((g) => [g.country, g.visitors]) }}
+            >
+              <HBarChart data={data.geographicData} dataKey="visitors" nameKey="country" unit="visitors" theme={theme} />
+            </ChartCard>
+
+            <section className="ds-card an-chart an-insights" aria-label="Visitor mix">
+              <header className="an-chart__head">
+                <h2 className="an-chart__title">Visitor mix</h2>
+              </header>
+              <dl className="an-insights__grid">
+                <div>
+                  <dt>New visitors</dt>
+                  <dd>{data.overview.newVisitors.toLocaleString()}<span>{share(data.overview.newVisitors, data.overview.totalVisitors)}</span></dd>
                 </div>
-              </div>
-              <div className="insight-item">
-                <div className="insight-item__value">{data.overview.returningVisitors}</div>
-                <div className="insight-item__label">Returning Visitors</div>
-                <div className="insight-item__percentage">
-                  {data.overview.totalVisitors > 0 
-                    ? `${Math.round((data.overview.returningVisitors / data.overview.totalVisitors) * 100)}%`
-                    : '0%'
-                  }
+                <div>
+                  <dt>Returning visitors</dt>
+                  <dd>{data.overview.returningVisitors.toLocaleString()}<span>{share(data.overview.returningVisitors, data.overview.totalVisitors)}</span></dd>
                 </div>
-              </div>
-              <div className="insight-item">
-                <div className="insight-item__value">
-                  {data.overview.totalVisitors > 0 
-                    ? (data.overview.pageViews / data.overview.totalVisitors).toFixed(1)
-                    : '0.0'
-                  }
+                <div>
+                  <dt>Pages per session</dt>
+                  <dd>{data.overview.totalVisitors > 0 ? (data.overview.pageViews / data.overview.totalVisitors).toFixed(1) : '—'}</dd>
                 </div>
-                <div className="insight-item__label">Pages per Session</div>
-                <div className="insight-item__percentage">
-                  {data.overview.totalVisitors > 0 ? 'Real-time' : 'No data'}
+                <div>
+                  <dt>Avg session length</dt>
+                  <dd>{data.overview.avgSessionDuration}</dd>
                 </div>
-              </div>
-              <div className="insight-item">
-                <div className="insight-item__value">{data.overview.avgSessionDuration}</div>
-                <div className="insight-item__label">Avg. Session Duration</div>
-                <div className="insight-item__percentage">
-                  {data.overview.totalVisitors > 0 ? 'Live data' : 'No data'}
-                </div>
-              </div>
-            </div>
-          </ChartCard>
-        </div>
+              </dl>
+            </section>
+          </div>
+        </>
       )}
 
-      {/* Footer */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        className="analytics-footer"
-      >
-        <p>
-          <Calendar size={16} />
-          Last updated: {new Date().toLocaleString()}
-        </p>
-        <p>
-          <Download size={16} />
-          Data powered by Vercel Analytics
-        </p>
-      </motion.div>
-    </div>
+      <footer className="an-footer ds-meta" aria-live="polite">
+        {updatedAt ? `Updated ${updatedAt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit' })}` : 'Not loaded yet'}
+        {loading && data ? ', refreshing…' : ''}
+      </footer>
+    </main>
   );
 }

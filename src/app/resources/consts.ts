@@ -19,11 +19,11 @@ export const footerButtonLinks = [{
     href: "https://www.instagram.com/yasasvi_reddy/profilecard/",
 }]
 
-export const aboutMe = "Full-Stack Engineer specializing in Java 17/Spring Boot microservices and React/TypeScript front ends, with 5+ years building cloud-native, event-driven systems on AWS. Proficient in developing RESTful and GraphQL APIs, optimizing relational and NoSQL databases (PostgreSQL, MongoDB), and deploying scalable applications. Passionate about leveraging user feedback and Open-Source technologies to drive continuous product improvement and operational excellence."
+export const aboutMe = "Full Stack & AI Engineer with 4+ years of experience designing scalable, distributed web applications and cloud-native microservices using Java, Python, and JavaScript/TypeScript. I specialize in microservices architecture, high-throughput backend systems, and API integrations across React, Spring Boot, and Node.js, and deploy cloud-native solutions with AWS, Docker, Kubernetes, and Jenkins. Today I'm focused on integrating AI and LLM-based systems (RAG, MCP, multi-agent orchestration, OpenAI/Gemini/Claude APIs) to make applications more intelligent and useful."
 
 export const experience = [
   {
-    "role": "Software Engineer",
+    "role": "Software Engineer – AI",
     "company": "Twisted X Global Brands",
     "location": "Texas, USA",
     "timeframe": "Dec 2024 - Present",
@@ -31,80 +31,79 @@ export const experience = [
     "icon": "💼",
     "color": "#667eea",
     "achievements": [
-      "Integrated custom React/Node.js applications and built a Python-based forecasting model (Prophet, scikit-learn) to automate inventory workflows, cutting manual tracking by 40% and boosting system uptime to 99.9%.",
-      "Designed and deployed a LangChain + Azure OpenAI RAG pipeline integrated with NetSuite ERP, supplier APIs, and logistics data; enabled natural language queries with secure RBAC + PII handling, cutting planner reporting time by 70% and improving order fulfillment rates by 15%.",
-      "Deployed a real-time Python anomaly detection using Isolation Forest & DBSCAN, streaming data through Kafka and processing with Pandas and NumPy to flag inventory and order inconsistencies and cut manual reconciliation by 30%.",
-      "Implemented RESTful and GraphQL APIs for ERP and e-commerce systems, increased data accuracy and improved production schedules, combined supplier and logistics APIs with Node.js, MongoDB, and Oracle for real-time data sync.",
-      "Revamped React.js front end by introducing code-splitting and lazy loading in Webpack, other performance enhancing strategies, slashing page-load times from 3s to 1.8s.",
-      "Optimized Dockerized deployments by containerizing backend services and configuring CI/CD pipelines (GitHub Actions + AWS EKS), enabling faster rollouts, zero-downtime updates, and cutting environment setup time by 60%.",
-      "Spearheaded implementation of Test-Driven Development (TDD) and Agile methodologies, leading to the timely delivery of 95% of project milestones and a 15% reduction in post-deployment defects.",
-      "Prototyped MCP (Model Context Protocol) integration with Netsuite ERP and internal React/Node.js tools using WebSockets and context aware APIs."
+      "Built and maintain an agentic AI supply chain intelligence platform using LangChain, LangGraph, and RAG, enabling multi-step reasoning, LLM orchestration, tool calling, eval harnesses, and retrieval across NetSuite ERP, supplier APIs, and logistics data, reducing reporting time by 70% and improving fulfillment by 15%.",
+      "Engineered a web monitoring agent using Playwright and the Claude API to detect product listings across retailer sites, validate pricing compliance, and reduce false positives in matching workflows.",
+      "Modernized inventory forecasting by replacing rolling 12-month historical averages (24–31% WAPE) with Google TimesFM 3, leveraging feature engineering and fine-tuning to achieve 11–21% WAPE across SKUs and categories while reducing manual tracking by 40%.",
+      "Designed scalable ETL pipelines using Python and Snowflake to ingest supplier, trading partner, and sales data, standardizing disparate formats and building partner-specific dbt marts for consistent reporting and analytics.",
+      "Streamlined CI/CD pipelines with GitHub Actions and Docker on AWS, enabling zero-downtime releases and cutting setup time from hours to minutes.",
+      "Developed a product comparison tool using marqo-fashionSigLIP and DuckDB to match internal and competitor styles by image and attribute data, reducing duplication and identifying catalog gaps.",
+      "Built MCP-based tool-calling agents through Celigo AI Studio, exposing NetSuite business logic via optimized RESTlet flows and JSON schema mapping, with guardrails, evaluations, rollback, and audit logging, reducing retrieval latency by 40%."
     ]
   },
   {
-    "role": "Software Engineer",
-    "company": "JP Morgan Chase",
+    "role": "Senior Associate – AI Research",
+    "company": "JPMorgan Chase",
     "location": "Texas, USA",
     "timeframe": "Jul 2024 - Dec 2024",
     "type": "Full-Time",
     "icon": "🏦",
     "color": "#3b82f6",
     "achievements": [
-      "Architected scalable Spring Boot microservices containerized with Docker on AWS EKS handling 5M+ events/day with zero downtime and led enterprise-grade API design using domain-driven design and OpenAPI standards.",
-      "Developed and reviewed Java 17 (Spring Boot) and React TypeScript code with OWASP checks and SonarQube quality gates, catching and fixing 30+ critical defects before production.",
-      "Automated remediation workflows using Spring Boot health checks and Kubernetes operators, eliminating 80% of recurring incidents and boosting system uptime to 99.99%.",
-      "Streamed 1M+ document ingestion events/day via Apache Kafka and Spark Structured Streaming; orchestrated AI enrichment tasks with Kubernetes Jobs, ensuring lossless processing and ≤ 200ms end-to-end resolution.",
-      "Introduced circuit-breaker patterns, API Gateway rate-limiting, and JWT/OAuth2 guards across microservices, achieved 99.99% uptime with proactive alerting via Prometheus and Grafana.",
-      "Engineered a MongoDB NoSQL schema with compound indexes and aggregation pipelines, cutting average query time from 200ms to 120ms and supporting 5× greater read throughput compared to the legacy SQL system.",
-      "Provisioned and tuned Elasticsearch/OpenSearch clusters (AWS Elasticsearch Service), and MongoDB replica sets to index 50M+ documents improving full-text query performance by 70% under peak load."
+      "Contributed to early-stage AI research projects across Commercial & Investment Banking (Markets) and Asset & Wealth Management, partnering with data scientists and engineering teams to prototype and evaluate new approaches.",
+      "Prototyped LLM-based solutions using retrieval-augmented generation and prompt engineering, improving response relevance by 15% over baseline on internal test sets.",
+      "Formulated problems, generated hypotheses, and developed models in Python, running experiments and evaluations that improved baseline performance by 12% on target tasks.",
+      "Built and tested machine learning pipelines in Python (PyTorch, scikit-learn, pandas) on large-scale financial datasets, delivering reproducible code and cutting data prep time by 35%.",
+      "Strengthened service resilience with circuit breakers, API Gateway rate limiting, and OAuth2 security, supported by Prometheus and Grafana monitoring.",
+      "Developed reusable Python utilities and evaluation scripts that standardized experiment tracking and reduced new-experiment setup time by 30%."
     ]
   },
   {
-    "role": "Java Developer",
-    "company": "Red Cloud Technologies",
+    "role": "Software Engineer Intern",
+    "company": "Colombo AI",
+    "location": "Texas, USA",
+    "timeframe": "Dec 2023 - May 2024",
+    "type": "Internship",
+    "icon": "🚀",
+    "color": "#ec4899",
+    "achievements": [
+      "Built ColomboAI's end-to-end personalized feed pipeline using TypeScript, Node.js, React, and PostgreSQL, generating relevant content from follows, interests, and user interactions, increasing engagement by 30%.",
+      "Developed a multi-signal feed ranking engine and REST APIs using affinity, engagement, recency, and time-decay scoring, with cursor pagination, deduplication, and creator-diversity rules for personalized infinite scrolling.",
+      "Implemented the creator posting experience, including multi-modal content tools (\"Magic Pen\") for images, video, and text, increasing content creation activity by 20%.",
+      "Built a Node.js recommendation pipeline that captured user interactions in PostgreSQL and computed weighted affinity scores from likes, comments, and viewing behavior to dynamically re-rank feeds.",
+      "Optimized PostgreSQL performance for high-volume social feed and messaging data with targeted indexes and restructured queries, cutting average API response times by 40%."
+    ]
+  },
+  {
+    "role": "Software Developer",
+    "company": "HCL Technologies",
     "location": "Hyderabad, India",
-    "timeframe": "May 2021 - May 2022",
+    "timeframe": "May 2021 - Jul 2022",
     "type": "Full-Time",
     "icon": "☁️",
     "color": "#10b981",
     "achievements": [
-      "Delivered end-to-end Java/J2EE solutions on Oracle and MySQL within Agile SCRUM teams, leading requirement analysis, design, and deployment to reduce turnaround by 15% and boost CPU efficiency by 20%.",
-      "Strengthened system throughput and resilience by architecting Spring MVC microservices with multithreading and hash-based caching layers, reducing average API response time from 200ms to 160ms under 1,000 RPS peak load.",
-      "Deployed end-to-end ETL pipelines processing over 500 GB/day using Apache Spark for batch jobs, Apache Kafka for streaming ingestion, and HDFS for storage cutting job latency by 30% and delivering 99.9% reliability.",
-      "Developed comprehensive API-driven front-ends, SOAP building RESTful Spring Boot and services consumed by an React.js UI, optimized client-side rendering and minimized page-load times by 25%.",
-      "Assessed critical performance indicators using AWS CloudWatch and implemented optimizations that slashed server latency from 1.2 seconds down to an impressive 800 milliseconds under heavy traffic conditions."
-    ]
-  },
-  {
-    "role": "Web Developer Intern",
-    "company": "Nivee Properties",
-    "location": "Hyderabad, India",
-    "timeframe": "Apr 2019 - Aug 2019",
-    "type": "Internship",
-    "icon": "🏢",
-    "color": "#f59e0b",
-    "achievements": [
-      "Engineered 10+ interactive internal dashboards using React.js, D3.js, and Bootstrap 4 visualizing key KPIs (occupancy rates, lease renewals) for 200+ property managers and cutting manual reporting effort by 60%.",
-      "Authored and maintained RESTful APIs in Node.js (v12) and Express.js (v4) with MySQL backends to aggregate lease, maintenance, and billing data boosting data-retrieval speed by 40% for dashboard queries.",
-      "Configured client-side routing with React Router and managed complex application state via Redux implementing role-based views and data caching to elevate UX consistency and reduce load-time variability.",
-      "Spearheaded test automation and CI by writing 100+ Jest unit tests and establishing Travis CI/GitHub pipelines achieving 85% code coverage, catching 75% of regressions pre-merge, and accelerating releases."
+      "Delivered end-to-end Java/Spring Boot microservices on Agile teams, tuning SQL queries and integrating Elasticsearch to cut API latency by 300ms and save $12,000 in annual cloud costs.",
+      "Built ETL and streaming pipelines processing 500 GB/day with Spark, Kafka, and HDFS, cutting job latency by 30% and improving data availability across downstream services.",
+      "Developed 15+ responsive React UI components using TypeScript and Redux, optimizing rendering and Webpack code-splitting to reduce page-load time from 3s to 1.8s.",
+      "Automated Jenkins CI/CD pipelines with Groovy and Docker, eliminating 10 hours of manual deployment weekly across 3 environments.",
+      "Migrated high-volume PDF and email workflows to AWS Lambda with API Gateway and CloudWatch, lowering EC2 runtime by 320 hours per year while holding p95 latency under 800ms.",
+      "Refactored PostgreSQL and MongoDB schemas, cutting report generation time from 4.5s to 2.9s and increasing analytics throughput by 8,000 transactions per hour."
     ]
   }
 ]
 
 export const researchExperience = {
   "role": "Graduate Research Assistant",
-  "title": "Wireless Network Research & AI-Driven Data Processing",
+  "title": "Graduate Research Assistant",
   "company": "The University of Texas at Arlington",
   "location": "Texas, USA",
-  "timeframe": "Dec 2023 - May 2024",
+  "timeframe": "Aug 2022 - May 2024",
   "icon": "🔬",
   "color": "#8b5cf6",
   "achievements": [
-    "Fine-tuned LLMs using NLP techniques to automate insight extraction and improve predictive accuracy by 15% on wireless communication datasets.",
-    "Programmed scalable data pipelines in Python for processing large-scale network data, leveraging Pandas, NumPy, and Scikit-learn to enhance feature engineering and reduce processing time by 35%.",
-    "Leveraged ML algorithms and deep learning models with TensorFlow and PyTorch to forecast network load and traffic patterns, achieving 92% model accuracy.",
-    "Utilized Jupyter Notebooks and deployed models using AWS SageMaker and GCP Vertex AI, accelerating training workflows and reducing iteration time by 40%."
+    "Created Python-based data processing pipelines, accelerating research analysis and improving accuracy of results.",
+    "Assisted in building REST APIs for lab projects, enabling students and researchers to efficiently access and manipulate experimental datasets.",
+    "Optimized backend performance by refactoring Java and Python modules, improving API speed and reliability."
   ]
 }
 
@@ -225,14 +224,15 @@ export const shuffleArray = (array:any) => {
 
 export const skillsData = [
   // Languages
-  { name: "Java", category: "languages", level: 95, experience: "5+ years", icon: "☕", tags: ["Enterprise", "Backend"] },
+  { name: "Java", category: "languages", level: 95, experience: "4+ years", icon: "☕", tags: ["Enterprise", "Backend"] },
   { name: "Python", category: "languages", level: 90, experience: "4+ years", icon: "🐍", tags: ["AI/ML", "Scripting"] },
-  { name: "JavaScript", category: "languages", level: 92, experience: "5+ years", icon: "⚡", tags: ["Full-Stack", "Web"] },
+  { name: "JavaScript", category: "languages", level: 92, experience: "4+ years", icon: "⚡", tags: ["Full-Stack", "Web"] },
   { name: "TypeScript", category: "languages", level: 90, experience: "4+ years", icon: "🔷", tags: ["Type-Safe", "Modern"] },
+  { name: "Go", category: "languages", level: 70, experience: "1+ years", icon: "🐹", tags: ["Services", "Concurrency"] },
   { name: "C++", category: "languages", level: 75, experience: "2+ years", icon: "⚙️", tags: ["Performance", "Systems"] },
   
   // Frontend
-  { name: "React.js", category: "frontend", level: 95, experience: "5+ years", icon: "⚛️", tags: ["SPA", "Hooks"] },
+  { name: "React.js", category: "frontend", level: 95, experience: "4+ years", icon: "⚛️", tags: ["SPA", "Hooks"] },
   { name: "Next.js", category: "frontend", level: 90, experience: "3+ years", icon: "▲", tags: ["SSR", "React"] },
   { name: "Redux", category: "frontend", level: 85, experience: "4+ years", icon: "🔄", tags: ["State Mgmt"] },
   { name: "Angular", category: "frontend", level: 80, experience: "2+ years", icon: "🅰️", tags: ["Framework"] },
@@ -242,17 +242,21 @@ export const skillsData = [
   { name: "React Query", category: "frontend", level: 85, experience: "2+ years", icon: "🔍", tags: ["Data Fetching"] },
   
   // Backend
-  { name: "Spring Boot", category: "backend", level: 95, experience: "5+ years", icon: "🍃", tags: ["Microservices", "REST"] },
+  { name: "Spring Boot", category: "backend", level: 95, experience: "4+ years", icon: "🍃", tags: ["Microservices", "REST"] },
   { name: "Hibernate", category: "backend", level: 88, experience: "4+ years", icon: "💾", tags: ["ORM", "JPA"] },
+  { name: "FastAPI", category: "backend", level: 88, experience: "2+ years", icon: "⚡", tags: ["Python", "API"] },
   { name: "Django", category: "backend", level: 82, experience: "3+ years", icon: "🎸", tags: ["Python", "Web"] },
   { name: "Express.js", category: "backend", level: 90, experience: "4+ years", icon: "🚂", tags: ["Node.js", "API"] },
-  { name: "Node.js", category: "backend", level: 92, experience: "5+ years", icon: "🟢", tags: ["Runtime", "Backend"] },
+  { name: "Node.js", category: "backend", level: 92, experience: "4+ years", icon: "🟢", tags: ["Runtime", "Backend"] },
   { name: "GraphQL", category: "backend", level: 85, experience: "3+ years", icon: "🔷", tags: ["API", "Query"] },
   { name: "LangChain", category: "backend", level: 80, experience: "1+ years", icon: "🔗", tags: ["LLM", "AI"] },
   
+  { name: "LangGraph", category: "backend", level: 82, experience: "1+ years", icon: "🕸️", tags: ["Agents", "LLM"] },
+  { name: "MCP", category: "backend", level: 80, experience: "1+ years", icon: "🔌", tags: ["Tool Calling", "Agents"] },
+  
   // Cloud & DevOps
-  { name: "AWS", category: "cloud", level: 93, experience: "5+ years", icon: "☁️", tags: ["EC2", "S3", "EKS"] },
-  { name: "Docker", category: "cloud", level: 92, experience: "5+ years", icon: "🐳", tags: ["Containers"] },
+  { name: "AWS", category: "cloud", level: 93, experience: "4+ years", icon: "☁️", tags: ["EC2", "S3", "EKS"] },
+  { name: "Docker", category: "cloud", level: 92, experience: "4+ years", icon: "🐳", tags: ["Containers"] },
   { name: "Kubernetes", category: "cloud", level: 90, experience: "4+ years", icon: "☸️", tags: ["Orchestration"] },
   { name: "Azure", category: "cloud", level: 78, experience: "2+ years", icon: "🔷", tags: ["Cloud"] },
   { name: "GCP", category: "cloud", level: 75, experience: "2+ years", icon: "🌐", tags: ["Cloud"] },
@@ -261,11 +265,13 @@ export const skillsData = [
   { name: "GitHub Actions", category: "cloud", level: 90, experience: "3+ years", icon: "🔄", tags: ["Automation"] },
   
   // Databases
-  { name: "PostgreSQL", category: "database", level: 92, experience: "5+ years", icon: "🐘", tags: ["Relational", "SQL"] },
+  { name: "PostgreSQL", category: "database", level: 92, experience: "4+ years", icon: "🐘", tags: ["Relational", "SQL"] },
   { name: "MongoDB", category: "database", level: 90, experience: "4+ years", icon: "🍃", tags: ["NoSQL", "Document"] },
-  { name: "MySQL", category: "database", level: 88, experience: "5+ years", icon: "🐬", tags: ["Relational"] },
+  { name: "MySQL", category: "database", level: 88, experience: "4+ years", icon: "🐬", tags: ["Relational"] },
   { name: "Redis", category: "database", level: 85, experience: "4+ years", icon: "🔴", tags: ["Cache", "In-Memory"] },
   { name: "Oracle", category: "database", level: 80, experience: "3+ years", icon: "🔴", tags: ["Enterprise"] },
+  { name: "Snowflake", category: "database", level: 82, experience: "1+ years", icon: "❄️", tags: ["Warehouse", "ETL"] },
+  { name: "DuckDB", category: "database", level: 78, experience: "1+ years", icon: "🦆", tags: ["Analytics"] },
   { name: "Elasticsearch", category: "database", level: 82, experience: "3+ years", icon: "🔍", tags: ["Search"] },
   
   // AI & ML
@@ -279,14 +285,15 @@ export const skillsData = [
   { name: "Vector DBs", category: "aiml", level: 78, experience: "1+ years", icon: "🔢", tags: ["Embeddings"] },
   
   // Tools & Testing
-  { name: "Git", category: "tools", level: 95, experience: "5+ years", icon: "📚", tags: ["Version Control"] },
+  { name: "Git", category: "tools", level: 95, experience: "4+ years", icon: "📚", tags: ["Version Control"] },
   { name: "Prometheus", category: "tools", level: 85, experience: "3+ years", icon: "📊", tags: ["Monitoring"] },
   { name: "Grafana", category: "tools", level: 83, experience: "3+ years", icon: "📈", tags: ["Visualization"] },
   { name: "SonarQube", category: "tools", level: 80, experience: "3+ years", icon: "🔍", tags: ["Code Quality"] },
-  { name: "Postman", category: "tools", level: 92, experience: "5+ years", icon: "📮", tags: ["API Testing"] },
-  { name: "JUnit", category: "tools", level: 90, experience: "5+ years", icon: "✅", tags: ["Testing", "Java"] },
+  { name: "Postman", category: "tools", level: 92, experience: "4+ years", icon: "📮", tags: ["API Testing"] },
+  { name: "JUnit", category: "tools", level: 90, experience: "4+ years", icon: "✅", tags: ["Testing", "Java"] },
   { name: "Jest", category: "tools", level: 88, experience: "4+ years", icon: "🃏", tags: ["Testing", "JS"] },
   { name: "Selenium", category: "tools", level: 82, experience: "3+ years", icon: "🕷️", tags: ["E2E Testing"] },
-  { name: "Maven", category: "tools", level: 85, experience: "5+ years", icon: "📦", tags: ["Build Tool"] },
+  { name: "Playwright", category: "tools", level: 85, experience: "1+ years", icon: "🎭", tags: ["E2E", "Agents"] },
+  { name: "Maven", category: "tools", level: 85, experience: "4+ years", icon: "📦", tags: ["Build Tool"] },
   { name: "Gradle", category: "tools", level: 83, experience: "4+ years", icon: "🐘", tags: ["Build Tool"] },
 ];

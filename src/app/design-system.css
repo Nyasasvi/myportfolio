@@ -1,0 +1,599 @@
+/*
+ * Design system: semantic tokens, base typography, glass surfaces and shared primitives.
+ * Theme follows the existing data-theme attribute that Once UI already sets on <html>.
+ */
+
+:root,
+[data-theme="dark"] {
+	--ds-bg: #0f1220;
+	--ds-surface-1: #151929;
+	--ds-surface-2: #1c2135;
+	--ds-surface-3: #252b42;
+	--ds-fg: #eceef6;
+	--ds-fg-muted: #a3a9c0;
+	--ds-fg-subtle: #7c839c;
+	--ds-border: rgba(236, 238, 246, 0.09);
+	--ds-border-strong: rgba(236, 238, 246, 0.18);
+	--ds-accent: #8e9bff;
+	--ds-accent-strong: #aab4ff;
+	--ds-accent-soft: rgba(142, 155, 255, 0.14);
+	--ds-on-accent: #0f1220;
+	--ds-signal: #5ed3a5;
+	--ds-signal-soft: rgba(94, 211, 165, 0.12);
+	--ds-danger: #ff8a8a;
+	/* Chart marks: validated for lightness band and 3:1 contrast on surface-1 (dataviz validator) */
+	--ds-chart-1: #6f7ff0;
+	--ds-chart-grid: rgba(236, 238, 246, 0.07);
+	--ds-ambient: radial-gradient(60rem 28rem at 50% -10rem, rgba(142, 155, 255, 0.16), transparent 70%);
+
+	--ds-glass-bg: rgba(24, 28, 46, 0.62);
+	--ds-glass-bg-solid: #1a1e31;
+	--ds-glass-edge: rgba(255, 255, 255, 0.12);
+	--ds-glass-highlight: rgba(255, 255, 255, 0.08);
+	--ds-glass-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.25);
+	--ds-overlay: rgba(8, 10, 18, 0.55);
+	color-scheme: dark;
+}
+
+[data-theme="light"] {
+	--ds-bg: #f4f5f9;
+	--ds-surface-1: #ffffff;
+	--ds-surface-2: #eef0f6;
+	--ds-surface-3: #e3e6f0;
+	--ds-fg: #141726;
+	--ds-fg-muted: #555b74;
+	--ds-fg-subtle: #737a93;
+	--ds-border: rgba(20, 23, 38, 0.09);
+	--ds-border-strong: rgba(20, 23, 38, 0.18);
+	--ds-accent: #4351d6;
+	--ds-accent-strong: #3340b8;
+	--ds-accent-soft: rgba(67, 81, 214, 0.1);
+	--ds-on-accent: #ffffff;
+	--ds-signal: #0f7f56;
+	--ds-signal-soft: rgba(15, 127, 86, 0.1);
+	--ds-danger: #c43c3c;
+	--ds-chart-1: #4351d6;
+	--ds-chart-grid: rgba(20, 23, 38, 0.07);
+	--ds-ambient: radial-gradient(60rem 28rem at 50% -10rem, rgba(67, 81, 214, 0.1), transparent 70%);
+
+	--ds-glass-bg: rgba(255, 255, 255, 0.7);
+	--ds-glass-bg-solid: #ffffff;
+	--ds-glass-edge: rgba(20, 23, 38, 0.1);
+	--ds-glass-highlight: rgba(255, 255, 255, 0.9);
+	--ds-glass-shadow: 0 12px 32px -14px rgba(20, 23, 38, 0.22), 0 2px 6px rgba(20, 23, 38, 0.06);
+	--ds-overlay: rgba(20, 23, 38, 0.28);
+	color-scheme: light;
+}
+
+:root {
+	/* Type: Bricolage Grotesque for display, Instrument Sans for reading and UI */
+	--ds-font-display: var(--font-secondary), system-ui, sans-serif;
+	--ds-font-body: var(--font-primary), system-ui, -apple-system, "Segoe UI", sans-serif;
+
+	/* Modular scale (1.25) */
+	--ds-text-xs: 0.8125rem;
+	--ds-text-sm: 0.9375rem;
+	--ds-text-md: 1.0625rem;
+	--ds-text-lg: 1.3125rem;
+	--ds-text-xl: 1.625rem;
+	--ds-text-2xl: clamp(1.75rem, 1.2rem + 1.6vw, 2.125rem);
+	--ds-text-3xl: clamp(2.25rem, 1.4rem + 2.8vw, 3rem);
+	--ds-text-hero: clamp(3rem, 1.2rem + 7vw, 6.5rem);
+
+	/* Spacing (4px base) */
+	--ds-space-1: 4px;
+	--ds-space-2: 8px;
+	--ds-space-3: 12px;
+	--ds-space-4: 16px;
+	--ds-space-5: 24px;
+	--ds-space-6: 32px;
+	--ds-space-7: 48px;
+	--ds-space-8: 64px;
+	--ds-space-9: 96px;
+
+	/* Radii follow hierarchy: chips < controls < cards < floating pill */
+	--ds-radius-chip: 6px;
+	--ds-radius-control: 10px;
+	--ds-radius-card: 18px;
+	--ds-radius-pill: 999px;
+
+	--ds-content-width: 1180px;
+	--ds-gutter: clamp(16px, 4vw, 32px);
+
+	--ds-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+	--ds-dur-fast: 140ms;
+	--ds-dur: 220ms;
+	--ds-dur-slow: 360ms;
+}
+
+/*
+ * Bridge: point Once UI's semantic tokens at this palette so pages that still use
+ * Once UI components and variables inherit the same colors in both themes.
+ * html.root[data-theme] outranks Once UI's own [data-surface][data-theme] selectors.
+ */
+html.root[data-theme] {
+	--page-background: var(--ds-bg);
+	--neutral-background-weak: var(--ds-bg);
+	--neutral-background-medium: var(--ds-surface-1);
+	--neutral-background-strong: var(--ds-surface-2);
+	--surface-background: var(--ds-surface-1);
+	--neutral-on-background-strong: var(--ds-fg);
+	--neutral-on-background-medium: var(--ds-fg-muted);
+	--neutral-on-background-weak: var(--ds-fg-subtle);
+	--neutral-border-weak: var(--ds-border);
+	--neutral-border-medium: var(--ds-border);
+	--neutral-border-strong: var(--ds-border-strong);
+	--neutral-alpha-weak: color-mix(in srgb, var(--ds-fg) 5%, transparent);
+	--neutral-alpha-medium: color-mix(in srgb, var(--ds-fg) 9%, transparent);
+	--neutral-alpha-strong: color-mix(in srgb, var(--ds-fg) 16%, transparent);
+
+	--brand-solid-strong: var(--ds-accent);
+	--brand-solid-medium: var(--ds-accent-strong);
+	--brand-on-solid-strong: var(--ds-on-accent);
+	--brand-on-solid-medium: var(--ds-on-accent);
+	--brand-on-background-strong: var(--ds-accent-strong);
+	--brand-on-background-medium: var(--ds-accent);
+	--brand-on-background-weak: var(--ds-accent);
+	--brand-background-weak: var(--ds-accent-soft);
+	--brand-background-medium: var(--ds-accent-soft);
+	--brand-alpha-weak: var(--ds-accent-soft);
+	--brand-alpha-medium: var(--ds-accent-soft);
+	--brand-border-medium: color-mix(in srgb, var(--ds-accent) 45%, transparent);
+	--brand-strong: var(--ds-accent);
+
+	--accent-solid-strong: var(--ds-accent);
+	--accent-on-background-strong: var(--ds-accent-strong);
+	--accent-on-background-medium: var(--ds-accent);
+	--accent-background-medium: var(--ds-accent-soft);
+	--accent-alpha-weak: var(--ds-accent-soft);
+}
+
+/* ---------- Base ---------- */
+
+html.root {
+	background: var(--ds-bg);
+	/* Keep focused fields and anchor targets clear of the sticky nav */
+	scroll-padding-top: 96px;
+}
+
+body.ds-body {
+	position: relative;
+	width: 100%;
+	min-height: 100vh;
+	margin: 0;
+	background: var(--ds-ambient), var(--ds-bg);
+	background-repeat: no-repeat;
+	color: var(--ds-fg);
+	font-family: var(--ds-font-body);
+	font-size: var(--ds-text-md);
+	line-height: 1.6;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+	overflow-x: hidden;
+}
+
+.ds-main {
+	width: 100%;
+	max-width: var(--ds-content-width);
+	margin: 0 auto;
+	padding: var(--ds-space-6) var(--ds-gutter) var(--ds-space-8);
+	flex: 1;
+	display: flex;
+	justify-content: center;
+}
+
+.ds-main > * {
+	min-width: 0;
+}
+
+::selection {
+	background: var(--ds-accent-soft);
+	color: var(--ds-fg);
+}
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+	outline: 2px solid var(--ds-accent);
+	outline-offset: 2px;
+	border-radius: var(--ds-radius-control);
+}
+
+.ds-skip-link {
+	position: absolute;
+	left: var(--ds-space-4);
+	top: -100px;
+	z-index: 200;
+	padding: var(--ds-space-2) var(--ds-space-4);
+	border-radius: var(--ds-radius-control);
+	background: var(--ds-accent);
+	color: var(--ds-on-accent);
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.ds-skip-link:focus {
+	top: var(--ds-space-3);
+}
+
+.ds-visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+/* ---------- Typography ---------- */
+
+.ds-display {
+	font-family: var(--ds-font-display);
+	font-weight: 600;
+	letter-spacing: -0.035em;
+	line-height: 0.95;
+	font-variation-settings: "opsz" 96;
+}
+
+.ds-h1 {
+	font-family: var(--ds-font-display);
+	font-size: var(--ds-text-3xl);
+	font-weight: 600;
+	letter-spacing: -0.025em;
+	line-height: 1.08;
+	margin: 0;
+}
+
+.ds-h2 {
+	font-family: var(--ds-font-display);
+	font-size: var(--ds-text-2xl);
+	font-weight: 600;
+	letter-spacing: -0.02em;
+	line-height: 1.15;
+	margin: 0;
+}
+
+.ds-h3 {
+	font-family: var(--ds-font-display);
+	font-size: var(--ds-text-lg);
+	font-weight: 600;
+	letter-spacing: -0.01em;
+	line-height: 1.25;
+	margin: 0;
+}
+
+.ds-lede {
+	font-size: var(--ds-text-lg);
+	line-height: 1.55;
+	color: var(--ds-fg-muted);
+	max-width: 60ch;
+	margin: 0;
+}
+
+.ds-body-text {
+	color: var(--ds-fg-muted);
+	max-width: 68ch;
+	margin: 0;
+}
+
+.ds-meta {
+	font-size: var(--ds-text-xs);
+	color: var(--ds-fg-subtle);
+}
+
+/* ---------- Glass (floating controls only) ---------- */
+
+/* :where() keeps specificity at zero so components can set their own positioning */
+:where(.ds-glass) {
+	position: relative;
+}
+
+.ds-glass {
+	background: var(--ds-glass-bg);
+	-webkit-backdrop-filter: blur(18px) saturate(160%);
+	backdrop-filter: blur(18px) saturate(160%);
+	border: 1px solid var(--ds-glass-edge);
+	box-shadow: inset 0 1px 0 var(--ds-glass-highlight), var(--ds-glass-shadow);
+}
+
+/* Specular top edge: a thin light line that sells the floating surface */
+.ds-glass::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	pointer-events: none;
+	background: linear-gradient(180deg, var(--ds-glass-highlight), transparent 40%);
+	opacity: 0.6;
+	mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
+	-webkit-mask-composite: xor;
+	mask-composite: exclude;
+	padding: 1px;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+	.ds-glass {
+		background: var(--ds-glass-bg-solid);
+	}
+}
+
+@media (prefers-reduced-transparency: reduce) {
+	.ds-glass {
+		background: var(--ds-glass-bg-solid);
+		-webkit-backdrop-filter: none;
+		backdrop-filter: none;
+	}
+}
+
+@media (prefers-contrast: more) {
+	.ds-glass {
+		background: var(--ds-glass-bg-solid);
+		border-color: var(--ds-border-strong);
+	}
+}
+
+/* ---------- Buttons ---------- */
+
+.ds-btn {
+	--btn-bg: var(--ds-surface-2);
+	--btn-fg: var(--ds-fg);
+	--btn-border: var(--ds-border);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--ds-space-2);
+	min-height: 44px;
+	padding: 0 var(--ds-space-5);
+	border-radius: var(--ds-radius-control);
+	border: 1px solid var(--btn-border);
+	background: var(--btn-bg);
+	color: var(--btn-fg);
+	font: 600 var(--ds-text-sm) / 1 var(--ds-font-body);
+	text-decoration: none;
+	cursor: pointer;
+	white-space: nowrap;
+	transition:
+		background-color var(--ds-dur-fast) var(--ds-ease),
+		border-color var(--ds-dur-fast) var(--ds-ease),
+		transform var(--ds-dur-fast) var(--ds-ease),
+		color var(--ds-dur-fast) var(--ds-ease);
+}
+
+.ds-btn:hover {
+	--btn-bg: var(--ds-surface-3);
+	--btn-border: var(--ds-border-strong);
+}
+
+.ds-btn:active {
+	transform: scale(0.97);
+}
+
+.ds-btn--primary {
+	--btn-bg: var(--ds-accent);
+	--btn-fg: var(--ds-on-accent);
+	--btn-border: transparent;
+}
+
+.ds-btn--primary:hover {
+	--btn-bg: var(--ds-accent-strong);
+	--btn-border: transparent;
+}
+
+.ds-btn--ghost {
+	--btn-bg: transparent;
+	--btn-border: transparent;
+}
+
+.ds-btn--ghost:hover {
+	--btn-bg: var(--ds-surface-2);
+	--btn-border: transparent;
+}
+
+.ds-btn svg {
+	width: 16px;
+	height: 16px;
+	flex-shrink: 0;
+}
+
+.ds-icon-btn {
+	display: inline-grid;
+	place-items: center;
+	width: 40px;
+	height: 40px;
+	padding: 0;
+	border-radius: var(--ds-radius-pill);
+	border: 1px solid transparent;
+	background: transparent;
+	color: var(--ds-fg-muted);
+	cursor: pointer;
+	transition:
+		background-color var(--ds-dur-fast) var(--ds-ease),
+		color var(--ds-dur-fast) var(--ds-ease),
+		transform var(--ds-dur-fast) var(--ds-ease);
+}
+
+.ds-icon-btn:hover {
+	background: var(--ds-surface-2);
+	color: var(--ds-fg);
+}
+
+.ds-icon-btn:active {
+	transform: scale(0.92);
+}
+
+.ds-icon-btn svg {
+	width: 18px;
+	height: 18px;
+}
+
+/* ---------- Chips & keys ---------- */
+
+.ds-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px 10px;
+	border-radius: var(--ds-radius-chip);
+	background: var(--ds-surface-2);
+	border: 1px solid var(--ds-border);
+	color: var(--ds-fg-muted);
+	font-size: var(--ds-text-xs);
+	font-weight: 500;
+	line-height: 1.5;
+}
+
+.ds-kbd {
+	display: inline-grid;
+	place-items: center;
+	min-width: 20px;
+	height: 20px;
+	padding: 0 5px;
+	border-radius: 5px;
+	border: 1px solid var(--ds-border-strong);
+	background: var(--ds-surface-1);
+	color: var(--ds-fg-subtle);
+	font: 500 11px / 1 var(--ds-font-body);
+}
+
+/* ---------- Cards ---------- */
+
+.ds-card {
+	position: relative;
+	background: var(--ds-surface-1);
+	border: 1px solid var(--ds-border);
+	border-radius: var(--ds-radius-card);
+	padding: var(--ds-space-5);
+}
+
+a.ds-card,
+.ds-card--interactive {
+	color: inherit;
+	text-decoration: none;
+	transition:
+		border-color var(--ds-dur) var(--ds-ease),
+		background-color var(--ds-dur) var(--ds-ease),
+		transform var(--ds-dur) var(--ds-ease);
+}
+
+@media (hover: hover) {
+	a.ds-card:hover,
+	.ds-card--interactive:hover {
+		border-color: var(--ds-border-strong);
+		background: var(--ds-surface-2);
+	}
+}
+
+a.ds-card:active,
+.ds-card--interactive:active {
+	transform: scale(0.99);
+}
+
+/* ---------- Segmented filter (shared sliding indicator via framer layoutId) ---------- */
+.ds-segmented {
+	display: inline-flex;
+	align-self: flex-start;
+	flex-wrap: wrap;
+	gap: 2px;
+	padding: 4px;
+	border-radius: var(--ds-radius-pill);
+	background: var(--ds-surface-1);
+	border: 1px solid var(--ds-border);
+	max-width: 100%;
+}
+
+.ds-segmented__btn {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	gap: var(--ds-space-2);
+	height: 36px;
+	padding: 0 14px;
+	border: 0;
+	border-radius: var(--ds-radius-pill);
+	background: transparent;
+	color: var(--ds-fg-muted);
+	font: 500 var(--ds-text-sm) / 1 var(--ds-font-body);
+	cursor: pointer;
+	transition: color var(--ds-dur-fast) var(--ds-ease);
+}
+
+.ds-segmented__btn:hover {
+	color: var(--ds-fg);
+}
+
+.ds-segmented__btn.is-active {
+	color: var(--ds-fg);
+}
+
+.ds-segmented__indicator {
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	background: var(--ds-surface-3);
+	box-shadow: inset 0 1px 0 var(--ds-glass-highlight);
+}
+
+.ds-segmented__label,
+.ds-segmented__count {
+	position: relative;
+}
+
+.ds-segmented__count {
+	font-size: var(--ds-text-xs);
+	color: var(--ds-fg-subtle);
+	font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 560px) {
+	.ds-segmented {
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		scrollbar-width: none;
+		align-self: stretch;
+		/* Fade the trailing edge so it's clear more filters scroll into view */
+		-webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 32px), transparent);
+		mask-image: linear-gradient(90deg, #000 calc(100% - 32px), transparent);
+	}
+
+	.ds-segmented__btn {
+		flex-shrink: 0;
+	}
+}
+
+/* ---------- Status dot ---------- */
+
+.ds-status {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--ds-space-2);
+	padding: 6px 12px 6px 10px;
+	border-radius: var(--ds-radius-pill);
+	background: var(--ds-signal-soft);
+	color: var(--ds-signal);
+	font-size: var(--ds-text-xs);
+	font-weight: 600;
+}
+
+.ds-status::before {
+	content: "";
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: currentColor;
+	box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 25%, transparent);
+}
+
+/* ---------- Motion preferences ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+@view-transition {
+	navigation: auto;
+}

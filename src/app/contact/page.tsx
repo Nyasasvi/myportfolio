@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from "react"
-import { Flex, Text, Button, Spinner } from "@/once-ui/components"
+import { useRef, useState } from "react"
+import { CalendarDays, Check, Copy, Github, Linkedin, Loader2, Mail } from "lucide-react"
+import { contactLinks } from "../resources/navigation"
 import './index.css'
 
 interface FormData {
@@ -16,45 +17,49 @@ interface FormErrors {
     message?: string
 }
 
+const MIN_MESSAGE_LENGTH = 10
+
 export default function ContactPage() {
     const [formData, setFormData] = useState<FormData>({
         name: '',
         email: '',
         message: ''
     })
-    
+
     const [errors, setErrors] = useState<FormErrors>({})
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
     const [submitMessage, setSubmitMessage] = useState('')
+    const [copied, setCopied] = useState(false)
+    const formRef = useRef<HTMLFormElement>(null)
 
-    const validateForm = (): boolean => {
+    const validateForm = (): FormErrors => {
         const newErrors: FormErrors = {}
 
         // Name validation
         if (!formData.name.trim()) {
-            newErrors.name = 'Name is required'
+            newErrors.name = 'Enter your name'
         } else if (formData.name.trim().length < 2) {
-            newErrors.name = 'Name must be at least 2 characters'
+            newErrors.name = 'Name needs at least 2 characters'
         }
 
         // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         if (!formData.email.trim()) {
-            newErrors.email = 'Email is required'
+            newErrors.email = 'Enter your email so I can reply'
         } else if (!emailRegex.test(formData.email)) {
-            newErrors.email = 'Please enter a valid email address'
+            newErrors.email = 'Enter an email like name@example.com'
         }
 
         // Message validation
         if (!formData.message.trim()) {
-            newErrors.message = 'Message is required'
-        } else if (formData.message.trim().length < 10) {
-            newErrors.message = 'Message must be at least 10 characters'
+            newErrors.message = 'Write a short message'
+        } else if (formData.message.trim().length < MIN_MESSAGE_LENGTH) {
+            newErrors.message = `Message needs at least ${MIN_MESSAGE_LENGTH} characters`
         }
 
         setErrors(newErrors)
-        return Object.keys(newErrors).length === 0
+        return newErrors
     }
 
     const handleInputChange = (field: keyof FormData, value: string) => {
@@ -72,7 +77,10 @@ export default function ContactPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
-        if (!validateForm()) {
+        const newErrors = validateForm()
+        const firstInvalid = (['name', 'email', 'message'] as const).find((field) => newErrors[field])
+        if (firstInvalid) {
+            formRef.current?.querySelector<HTMLElement>(`#${firstInvalid}`)?.focus()
             return
         }
 
@@ -92,225 +100,168 @@ export default function ContactPage() {
 
             if (response.ok) {
                 setSubmitStatus('success')
-                setSubmitMessage('Thank you for your message! I\'ll get back to you soon.')
+                setSubmitMessage('Message sent. I\'ll reply to your email soon.')
                 // Reset form
                 setFormData({ name: '', email: '', message: '' })
             } else {
                 setSubmitStatus('error')
-                setSubmitMessage(data.message || 'Something went wrong. Please try again.')
+                setSubmitMessage(data.message || 'Your message wasn\'t sent. Try again, or email me directly.')
             }
         } catch (error) {
             setSubmitStatus('error')
-            setSubmitMessage('Failed to send message. Please try again later.')
+            setSubmitMessage('Your message wasn\'t sent because the server couldn\'t be reached. Try again, or email me directly.')
             console.error('Error submitting form:', error)
         } finally {
             setIsSubmitting(false)
         }
     }
 
+    const copyEmail = async () => {
+        try {
+            await navigator.clipboard.writeText(contactLinks.email)
+            setCopied(true)
+            setTimeout(() => setCopied(false), 2000)
+        } catch {
+            window.location.href = `mailto:${contactLinks.email}`
+        }
+    }
+
+    const fieldProps = (field: keyof FormData) => ({
+        id: field,
+        name: field,
+        value: formData[field],
+        disabled: isSubmitting,
+        'aria-invalid': !!errors[field],
+        'aria-describedby': errors[field] ? `${field}-error` : field === 'message' ? 'message-hint' : undefined,
+        className: `contact-field__control${errors[field] ? ' is-invalid' : ''}`,
+    })
+
+    const messageLength = formData.message.trim().length
+
     return (
-        <Flex
-            as="main"
-            direction="column"
-            justifyContent="normal"
-            fillWidth
-            fillHeight
-            padding="xs"
-            gap="m"
-        >
-            <Flex fillWidth direction="column">
-                <Text
-                    variant="heading-strong-xl"
-                    style={{ fontSize: "32px" }}
-                    onBackground="accent-medium"
-                    marginBottom="s"
-                >
-                    GET IN TOUCH
-                </Text>
-                <Text variant="body-default-m" marginBottom="m" onBackground="neutral-weak">
-                    Have a question or want to work together? Feel free to reach out!
-                </Text>
-            </Flex>
+        <main className="contact">
+            <header className="contact-intro">
+                <h1 className="ds-h1">Get in touch</h1>
+                <p className="ds-lede">Hiring, collaborating, or just curious about something I built? Send a note and I&apos;ll reply by email.</p>
+            </header>
 
-            <Flex
-                fillWidth
-                direction="row"
-                mobileDirection="column"
-                gap="l"
-            >
-                {/* Contact Form */}
-                <Flex
-                    flex={2}
-                    direction="column"
-                    gap="m"
-                >
-                    <form onSubmit={handleSubmit} className="contact-form">
-                        {/* Name Field */}
-                        <Flex direction="column" gap="4">
-                            <label htmlFor="name" className="form-label">
-                                <Text variant="body-strong-m">Name *</Text>
-                            </label>
+            <div className="contact-layout">
+                <form ref={formRef} onSubmit={handleSubmit} className="ds-card contact-form" noValidate>
+                    <div className="contact-form__row">
+                        <div className="contact-field">
+                            <label htmlFor="name" className="contact-field__label">Name</label>
                             <input
-                                id="name"
+                                {...fieldProps('name')}
                                 type="text"
-                                value={formData.name}
+                                autoComplete="name"
                                 onChange={(e) => handleInputChange('name', e.target.value)}
-                                className={`form-input ${errors.name ? 'error' : ''}`}
-                                placeholder="Your name"
-                                disabled={isSubmitting}
+                                required
                             />
-                            {errors.name && (
-                                <Text variant="body-default-s" className="error-text">
-                                    {errors.name}
-                                </Text>
-                            )}
-                        </Flex>
+                            {errors.name && <p id="name-error" className="contact-field__error">{errors.name}</p>}
+                        </div>
 
-                        {/* Email Field */}
-                        <Flex direction="column" gap="4">
-                            <label htmlFor="email" className="form-label">
-                                <Text variant="body-strong-m">Email *</Text>
-                            </label>
+                        <div className="contact-field">
+                            <label htmlFor="email" className="contact-field__label">Email</label>
                             <input
-                                id="email"
+                                {...fieldProps('email')}
                                 type="email"
-                                value={formData.email}
+                                autoComplete="email"
+                                inputMode="email"
                                 onChange={(e) => handleInputChange('email', e.target.value)}
-                                className={`form-input ${errors.email ? 'error' : ''}`}
-                                placeholder="your.email@example.com"
-                                disabled={isSubmitting}
+                                required
                             />
-                            {errors.email && (
-                                <Text variant="body-default-s" className="error-text">
-                                    {errors.email}
-                                </Text>
-                            )}
-                        </Flex>
+                            {errors.email && <p id="email-error" className="contact-field__error">{errors.email}</p>}
+                        </div>
+                    </div>
 
-                        {/* Message Field */}
-                        <Flex direction="column" gap="4">
-                            <label htmlFor="message" className="form-label">
-                                <Text variant="body-strong-m">Message *</Text>
-                            </label>
-                            <textarea
-                                id="message"
-                                value={formData.message}
-                                onChange={(e) => handleInputChange('message', e.target.value)}
-                                className={`form-textarea ${errors.message ? 'error' : ''}`}
-                                placeholder="Your message here..."
-                                rows={6}
-                                disabled={isSubmitting}
-                            />
-                            {errors.message && (
-                                <Text variant="body-default-s" className="error-text">
-                                    {errors.message}
-                                </Text>
-                            )}
-                        </Flex>
-
-                        {/* Submit Status Messages */}
-                        {submitStatus === 'success' && (
-                            <Flex className="status-message success">
-                                <Text variant="body-default-m">{submitMessage}</Text>
-                            </Flex>
+                    <div className="contact-field">
+                        <label htmlFor="message" className="contact-field__label">Message</label>
+                        <textarea
+                            {...fieldProps('message')}
+                            rows={7}
+                            onChange={(e) => handleInputChange('message', e.target.value)}
+                            placeholder="What would you like to talk about?"
+                            required
+                        />
+                        {errors.message ? (
+                            <p id="message-error" className="contact-field__error">{errors.message}</p>
+                        ) : (
+                            <p id="message-hint" className="contact-field__hint">
+                                {messageLength < MIN_MESSAGE_LENGTH
+                                    ? `At least ${MIN_MESSAGE_LENGTH} characters`
+                                    : `${messageLength} characters`}
+                            </p>
                         )}
+                    </div>
 
-                        {submitStatus === 'error' && (
-                            <Flex className="status-message error">
-                                <Text variant="body-default-m">{submitMessage}</Text>
-                            </Flex>
+                    <div aria-live="polite" className="contact-form__status-slot">
+                        {submitStatus !== 'idle' && (
+                            <p className={`contact-status contact-status--${submitStatus}`} role={submitStatus === 'error' ? 'alert' : 'status'}>
+                                {submitStatus === 'success' && <Check aria-hidden="true" />}
+                                {submitMessage}
+                            </p>
                         )}
+                    </div>
 
-                        {/* Submit Button */}
-                        <Button
-                            type="submit"
-                            variant="primary"
-                            disabled={isSubmitting}
-                            style={{ width: '100%' }}
-                        >
-                            {isSubmitting ? (
-                                <Flex alignItems="center" gap="8">
-                                    <Spinner size="s" />
-                                    <span>Sending...</span>
-                                </Flex>
-                            ) : (
-                                'Send Message'
-                            )}
-                        </Button>
-                    </form>
-                </Flex>
+                    <button type="submit" className="ds-btn ds-btn--primary contact-form__submit" disabled={isSubmitting} aria-busy={isSubmitting}>
+                        {isSubmitting ? (
+                            <>
+                                <Loader2 className="contact-spin" aria-hidden="true" />
+                                Sending message
+                            </>
+                        ) : (
+                            'Send message'
+                        )}
+                    </button>
+                </form>
 
-                {/* Contact Info & Calendly */}
-                <Flex
-                    flex={1}
-                    direction="column"
-                    gap="l"
-                >
-                    {/* Quick Contact Info */}
-                    <Flex direction="column" gap="m" className="contact-info-card">
-                        <Text variant="heading-strong-l" marginBottom="s">
-                            Other Ways to Connect
-                        </Text>
-                        
-                        <Flex direction="column" gap="s">
-                            <Flex alignItems="center" gap="8">
-                                <Text variant="body-strong-m">📧 Email:</Text>
-                            </Flex>
-                            <a href="mailto:yasasvi.nellore@gmail.com" className="contact-link">
-                                <Text variant="body-default-m">yasasvi.nellore@gmail.com</Text>
-                            </a>
-                        </Flex>
+                <aside className="contact-aside" aria-label="Other ways to reach me">
+                    <div className="ds-card contact-channels">
+                        <h2 className="ds-h3">Other ways to reach me</h2>
+                        <ul className="contact-channels__list" role="list">
+                            <li>
+                                <a href={`mailto:${contactLinks.email}`} className="contact-channel">
+                                    <Mail aria-hidden="true" />
+                                    <span>
+                                        <span className="contact-channel__label">Email</span>
+                                        <span className="contact-channel__value">{contactLinks.email}</span>
+                                    </span>
+                                </a>
+                                <button type="button" className="ds-icon-btn" onClick={copyEmail} aria-label={copied ? 'Email address copied' : 'Copy email address'}>
+                                    {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+                                </button>
+                            </li>
+                            <li>
+                                <a href={contactLinks.linkedin} target="_blank" rel="noopener noreferrer" className="contact-channel">
+                                    <Linkedin aria-hidden="true" />
+                                    <span>
+                                        <span className="contact-channel__label">LinkedIn</span>
+                                        <span className="contact-channel__value">linkedin.com/in/yasasvi-nellore</span>
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href={contactLinks.github} target="_blank" rel="noopener noreferrer" className="contact-channel">
+                                    <Github aria-hidden="true" />
+                                    <span>
+                                        <span className="contact-channel__label">GitHub</span>
+                                        <span className="contact-channel__value">github.com/Nyasasvi</span>
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
 
-                        <Flex direction="column" gap="s">
-                            <Flex alignItems="center" gap="8">
-                                <Text variant="body-strong-m">💼 LinkedIn:</Text>
-                            </Flex>
-                            <a 
-                                href="https://www.linkedin.com/in/yasasvi-nellore/" 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="contact-link"
-                            >
-                                <Text variant="body-default-m">linkedin.com/in/yasasvi-nellore</Text>
-                            </a>
-                        </Flex>
-
-                        <Flex direction="column" gap="s">
-                            <Flex alignItems="center" gap="8">
-                                <Text variant="body-strong-m">💻 GitHub:</Text>
-                            </Flex>
-                            <a 
-                                href="https://github.com/Nyasasvi/" 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="contact-link"
-                            >
-                                <Text variant="body-default-m">github.com/Nyasasvi</Text>
-                            </a>
-                        </Flex>
-                    </Flex>
-
-                    {/* Calendly Integration */}
-                    <Flex direction="column" gap="m" className="calendly-card">
-                        <Text variant="heading-strong-l" marginBottom="s">
-                            Schedule a Call
-                        </Text>
-                        <Text variant="body-default-m" marginBottom="s" onBackground="neutral-weak">
-                            Prefer to talk? Book a time slot that works for you.
-                        </Text>
-                        <Button
-                            href="https://calendly.com/yasasvi-nellore/30min"
-                            variant="secondary"
-                            target="_blank"
-                        >
-                            📅 Schedule 30min Meeting
-                        </Button>
-                        <Text variant="body-default-s" onBackground="neutral-weak">
-                            Book a convenient time to discuss your project or opportunity
-                        </Text>
-                    </Flex>
-                </Flex>
-            </Flex>
-        </Flex>
+                    <div className="ds-card contact-call">
+                        <h2 className="ds-h3">Prefer to talk?</h2>
+                        <p className="ds-body-text">Book a 30-minute call at a time that works for you.</p>
+                        <a href="https://calendly.com/yasasvi-nellore/30min" target="_blank" rel="noopener noreferrer" className="ds-btn">
+                            <CalendarDays aria-hidden="true" />
+                            Book a call
+                        </a>
+                    </div>
+                </aside>
+            </div>
+        </main>
     )
 }

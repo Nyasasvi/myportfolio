@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Flex, Text, Button, Spinner } from '@/once-ui/components';
+import Link from 'next/link';
+import { Check, Loader2, RefreshCw } from 'lucide-react';
 import './newsletter.css';
 
 interface Newsletter {
@@ -15,26 +15,35 @@ interface Newsletter {
   status: string;
 }
 
+type Notice = { tone: 'success' | 'error'; text: string } | null;
+
+const formatDate = (iso: string) =>
+  new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
 export default function NewsletterPage() {
   const [newsletters, setNewsletters] = useState<Newsletter[]>([]);
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadFailed, setLoadFailed] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState<Notice>(null);
 
   useEffect(() => {
     fetchNewsletters();
   }, []);
 
   const fetchNewsletters = async () => {
+    setLoadFailed(false);
     try {
       const response = await fetch('/api/newsletter');
       const data = await response.json();
       setNewsletters(data.newsletters || []);
     } catch (error) {
       console.error('Error fetching newsletters:', error);
+      setLoadFailed(true);
     } finally {
       setLoading(false);
     }
@@ -58,10 +67,10 @@ export default function NewsletterPage() {
         setSubscribed(true);
         setEmail('');
       } else {
-        setError(data.error || 'Failed to subscribe');
+        setError(data.error || 'Subscription failed. Check the address and try again.');
       }
     } catch (error) {
-      setError('Failed to subscribe. Please try again.');
+      setError('Subscription failed because the server couldn\'t be reached. Try again in a moment.');
     } finally {
       setSubscribing(false);
     }
@@ -69,6 +78,7 @@ export default function NewsletterPage() {
 
   const handleGenerateNewsletter = async () => {
     setGenerating(true);
+    setNotice(null);
     try {
       const response = await fetch('/api/newsletter/generate', {
         method: 'POST',
@@ -79,313 +89,133 @@ export default function NewsletterPage() {
       if (response.ok) {
         // Refresh newsletters list
         await fetchNewsletters();
-        alert(`✅ Newsletter #${data.newsletter.edition} generated successfully!`);
+        setNotice({ tone: 'success', text: `Edition #${data.newsletter.edition} generated.` });
       } else {
-        alert(`❌ Error: ${data.error}`);
+        setNotice({ tone: 'error', text: `Edition wasn't generated: ${data.error}` });
       }
     } catch (error) {
-      alert('Failed to generate newsletter');
+      setNotice({ tone: 'error', text: 'Edition wasn\'t generated because the server couldn\'t be reached.' });
     } finally {
       setGenerating(false);
     }
   };
 
+  const [latest, ...older] = newsletters;
+
   return (
-    <Flex
-      as="main"
-      direction="column"
-      justifyContent="normal"
-      fillWidth
-      fillHeight
-      padding="xs"
-      gap="l"
-      className="newsletter-page"
-    >
-      {/* Hero Section */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="newsletter-hero"
-      >
-        <div className="hero-content">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: 'spring' }}
-            className="hero-icon"
-          >
-            🤖
-          </motion.div>
-          
-          <Text
-            variant="heading-strong-xl"
-            style={{
-              fontSize: '48px',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              marginBottom: '16px',
-              textAlign: 'center'
-            }}
-          >
-            AI Weekly Newsletter
-          </Text>
+    <main className="nl">
+      <header className="nl-hero">
+        <div className="nl-hero__text">
+          <h1 className="ds-h1">AI Weekly</h1>
+          <p className="ds-lede">
+            The ten AI developments worth knowing each week, collected from several sources and checked before they go out.
+          </p>
+        </div>
 
-          <Text
-            variant="body-default-l"
-            onBackground="neutral-medium"
-            style={{ 
-              maxWidth: '700px', 
-              margin: '0 auto 32px',
-              textAlign: 'center',
-              lineHeight: '1.7'
-            }}
-          >
-            Top 10 AI updates every week, curated and verified from multiple sources.
-            Stay ahead of the curve with the latest developments in artificial intelligence.
-          </Text>
-
-          {/* Subscription Form */}
-          <AnimatePresence mode="wait">
-            {!subscribed ? (
-              <motion.form
-                key="form"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                onSubmit={handleSubscribe}
-                className="subscribe-form"
-              >
+        <div className="ds-card nl-subscribe">
+          {!subscribed ? (
+            <form onSubmit={handleSubscribe} className="nl-subscribe__form">
+              <label htmlFor="nl-email" className="nl-subscribe__label">Get it by email</label>
+              <div className="nl-subscribe__row">
                 <input
+                  id="nl-email"
                   type="email"
-                  placeholder="your.email@example.com"
+                  autoComplete="email"
+                  inputMode="email"
+                  placeholder="name@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   disabled={subscribing}
-                  className="subscribe-input"
+                  aria-invalid={!!error}
+                  aria-describedby={error ? 'nl-error' : 'nl-hint'}
+                  className="nl-input"
                 />
-                <button 
-                  type="submit" 
-                  disabled={subscribing}
-                  className="subscribe-button"
-                >
-                  {subscribing ? (
-                    <Flex alignItems="center" gap="xs">
-                      <Spinner size="s" />
-                      <span>Subscribing...</span>
-                    </Flex>
-                  ) : (
-                    '📧 Subscribe Free'
-                  )}
+                <button type="submit" disabled={subscribing} aria-busy={subscribing} className="ds-btn ds-btn--primary">
+                  {subscribing ? <><Loader2 className="nl-spin" aria-hidden="true" />Subscribing</> : 'Subscribe'}
                 </button>
-              </motion.form>
-            ) : (
-              <motion.div
-                key="success"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="success-message"
-              >
-                <span className="success-icon">✅</span>
-                <Text variant="body-default-l">
-                  Subscribed! You'll receive weekly AI updates in your inbox.
-                </Text>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {error && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="error-message"
-            >
-              {error}
-            </motion.div>
-          )}
-
-          {/* Stats */}
-          <div className="newsletter-stats">
-            <div className="stat-item">
-              <span className="stat-icon">📧</span>
-              <span className="stat-value">{newsletters.length}</span>
-              <span className="stat-label">Editions</span>
-            </div>
-            <div className="stat-divider" />
-            <div className="stat-item">
-              <span className="stat-icon">👥</span>
-              <span className="stat-value">
-                {newsletters.reduce((sum, n) => sum + (n.subscribers || 0), 0)}
-              </span>
-              <span className="stat-label">Subscribers</span>
-            </div>
-            <div className="stat-divider" />
-            <div className="stat-item">
-              <span className="stat-icon">🔥</span>
-              <span className="stat-value">100%</span>
-              <span className="stat-label">Free</span>
-            </div>
-          </div>
-
-          {/* Admin: Generate Newsletter Button */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            style={{ marginTop: '24px' }}
-          >
-            <Button
-              onClick={handleGenerateNewsletter}
-              disabled={generating}
-              variant="secondary"
-              size="m"
-              style={{
-                borderColor: '#667eea',
-                borderWidth: '2px'
-              }}
-            >
-              {generating ? (
-                <Flex alignItems="center" gap="xs">
-                  <Spinner size="s" />
-                  <span>Generating Newsletter...</span>
-                </Flex>
+              </div>
+              {error ? (
+                <p id="nl-error" className="nl-field-msg nl-field-msg--error" role="alert">{error}</p>
               ) : (
-                '⚡ Generate New Edition'
+                <p id="nl-hint" className="nl-field-msg">Free, weekly. Unsubscribe from any email.</p>
               )}
-            </Button>
-            <Text 
-              variant="body-default-xs" 
-              onBackground="neutral-weak"
-              style={{ marginTop: '8px', textAlign: 'center' }}
-            >
-              Automatically curates top 10 AI news from Reddit
-            </Text>
-          </motion.div>
+            </form>
+          ) : (
+            <p className="nl-subscribed" role="status">
+              <Check aria-hidden="true" />
+              You&apos;re subscribed. The next edition will arrive in your inbox.
+            </p>
+          )}
+          <dl className="nl-stats">
+            <div><dt>{newsletters.length}</dt><dd>editions</dd></div>
+            <div><dt>{newsletters.reduce((sum, n) => sum + (n.subscribers || 0), 0)}</dt><dd>subscribers</dd></div>
+          </dl>
         </div>
-      </motion.div>
+      </header>
 
-      {/* Newsletter Archive */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="newsletter-archive"
-      >
-        <Flex
-          direction="column"
-          gap="m"
-          style={{ marginBottom: '32px' }}
-        >
-          <Text
-            variant="heading-strong-l"
-            style={{ 
-              fontSize: '32px',
-              textAlign: 'center'
-            }}
-          >
-            📚 Newsletter Archive
-          </Text>
-          <Text
-            variant="body-default-m"
-            onBackground="neutral-medium"
-            style={{ textAlign: 'center' }}
-          >
-            Browse past editions and catch up on AI developments
-          </Text>
-        </Flex>
+      <section className="nl-archive" aria-labelledby="nl-archive-title" aria-busy={loading}>
+        <div className="nl-archive__head">
+          <h2 id="nl-archive-title" className="ds-h2">Editions</h2>
+          <button type="button" onClick={handleGenerateNewsletter} disabled={generating} aria-busy={generating} className="ds-btn ds-btn--ghost nl-generate">
+            {generating ? <Loader2 className="nl-spin" aria-hidden="true" /> : <RefreshCw aria-hidden="true" />}
+            {generating ? 'Generating edition' : 'Generate new edition'}
+          </button>
+        </div>
+
+        <div aria-live="polite">
+          {notice && <p className={`nl-notice nl-notice--${notice.tone}`}>{notice.text}</p>}
+        </div>
 
         {loading ? (
-          <Flex justifyContent="center" padding="xl">
-            <Spinner size="l" />
-          </Flex>
+          <div className="nl-grid" aria-hidden="true">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="ds-card nl-card nl-card--skeleton">
+                <span className="nl-skel nl-skel--sm" />
+                <span className="nl-skel nl-skel--lg" />
+                <span className="nl-skel" />
+                <span className="nl-skel" />
+                <span className="nl-skel nl-skel--md" />
+              </div>
+            ))}
+          </div>
+        ) : loadFailed ? (
+          <div className="nl-empty">
+            <p>Editions couldn&apos;t be loaded.</p>
+            <button type="button" className="ds-btn" onClick={() => { setLoading(true); fetchNewsletters(); }}>Try again</button>
+          </div>
         ) : newsletters.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="empty-state"
-          >
-            <span className="empty-icon">📰</span>
-            <Text variant="heading-default-l">No newsletters yet</Text>
-            <Text variant="body-default-m" onBackground="neutral-medium">
-              Generate the first edition to get started!
-            </Text>
-          </motion.div>
+          <div className="nl-empty">
+            <p>No editions yet.</p>
+            <p className="ds-meta">Generate the first one to start the archive.</p>
+          </div>
         ) : (
-          <div className="newsletters-grid">
-            {newsletters.map((newsletter, index) => (
-              <motion.div
+          <div className="nl-grid">
+            {[latest, ...older].map((newsletter, index) => (
+              <Link
                 key={newsletter.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="newsletter-card"
-                whileHover={{ y: -8, scale: 1.02 }}
+                href={`/newsletter/${newsletter.edition}`}
+                className={`ds-card nl-card${index === 0 ? ' nl-card--latest' : ''}`}
               >
-                <div className="card-header">
-                  <span className="edition-badge">
-                    Edition #{newsletter.edition}
-                  </span>
-                  <span className="date-badge">
-                    {new Date(newsletter.publishedAt).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric'
-                    })}
-                  </span>
+                <div className="nl-card__meta">
+                  <span>Edition {newsletter.edition}</span>
+                  <time dateTime={newsletter.publishedAt}>{formatDate(newsletter.publishedAt)}</time>
                 </div>
-
-                <Text 
-                  variant="heading-strong-m"
-                  style={{ fontSize: '20px', marginBottom: '12px' }}
-                >
-                  {newsletter.title}
-                </Text>
-
-                {/* Preview articles */}
-                <div className="articles-preview">
-                  <Text 
-                    variant="label-default-s" 
-                    onBackground="neutral-weak"
-                    style={{ marginBottom: '8px' }}
-                  >
-                    TOP STORIES:
-                  </Text>
-                  <ul className="preview-list">
-                    {newsletter.articles.slice(0, 3).map((article, i) => (
-                      <li key={i} className="preview-item">
-                        <span className="item-rank">#{article.rank}</span>
-                        <span className="item-title">{article.title}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="card-footer">
-                  <Button
-                    href={`/newsletter/${newsletter.edition}`}
-                    variant="primary"
-                    size="s"
-                    style={{
-                      width: '100%',
-                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                    }}
-                  >
-                    Read Full Edition →
-                  </Button>
-                </div>
-
-                <div className="card-meta">
-                  <span>📊 {newsletter.subscribers} subscribers</span>
-                  <span>📝 {newsletter.articles.length} articles</span>
-                </div>
-              </motion.div>
+                <h3 className="ds-h3">{newsletter.title}</h3>
+                <ol className="nl-card__stories">
+                  {newsletter.articles.slice(0, index === 0 ? 5 : 3).map((article, i) => (
+                    <li key={i}>{article.title}</li>
+                  ))}
+                </ol>
+                <span className="nl-card__footer">
+                  {newsletter.articles.length} stories
+                  <span className="nl-card__read">Read edition</span>
+                </span>
+              </Link>
             ))}
           </div>
         )}
-      </motion.div>
-    </Flex>
+      </section>
+    </main>
   );
 }
-

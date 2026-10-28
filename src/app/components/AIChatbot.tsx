@@ -121,27 +121,14 @@ export default function AIChatbot({ theme = 'light' }: AIChatbotProps) {
             exit={{ scale: 0, opacity: 0 }}
             className="chatbot-fab"
           >
-            <motion.button
+            <button
+              type="button"
               className="chatbot-fab-button"
               onClick={() => setIsOpen(true)}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
               aria-label="Open AI Assistant"
             >
-              <span className="chatbot-fab-icon">🤖</span>
-              <motion.div
-                className="chatbot-fab-pulse"
-                animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.5, 0, 0.5],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              />
-            </motion.button>
+              <span className="chatbot-fab-icon" aria-hidden="true">🤖</span>
+            </button>
           </motion.div>
         )}
       </AnimatePresence>

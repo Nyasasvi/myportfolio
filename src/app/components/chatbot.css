@@ -1,8 +1,8 @@
-/* Floating Action Button */
+/* Floating Action Button: a small glass control that floats above content */
 .chatbot-fab {
   position: fixed;
-  bottom: 32px;
-  right: 32px;
+  bottom: 24px;
+  right: 24px;
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -11,38 +11,48 @@
 
 .chatbot-fab-button {
   position: relative;
-  width: 64px;
-  height: 64px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border: none;
+  border: 1px solid var(--ds-glass-edge);
+  background: var(--ds-glass-bg);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
+  box-shadow: inset 0 1px 0 var(--ds-glass-highlight), var(--ds-glass-shadow);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
-  transition: all 0.3s ease;
+  transition: transform var(--ds-dur-fast) var(--ds-ease), border-color var(--ds-dur-fast) var(--ds-ease);
 }
 
 .chatbot-fab-button:hover {
-  box-shadow: 0 12px 32px rgba(102, 126, 234, 0.6);
+  border-color: var(--ds-border-strong);
+  transform: translateY(-1px);
+}
+
+.chatbot-fab-button:active {
+  transform: scale(0.94);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .chatbot-fab-button {
+    background: var(--ds-glass-bg-solid);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
 }
 
 .chatbot-fab-icon {
-  font-size: 32px;
+  font-size: 24px;
+  line-height: 1;
   position: relative;
   z-index: 2;
 }
 
+/* The old looping pulse is retired; motion here should answer an action, not loop */
 .chatbot-fab-pulse {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  z-index: 1;
+  display: none;
 }
 
 /* Tooltip removed - clean floating button */

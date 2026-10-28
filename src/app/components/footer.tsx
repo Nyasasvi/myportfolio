@@ -1,39 +1,40 @@
 'use client'
 
-import { Button, Flex, IconButton, Text } from "@/once-ui/components"
+import { Github, Instagram, Linkedin, Mail, type LucideIcon } from "lucide-react";
 import { footerButtonLinks } from "../resources/consts";
+import "./footer.css";
+
+const icons: Record<string, LucideIcon> = {
+    github: Github,
+    linkedin: Linkedin,
+    mail: Mail,
+    instagram: Instagram,
+};
+
 export default function Footer() {
-
     return (
-        <Flex
-                mobileDirection="column"
-				as="footer"
-				position="relative"
-				fillWidth paddingX="2"  paddingY="s"
-				justifyContent="space-between">
-				<Flex key="copyright" justifyContent="center" alignItems="center" padding="s">
-                <Text
-					variant="body-default-s" onBackground="neutral-weak">
-						© 2025 Yasasvi Nellore. 
-				</Text>
-                </Flex>
-                
-				<Flex key= "links" justifyContent="center" alignItems="center"
-					gap="12">
-                {footerButtonLinks.map((button) =>(
-                    true ? 
-                    <IconButton key= {button.label} icon={button.icon} href = {button.href} size="s" variant="ghost"/>
-                    :
-                    <Button
-                    key= {button.label}
-						href= {button.href}
-						prefixIcon={button.icon} size="s" variant="tertiary">
-						{button.label}
-					</Button>
-                ))}
-
-
-				</Flex>
-			</Flex>
+        <footer className="site-footer">
+            <div className="site-footer__inner">
+                <p className="site-footer__copy">© {new Date().getFullYear()} Yasasvi Nellore. Built in Dallas, TX.</p>
+                <ul className="site-footer__links" role="list">
+                    {footerButtonLinks.map((link) => {
+                        const Icon = icons[link.icon];
+                        const external = link.href.startsWith("http");
+                        return (
+                            <li key={link.label}>
+                                <a
+                                    href={link.href}
+                                    className="ds-icon-btn"
+                                    aria-label={link.label}
+                                    {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                                >
+                                    {Icon ? <Icon aria-hidden /> : link.label}
+                                </a>
+                            </li>
+                        );
+                    })}
+                </ul>
+            </div>
+        </footer>
     )
 }

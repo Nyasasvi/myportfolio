@@ -1,34 +1,29 @@
 'use client'
-import { Background, Flex } from "@/once-ui/components"
-import { Header } from "./components/header"
+import { Flex } from "@/once-ui/components"
+import { SiteNav } from "./components/SiteNav"
+import { CommandPalette } from "./components/CommandPalette"
 import Footer from "./components/footer"
-import { Inter, Sora, Source_Code_Pro } from "next/font/google";
+import { Instrument_Sans, Bricolage_Grotesque, Source_Code_Pro } from "next/font/google";
 import "@/once-ui/styles/index.scss";
 import "@/once-ui/tokens/index.scss";
+import "./design-system.css";
 import classNames from 'classnames';
-import { useEffect, useState } from "react";
-import EnhancedBackground from "./components/EnhancedBackground";
+import { useCallback, useEffect, useState } from "react";
 import AIChatbot from "./components/AIChatbot";
 import { Analytics } from '@vercel/analytics/react';
 
-type FontConfig = {
-	variable: string;
-};
-const primary = Inter({
+// Once UI reads --font-primary for body text and --font-secondary for headings
+const primary = Instrument_Sans({
 	variable: '--font-primary',
 	subsets: ['latin'],
 	display: 'swap'
 });
 
-
-
-const secondary = Sora({
+const secondary = Bricolage_Grotesque({
 	variable: '--font-secondary',
 	subsets: ['latin'],
 	display: 'swap'
 });
-
-const tertiary: FontConfig | undefined = undefined;
 
 const code = Source_Code_Pro({
 	variable: '--font-code',
@@ -36,27 +31,43 @@ const code = Source_Code_Pro({
 	display: 'swap',
 });
 
+type Theme = 'light' | 'dark';
 
 export default function PageLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const [theme, setTheme] = useState('dark');
-	const [loading, setLoading] = useState(true);
+	const [theme, setTheme] = useState<Theme>('dark');
+	const [paletteOpen, setPaletteOpen] = useState(false);
+
 	useEffect(() => {
-		if (typeof window !== 'undefined') {
-			const storedTheme = localStorage.getItem('theme') || 'dark';
-			setTheme(storedTheme);
-			setLoading(false)
-		}
+		const storedTheme = localStorage.getItem('theme');
+		if (storedTheme === 'light' || storedTheme === 'dark') setTheme(storedTheme);
 	}, []);
-	const onThemeSwitch = () => {
-		setTheme(theme == "dark" ? "light" : "dark");
-		localStorage.setItem('theme', theme == "dark" ? "light" : "dark");
-	}
+
+	const onThemeSwitch = useCallback(() => {
+		setTheme((current) => {
+			const next = current === 'dark' ? 'light' : 'dark';
+			localStorage.setItem('theme', next);
+			return next;
+		});
+	}, []);
+
+	const closePalette = useCallback(() => setPaletteOpen(false), []);
+
+	useEffect(() => {
+		const onKey = (e: KeyboardEvent) => {
+			if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+				e.preventDefault();
+				setPaletteOpen((open) => !open);
+			}
+		};
+		window.addEventListener('keydown', onKey);
+		return () => window.removeEventListener('keydown', onKey);
+	}, []);
+
 	return (
-		
 		<Flex
 			as="html" lang="en"
 			fillHeight background="page"
@@ -71,47 +82,29 @@ export default function PageLayout({
 			data-transition="all"
 			className={classNames(
 				primary.variable,
-				secondary ? secondary.variable : '',
-				tertiary ? tertiary.variable : '',
+				secondary.variable,
 				code.variable,
 				'root')}
-			justifyContent="center">
-			<link rel="preload" as="image" href="/images/chess.png"/>
-			<link rel="preload" as="image" href="/images/canvas.webp"/>
-			<link rel="preload" as="image" href="/images/ai-resume-editor.png.png"/>
-			<link rel="preload" as="image" href="/images/duffison_model.png.png"/>
-			<link rel="preload" as="image" href="/images/diet-ai-agent.png.png"/>
-			<link rel="preload" as="image" href="/images/shopping.webp"/>
-			<Flex
-				style={{ width: "80%" }}
-				as="body"
-				fillHeight marginX="4"
-				direction="column"
-
-			>
-				<Background />
-				<EnhancedBackground particleCount={25} enableOnMobile={false} theme={theme as 'light' | 'dark'} />
-				<Flex
-					fillWidth
-					minHeight="16">
-				</Flex>
-				<Header theme={theme == "dark" ? "light" : "dark"} onThemeSwitch={onThemeSwitch} />
-				<Flex
-					zIndex={0}
-					paddingY="l" paddingX="l"
-					justifyContent="center" flex={1}>
-					<Flex
-						justifyContent="center"
-						fillWidth minHeight="0">
-						{children}
-					</Flex>
-				</Flex>
+			justifyContent="center"
+			// The inline script below may set data-theme before hydration
+			suppressHydrationWarning>
+			<body className="ds-body" style={{ display: 'flex', flexDirection: 'column' }}>
+				{/* Apply the saved theme before first paint so light-mode visitors don't see a dark flash */}
+				<script
+					dangerouslySetInnerHTML={{
+						__html: "try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}",
+					}}
+				/>
+				<a href="#main-content" className="ds-skip-link">Skip to content</a>
+				<SiteNav theme={theme} onThemeSwitch={onThemeSwitch} onOpenPalette={() => setPaletteOpen(true)} />
+				<div id="main-content" className="ds-main" tabIndex={-1}>
+					{children}
+				</div>
 				<Footer />
-				{/* AI-Powered Chatbot */}
-				<AIChatbot theme={theme as 'light' | 'dark'} />
-				{/* Vercel Analytics */}
+				<CommandPalette open={paletteOpen} onClose={closePalette} theme={theme} onThemeSwitch={onThemeSwitch} />
+				<AIChatbot theme={theme} />
 				<Analytics />
-			</Flex>
+			</body>
 		</Flex>
 	)
 }

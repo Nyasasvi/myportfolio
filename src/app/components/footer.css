@@ -1,0 +1,36 @@
+.site-footer {
+	width: 100%;
+	border-top: 1px solid var(--ds-border);
+}
+
+.site-footer__inner {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--ds-space-4);
+	max-width: var(--ds-content-width);
+	margin: 0 auto;
+	padding: var(--ds-space-5) var(--ds-gutter);
+}
+
+.site-footer__copy {
+	margin: 0;
+	font-size: var(--ds-text-xs);
+	color: var(--ds-fg-subtle);
+}
+
+.site-footer__links {
+	display: flex;
+	gap: var(--ds-space-1);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+@media (max-width: 560px) {
+	.site-footer__inner {
+		flex-direction: column-reverse;
+		/* Leave room for the floating chat button */
+		padding-bottom: 88px;
+	}
+}

@@ -283,30 +283,27 @@ export default function JobMatchPage() {
     <div className={`job-match-container ${isAnimating ? 'fade-in' : ''}`}>
       <div className="job-match-header">
         <div className="header-content">
-          <div className="icon-wrapper">
-            <span className="header-icon">🎯</span>
-          </div>
           <Heading className="main-heading" as="h1">
             Job Match Analyzer
           </Heading>
           <Text className="subtitle">
-            Powered by AI • Compare skills with job requirements • Get personalized insights
+            Paste a job description to see how my experience lines up, or find recent openings that match a resume.
           </Text>
           
           {/* Tab Navigation */}
           <div className="tab-navigation">
             <button
               className={`tab-button ${activeTab === 'analyze' ? 'active' : ''}`}
+              aria-pressed={activeTab === 'analyze'}
               onClick={() => setActiveTab('analyze')}
             >
-              <span className="tab-icon">📊</span>
               Analyze Single Job
             </button>
             <button
               className={`tab-button ${activeTab === 'scraper' ? 'active' : ''}`}
+              aria-pressed={activeTab === 'scraper'}
               onClick={() => setActiveTab('scraper')}
             >
-              <span className="tab-icon">🔍</span>
               Find Matching Jobs
             </button>
           </div>
@@ -321,7 +318,7 @@ export default function JobMatchPage() {
                   className="toggle-checkbox"
                 />
                 <span className="toggle-text">
-                  {useCustomResume ? '📄 Using Your Resume' : '👤 Using Default Profile (Yasasvi)'}
+                  {useCustomResume ? 'Compare against a resume you paste' : 'Compare against my profile'}
                 </span>
               </label>
             </div>
@@ -339,8 +336,8 @@ export default function JobMatchPage() {
               <div className="input-card resume-card">
                 <div className="card-header">
                   <div className="header-left">
-                    <span className="step-badge" style={{ background: 'linear-gradient(135deg, #10b981, #059669)' }}>Step 1</span>
-                    <h2 className="card-title">Paste Your Resume</h2>
+                    <span className="step-badge">Step 1</span>
+                    <h2 className="card-title"><label htmlFor="jm-custom-resume">Paste your resume</label></h2>
                   </div>
                   <div className="char-counter">
                     {resumeCharCount.toLocaleString()} characters
@@ -348,6 +345,7 @@ export default function JobMatchPage() {
                 </div>
                 
                 <textarea
+                  id="jm-custom-resume"
                   className="job-textarea resume-textarea"
                   placeholder="Paste your complete resume/CV here...
 
@@ -357,9 +355,7 @@ Include:
 • Skills and technologies
 • Education and certifications
 • Projects (if applicable)
-• Any relevant details about your background
-
-💡 Tip: The more comprehensive your resume, the better the analysis!"
+• Any relevant details about your background"
                   value={resume}
                   onChange={handleResumeTextChange}
                   rows={14}
@@ -372,7 +368,7 @@ Include:
               <div className="card-header">
                 <div className="header-left">
                   <span className="step-badge">{useCustomResume ? 'Step 2' : 'Step 1'}</span>
-                  <h2 className="card-title">Paste Job Description</h2>
+                  <h2 className="card-title"><label htmlFor="jm-job-description">Paste the job description</label></h2>
                 </div>
                 <div className="char-counter">
                   {jobCharCount.toLocaleString()} characters
@@ -380,6 +376,7 @@ Include:
               </div>
               
               <textarea
+                id="jm-job-description"
                 className="job-textarea"
                 placeholder="Paste the complete job description here...
 
@@ -397,8 +394,7 @@ The more details you provide, the better the analysis!"
               />
 
               {error && (
-                <div className="error-message">
-                  <span className="error-icon">⚠️</span>
+                <div className="error-message" role="alert">
                   {error}
                 </div>
               )}
@@ -416,8 +412,7 @@ The more details you provide, the better the analysis!"
                     </>
                   ) : (
                     <>
-                      <span>✨</span>
-                      Analyze Match
+                      Analyze match
                     </>
                   )}
                 </Button>
@@ -435,21 +430,18 @@ The more details you provide, the better the analysis!"
 
               <div className="info-cards">
                 <div className="info-card">
-                  <span className="info-icon">🤖</span>
                   <div>
                     <strong>AI-Powered Analysis</strong>
                     <p>Uses advanced NLP to match skills</p>
                   </div>
                 </div>
                 <div className="info-card">
-                  <span className="info-icon">📊</span>
                   <div>
                     <strong>Detailed Insights</strong>
                     <p>Get comprehensive gap analysis</p>
                   </div>
                 </div>
                 <div className="info-card">
-                  <span className="info-icon">🎯</span>
                   <div>
                     <strong>Personalized Results</strong>
                     <p>{useCustomResume ? 'Based on your resume' : 'Based on default profile'}</p>
@@ -498,7 +490,6 @@ The more details you provide, the better the analysis!"
 
               {result.jobTitle && (
                 <div className="job-title-display">
-                  <span className="job-title-icon">💼</span>
                   <strong>{result.jobTitle}</strong>
                 </div>
               )}
@@ -526,14 +517,13 @@ The more details you provide, the better the analysis!"
               <div className="section-card strengths-card">
                 <div className="section-header">
                   <h3>
-                    <span className="section-icon">💪</span>
                     Your Strengths
                   </h3>
                 </div>
                 <div className="strengths-grid">
                   {result.strengths.map((strength, index) => (
                     <div key={index} className="strength-item">
-                      <span className="strength-checkmark">✓</span>
+                      <span className="strength-checkmark" aria-hidden="true">✓</span>
                       <span>{strength}</span>
                     </div>
                   ))}
@@ -546,14 +536,13 @@ The more details you provide, the better the analysis!"
               <div className="section-card">
                 <div className="section-header">
                   <h3>
-                    <span className="section-icon">✅</span>
                     Matched Skills ({result.matchedSkills.length})
                   </h3>
                 </div>
                 <div className="skills-grid">
                   {result.matchedSkills.map((skill, index) => (
                     <div key={index} className="skill-chip matched">
-                      <span className="skill-icon">✓</span>
+                      <span className="skill-icon" aria-hidden="true">✓</span>
                       <div className="skill-info">
                         <span className="skill-name">{skill.skill}</span>
                         {skill.yourLevel && (
@@ -572,7 +561,6 @@ The more details you provide, the better the analysis!"
               <div className="section-card gap-card">
                 <div className="section-header">
                   <h3>
-                    <span className="section-icon">📊</span>
                     Skills Gap Analysis
                   </h3>
                 </div>
@@ -580,7 +568,7 @@ The more details you provide, the better the analysis!"
                 {result.gapAnalysis.critical.length > 0 && (
                   <div className="gap-subsection">
                     <h4 className="gap-title critical">
-                      <span>🔴</span> Critical Skills to Learn
+                      Critical skills to learn
                     </h4>
                     <div className="gap-list">
                       {result.gapAnalysis.critical.map((skill, index) => (
@@ -596,7 +584,7 @@ The more details you provide, the better the analysis!"
                 {result.gapAnalysis.nice_to_have.length > 0 && (
                   <div className="gap-subsection">
                     <h4 className="gap-title nice-to-have">
-                      <span>🟡</span> Nice to Have
+                      Nice to have
                     </h4>
                     <div className="gap-list">
                       {result.gapAnalysis.nice_to_have.map((skill, index) => (
@@ -616,7 +604,6 @@ The more details you provide, the better the analysis!"
               <div className="section-card learning-card">
                 <div className="section-header">
                   <h3>
-                    <span className="section-icon">🎓</span>
                     Recommended Learning Path
                   </h3>
                 </div>
@@ -636,14 +623,13 @@ The more details you provide, the better the analysis!"
               <div className="section-card recommendations-card">
                 <div className="section-header">
                   <h3>
-                    <span className="section-icon">💡</span>
                     AI Recommendations
                   </h3>
                 </div>
                 <div className="recommendations-list">
                   {result.recommendations.map((rec, index) => (
                     <div key={index} className="recommendation-item">
-                      <span className="rec-icon">→</span>
+                      <span className="rec-icon" aria-hidden="true" />
                       <p>{rec}</p>
                     </div>
                   ))}
@@ -653,8 +639,7 @@ The more details you provide, the better the analysis!"
 
             <div className="action-footer">
               <Button onClick={handleClear} className="analyze-another-btn">
-                <span>🔄</span>
-                Analyze Another Job
+                Analyze another job
               </Button>
             </div>
           </div>
@@ -668,7 +653,7 @@ The more details you provide, the better the analysis!"
                 <div className="input-card scraper-card">
                   <div className="card-header">
                     <div className="header-left">
-                      <h2 className="card-title">🔍 Automated Job Finder</h2>
+                      <h2 className="card-title">Find matching jobs</h2>
                     </div>
                   </div>
                   
@@ -677,29 +662,28 @@ The more details you provide, the better the analysis!"
                       <strong>How it works:</strong>
                     </p>
                     <ul>
-                      <li>✨ We scrape job boards for positions posted recently</li>
-                      <li>🎯 Use filters to narrow down your search (including match %)</li>
-                      <li>🤖 AI analyzes each job against your resume</li>
-                      <li>📧 Receive <strong>all matching jobs</strong> via email (customize match %)</li>
-                      <li>⚡ Save time by letting AI find the best opportunities for you!</li>
+                      <li>We scrape job boards for positions posted recently</li>
+                      <li>Use filters to narrow down your search (including match %)</li>
+                      <li>AI analyzes each job against your resume</li>
+                      <li>Receive <strong>all matching jobs</strong> via email (customize match %)</li>
+                      <li>Save time by letting AI find the best opportunities for you!</li>
                     </ul>
                   </div>
 
                   {/* Job Filters Section */}
                   <div className="filters-section">
                     <h3 className="filters-title">
-                      <span className="filter-icon">🎯</span>
                       Filter Your Job Search
                     </h3>
                     
                     <div className="filters-grid">
                       {/* Keywords */}
                       <div className="filter-group">
-                        <label className="filter-label">
-                          <span className="label-icon">🔍</span>
+                        <label className="filter-label" htmlFor="jm-keywords">
                           Keywords
                         </label>
                         <input
+                          id="jm-keywords"
                           type="text"
                           className="filter-input"
                           placeholder="e.g., React, Python, Machine Learning"
@@ -711,11 +695,11 @@ The more details you provide, the better the analysis!"
 
                       {/* Location */}
                       <div className="filter-group">
-                        <label className="filter-label">
-                          <span className="label-icon">📍</span>
+                        <label className="filter-label" htmlFor="jm-location">
                           Location
                         </label>
                         <input
+                          id="jm-location"
                           type="text"
                           className="filter-input"
                           placeholder="e.g., San Francisco, New York, Remote"
@@ -727,11 +711,11 @@ The more details you provide, the better the analysis!"
 
                       {/* Experience Level */}
                       <div className="filter-group">
-                        <label className="filter-label">
-                          <span className="label-icon">⭐</span>
+                        <label className="filter-label" htmlFor="jm-experience">
                           Experience Level
                         </label>
                         <select
+                          id="jm-experience"
                           className="filter-select"
                           value={experienceLevel}
                           onChange={(e) => setExperienceLevel(e.target.value)}
@@ -746,11 +730,11 @@ The more details you provide, the better the analysis!"
 
                       {/* Job Type */}
                       <div className="filter-group">
-                        <label className="filter-label">
-                          <span className="label-icon">💼</span>
+                        <label className="filter-label" htmlFor="jm-type">
                           Job Type
                         </label>
                         <select
+                          id="jm-type"
                           className="filter-select"
                           value={jobType}
                           onChange={(e) => setJobType(e.target.value)}
@@ -765,11 +749,11 @@ The more details you provide, the better the analysis!"
 
                       {/* Minimum Salary */}
                       <div className="filter-group">
-                        <label className="filter-label">
-                          <span className="label-icon">💰</span>
+                        <label className="filter-label" htmlFor="jm-salary">
                           Minimum Salary (USD)
                         </label>
                         <input
+                          id="jm-salary"
                           type="number"
                           className="filter-input"
                           placeholder="e.g., 100000"
@@ -783,11 +767,11 @@ The more details you provide, the better the analysis!"
 
                       {/* Max Days Old */}
                       <div className="filter-group">
-                        <label className="filter-label">
-                          <span className="label-icon">⏰</span>
+                        <label className="filter-label" htmlFor="jm-posted">
                           Posted Within
                         </label>
                         <select
+                          id="jm-posted"
                           className="filter-select"
                           value={maxDaysOld}
                           onChange={(e) => setMaxDaysOld(e.target.value)}
@@ -802,11 +786,11 @@ The more details you provide, the better the analysis!"
 
                       {/* Minimum Match Percentage */}
                       <div className="filter-group">
-                        <label className="filter-label">
-                          <span className="label-icon">🎯</span>
+                        <label className="filter-label" htmlFor="jm-min-match">
                           Minimum Match %
                         </label>
                         <select
+                          id="jm-min-match"
                           className="filter-select"
                           value={minMatchPercentage}
                           onChange={(e) => setMinMatchPercentage(e.target.value)}
@@ -834,7 +818,6 @@ The more details you provide, the better the analysis!"
                           onChange={(e) => setRemote(e.target.checked)}
                         />
                         <span className="remote-toggle-text">
-                          <span className="remote-icon">{remote ? '✅' : '☐'}</span>
                           <strong>Remote Only</strong> - Show only remote positions
                         </span>
                       </label>
@@ -843,11 +826,12 @@ The more details you provide, the better the analysis!"
 
                   {/* Email Input */}
                   <div className="form-group">
-                    <label className="form-label">
-                      <span className="label-icon">📧</span>
-                      Your Email Address
+                    <label className="form-label" htmlFor="jm-email">
+                      Your email address
                     </label>
                     <input
+                      id="jm-email"
+                      autoComplete="email"
                       type="email"
                       className="form-input"
                       placeholder="your.email@example.com"
@@ -862,11 +846,11 @@ The more details you provide, the better the analysis!"
 
                   {/* Resume Input */}
                   <div className="form-group">
-                    <label className="form-label">
-                      <span className="label-icon">📄</span>
-                      Paste Your Resume
+                    <label className="form-label" htmlFor="jm-resume">
+                      Your resume
                     </label>
                     <textarea
+                      id="jm-resume"
                       className="job-textarea scraper-textarea"
                       placeholder="Paste your complete resume here...
 
@@ -875,9 +859,7 @@ Include:
 • Work experience with achievements
 • Skills and technologies
 • Education and certifications
-• Projects and relevant details
-
-💡 The better your resume, the more accurate the job matches!"
+• Projects and relevant details"
                       value={scraperResume}
                       onChange={(e) => {
                         setScraperResume(e.target.value);
@@ -891,8 +873,7 @@ Include:
                   </div>
 
                   {scraperError && (
-                    <div className="error-message">
-                      <span className="error-icon">⚠️</span>
+                    <div className="error-message" role="alert">
                       {scraperError}
                     </div>
                   )}
@@ -910,8 +891,7 @@ Include:
                         </>
                       ) : (
                         <>
-                          <span>🚀</span>
-                          Find Matching Jobs
+                          Find matching jobs
                         </>
                       )}
                     </Button>
@@ -929,21 +909,18 @@ Include:
 
                   <div className="info-cards">
                     <div className="info-card">
-                      <span className="info-icon">⏰</span>
                       <div>
                         <strong>24-Hour Jobs</strong>
                         <p>Only recently posted positions</p>
                       </div>
                     </div>
                     <div className="info-card">
-                      <span className="info-icon">🎯</span>
                       <div>
                         <strong>80%+ Match</strong>
                         <p>High compatibility jobs only</p>
                       </div>
                     </div>
                     <div className="info-card">
-                      <span className="info-icon">📬</span>
                       <div>
                         <strong>Email Delivery</strong>
                         <p>Results sent to your inbox</p>
@@ -957,7 +934,7 @@ Include:
               <div className="results-section scraper-results">
                 <div className="score-card success-card">
                   <div className="score-header">
-                    <h2>{scraperResult.success ? '✅ Job Search Complete!' : '⚠️ Search Complete'}</h2>
+                    <h2>{scraperResult.success ? 'Search complete' : 'Search finished with warnings'}</h2>
                     <button className="new-analysis-btn" onClick={handleScraperClear}>
                       New Search
                     </button>
@@ -969,7 +946,6 @@ Include:
                     {/* Match Quality Indicator */}
                     {scraperResult.matchThreshold && (
                       <div className={`match-quality-banner ${scraperResult.matchThreshold >= 80 ? 'high' : 'medium'}`}>
-                        <span className="quality-icon">{scraperResult.matchThreshold >= 80 ? '🎯' : '📋'}</span>
                         <div>
                           <strong>
                             {scraperResult.matchThreshold >= 80 
@@ -1009,7 +985,6 @@ Include:
                     {/* Suggestions for improvement */}
                     {scraperResult.suggestions && scraperResult.suggestions.length > 0 && (
                       <div className="suggestions-banner">
-                        <span className="suggestions-icon">💡</span>
                         <div>
                           <strong>Try these to get more matches:</strong>
                           <ul>
@@ -1023,7 +998,6 @@ Include:
 
                     {scraperResult.emailSent && (
                       <div className="email-sent-banner">
-                        <span className="email-icon">📧</span>
                         <strong>Email sent to {scraperEmail}</strong>
                         <p>Check your inbox for detailed job listings!</p>
                       </div>
@@ -1036,7 +1010,6 @@ Include:
                   <div className="section-card matched-jobs-card">
                     <div className="section-header">
                       <h3>
-                        <span className="section-icon">💼</span>
                         Matched Jobs ({scraperResult.matchedJobs.length})
                       </h3>
                     </div>
@@ -1048,14 +1021,14 @@ Include:
                             <div>
                               <h4 className="job-item-title">{job.title}</h4>
                               <p className="job-item-company">
-                                <span>🏢</span> {job.company}
+                                {job.company}
                               </p>
                               <p className="job-item-location">
-                                <span>📍</span> {job.location}
+                                {job.location}
                               </p>
                               {job.source && (
                                 <p className="job-item-source">
-                                  <span>🔗</span> Source: {job.source}
+                                  Source: {job.source}
                                 </p>
                               )}
                             </div>
@@ -1074,7 +1047,7 @@ Include:
                             rel="noopener noreferrer"
                             className="job-apply-link"
                           >
-                            View Full Job →
+                            View job posting
                           </a>
                         </div>
                       ))}
@@ -1084,22 +1057,13 @@ Include:
 
                 <div className="action-footer">
                   <Button onClick={handleScraperClear} className="analyze-another-btn">
-                    <span>🔄</span>
-                    Search Again
+                    Search again
                   </Button>
                 </div>
               </div>
             )}
           </div>
         )}
-      </div>
-
-      {/* Background Animations */}
-      <div className="background-elements">
-        <div className="floating-shape shape-1"></div>
-        <div className="floating-shape shape-2"></div>
-        <div className="floating-shape shape-3"></div>
-        <div className="floating-shape shape-4"></div>
       </div>
     </div>
   );

@@ -1,268 +1,118 @@
 'use client'
 
 import { useState } from 'react';
-import { Flex, Text } from "@/once-ui/components"
-import { motion } from 'framer-motion';
+import { motion, MotionConfig } from 'framer-motion';
 import './index.css'
 import { skillsData } from "../resources/consts"
 
+const categories = [
+    { id: 'aiml', label: 'AI & ML' },
+    { id: 'languages', label: 'Languages' },
+    { id: 'backend', label: 'Backend' },
+    { id: 'frontend', label: 'Frontend' },
+    { id: 'cloud', label: 'Cloud & DevOps' },
+    { id: 'database', label: 'Data' },
+    { id: 'tools', label: 'Tools & testing' },
+];
+
+const filters = [{ id: 'all', label: 'All' }, ...categories];
+
+// Self-assessed levels shown as three tiers rather than false-precision percentages
+const tier = (level: number) =>
+    level >= 90 ? { label: 'Expert', filled: 3 } : level >= 80 ? { label: 'Advanced', filled: 2 } : { label: 'Working knowledge', filled: 1 };
+
 export default function SkillsPage() {
     const [activeCategory, setActiveCategory] = useState('all');
-    const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
 
-    const categories = [
-        { id: 'all', label: 'All Skills', icon: '🎯' },
-        { id: 'languages', label: 'Languages', icon: '💻' },
-        { id: 'frontend', label: 'Frontend', icon: '🎨' },
-        { id: 'backend', label: 'Backend', icon: '⚙️' },
-        { id: 'cloud', label: 'Cloud & DevOps', icon: '☁️' },
-        { id: 'database', label: 'Databases', icon: '🗄️' },
-        { id: 'aiml', label: 'AI & ML', icon: '🤖' },
-        { id: 'tools', label: 'Tools & Testing', icon: '🔧' }
-    ];
-
-    const filteredSkills = activeCategory === 'all' 
-        ? skillsData 
-        : skillsData.filter(skill => skill.category === activeCategory);
+    const visible = categories
+        .filter((category) => activeCategory === 'all' || category.id === activeCategory)
+        .map((category) => ({
+            ...category,
+            skills: skillsData
+                .filter((skill) => skill.category === category.id)
+                .sort((a, b) => b.level - a.level),
+        }))
+        .filter((group) => group.skills.length);
 
     return (
-        <Flex
-            as="main"
-            direction="column"
-            justifyContent="normal"
-            fillWidth
-            fillHeight
-            padding="xs"
-            gap="l"
-        >
-            {/* Header Section */}
-            <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-            >
-                <Flex
-                    direction="column"
-                    fillWidth
-                    gap="s"
-                    style={{ textAlign: 'center', marginBottom: '24px' }}
-                >
-                    <Text
-                        variant="heading-strong-xl"
-                        style={{ 
-                            fontSize: "48px",
-                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            marginBottom: '8px'
-                        }}
-                    >
-                        Skills & Expertise
-                    </Text>
-                    <Text 
-                        variant="body-default-l" 
-                        onBackground="neutral-medium"
-                        style={{ maxWidth: '600px', margin: '0 auto' }}
-                    >
-                        5+ years of experience building scalable, cloud-native applications with modern technologies
-                    </Text>
-                </Flex>
-            </motion.div>
+        <MotionConfig reducedMotion="user">
+            <main className="skills">
+                <header className="skills-intro">
+                    <h1 className="ds-h1">Skills</h1>
+                    <p className="ds-lede">
+                        What I use to build agentic AI systems and the full-stack products around them, from four years of production work.
+                    </p>
+                </header>
 
-            {/* Category Filter Pills */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-            >
-                <Flex
-                    fillWidth
-                    gap="xs"
-                    style={{
-                        overflowX: 'auto',
-                        padding: '8px 0',
-                        justifyContent: 'center',
-                        flexWrap: 'wrap'
-                    }}
-                >
-                    {categories.map((category) => (
-                        <motion.button
-                            key={category.id}
-                            className={`category-pill ${activeCategory === category.id ? 'active' : ''}`}
-                            onClick={() => setActiveCategory(category.id)}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                        >
-                            <span className="category-icon">{category.icon}</span>
-                            <span>{category.label}</span>
-                        </motion.button>
-                    ))}
-                </Flex>
-            </motion.div>
-
-            {/* Skills Grid */}
-            <motion.div
-                layout
-                style={{ width: '100%' }}
-            >
-                <Flex
-                    fillWidth
-                    gap="m"
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                        gap: '20px'
-                    }}
-                >
-                    {filteredSkills.map((skill, index) => (
-                        <motion.div
-                            key={skill.name}
-                            layout
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.8 }}
-                            transition={{ 
-                                duration: 0.4, 
-                                delay: index * 0.05,
-                                layout: { duration: 0.3 }
-                            }}
-                            className="skill-card"
-                            onMouseEnter={() => setHoveredSkill(skill.name)}
-                            onMouseLeave={() => setHoveredSkill(null)}
-                        >
-                            <Flex direction="column" gap="m" fillWidth>
-                                {/* Skill Header */}
-                                <Flex alignItems="center" gap="s">
-                                    <div className="skill-icon">
-                                        {skill.icon}
-                                    </div>
-                                    <Flex direction="column" gap="4">
-                                        <Text variant="heading-strong-s" style={{ fontSize: '18px' }}>
-                                            {skill.name}
-                                        </Text>
-                                        {skill.experience && (
-                                            <Text 
-                                                variant="body-default-xs" 
-                                                onBackground="neutral-weak"
-                                                style={{ fontSize: '12px' }}
-                                            >
-                                                {skill.experience}
-                                            </Text>
-                                        )}
-                                    </Flex>
-                                </Flex>
-
-                                {/* Proficiency Bar */}
-                                <Flex direction="column" gap="4" fillWidth>
-                                    <Flex justifyContent="space-between" alignItems="center">
-                                        <Text variant="body-default-xs" onBackground="neutral-medium">
-                                            Proficiency
-                                        </Text>
-                                        <Text variant="body-default-xs" style={{ 
-                                            color: skill.level >= 90 ? '#10b981' : 
-                                                   skill.level >= 75 ? '#3b82f6' : 
-                                                   skill.level >= 60 ? '#f59e0b' : '#ef4444',
-                                            fontWeight: 600
-                                        }}>
-                                            {skill.level}%
-                                        </Text>
-                                    </Flex>
-                                    <div className="proficiency-bar-container">
-                                        <motion.div
-                                            className="proficiency-bar"
-                                            initial={{ width: 0 }}
-                                            animate={{ 
-                                                width: hoveredSkill === skill.name ? `${skill.level}%` : `${skill.level}%`
-                                            }}
-                                            transition={{ duration: 1, delay: index * 0.05 }}
-                                            style={{
-                                                background: skill.level >= 90 
-                                                    ? 'linear-gradient(90deg, #10b981, #059669)' 
-                                                    : skill.level >= 75 
-                                                    ? 'linear-gradient(90deg, #3b82f6, #2563eb)' 
-                                                    : skill.level >= 60 
-                                                    ? 'linear-gradient(90deg, #f59e0b, #d97706)' 
-                                                    : 'linear-gradient(90deg, #ef4444, #dc2626)'
-                                            }}
-                                        />
-                                    </div>
-                                </Flex>
-
-                                {/* Tags */}
-                                {skill.tags && skill.tags.length > 0 && (
-                                    <Flex gap="4" style={{ flexWrap: 'wrap' }}>
-                                        {skill.tags.map((tag) => (
-                                            <span key={tag} className="skill-tag">
-                                                {tag}
-                                            </span>
-                                        ))}
-                                    </Flex>
+                <div className="ds-segmented" role="group" aria-label="Filter skills by area">
+                    {filters.map((filter) => {
+                        const active = activeCategory === filter.id;
+                        const count = filter.id === 'all' ? skillsData.length : skillsData.filter((s) => s.category === filter.id).length;
+                        return (
+                            <button
+                                key={filter.id}
+                                type="button"
+                                className={`ds-segmented__btn${active ? ' is-active' : ''}`}
+                                aria-pressed={active}
+                                onClick={() => setActiveCategory(filter.id)}
+                            >
+                                {active && (
+                                    <motion.span
+                                        layoutId="skills-filter-indicator"
+                                        className="ds-segmented__indicator"
+                                        transition={{ type: 'spring', stiffness: 500, damping: 40 }}
+                                    />
                                 )}
-                            </Flex>
+                                <span className="ds-segmented__label">{filter.label}</span>
+                                <span className="ds-segmented__count">{count}</span>
+                            </button>
+                        );
+                    })}
+                </div>
 
-                            {/* Hover Effect Overlay */}
-                            <motion.div
-                                className="skill-card-overlay"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: hoveredSkill === skill.name ? 1 : 0 }}
-                                transition={{ duration: 0.3 }}
-                            />
-                        </motion.div>
+                <div className="skills-legend" aria-hidden="true">
+                    {[3, 2, 1].map((filled) => (
+                        <span key={filled} className="skills-legend__item">
+                            <span className="skill-meter" data-filled={filled}><i /><i /><i /></span>
+                            {tier(filled === 3 ? 95 : filled === 2 ? 85 : 70).label}
+                        </span>
                     ))}
-                </Flex>
-            </motion.div>
+                </div>
 
-            {/* Stats Section */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                style={{ marginTop: '40px' }}
-            >
-                <Flex
-                    fillWidth
-                    gap="m"
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                        gap: '16px'
-                    }}
-                >
-                    <div className="stat-card">
-                        <Text variant="display-strong-s" style={{ fontSize: '48px' }}>
-                            50+
-                        </Text>
-                        <Text variant="body-default-m" onBackground="neutral-medium">
-                            Technologies
-                        </Text>
-                    </div>
-                    <div className="stat-card">
-                        <Text variant="display-strong-s" style={{ fontSize: '48px' }}>
-                            5+
-                        </Text>
-                        <Text variant="body-default-m" onBackground="neutral-medium">
-                            Years Experience
-                        </Text>
-                    </div>
-                    <div className="stat-card">
-                        <Text variant="display-strong-s" style={{ fontSize: '48px' }}>
-                            100+
-                        </Text>
-                        <Text variant="body-default-m" onBackground="neutral-medium">
-                            Projects Delivered
-                        </Text>
-                    </div>
-                    <div className="stat-card">
-                        <Text variant="display-strong-s" style={{ fontSize: '48px' }}>
-                            99.9%
-                        </Text>
-                        <Text variant="body-default-m" onBackground="neutral-medium">
-                            System Uptime
-                        </Text>
-                    </div>
-                </Flex>
-            </motion.div>
-        </Flex>
+                <div className="skills-groups">
+                    {visible.map((group) => (
+                        <motion.section
+                            key={group.id}
+                            layout="position"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.2 }}
+                            className="skills-group"
+                            aria-labelledby={`skills-${group.id}`}
+                        >
+                            <h2 id={`skills-${group.id}`} className="skills-group__title">
+                                {group.label}
+                                <span className="skills-group__count">{group.skills.length}</span>
+                            </h2>
+                            <ul className="skills-list" role="list">
+                                {group.skills.map((skill) => {
+                                    const t = tier(skill.level);
+                                    return (
+                                        <li key={skill.name} className="skill-row">
+                                            <span className="skill-row__name">{skill.name}</span>
+                                            <span className="skill-row__tags">{skill.tags.join(', ')}</span>
+                                            <span className="skill-row__years">{skill.experience}</span>
+                                            <span className="skill-meter" data-filled={t.filled} role="img" aria-label={t.label} title={t.label}>
+                                                <i /><i /><i />
+                                            </span>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </motion.section>
+                    ))}
+                </div>
+            </main>
+        </MotionConfig>
     );
 }
-
