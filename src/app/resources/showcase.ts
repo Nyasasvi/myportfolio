@@ -44,14 +44,14 @@ export type ShowcaseProject = (typeof projects)[number] & {
     repo?: string;
 };
 
-// Black-and-white derivatives live in /public/images/mono (one treatment for every picture)
+// Resized colour derivatives live in /public/images/color (WebP, same crops as the old mono set)
 export const showcase: ShowcaseProject[] = projects.map((project) => {
     const note = notes[project.name] ?? { slug: "", why: project.description };
     return {
         ...project,
         ...note,
         image: note.slug
-            ? { small: `/images/mono/${note.slug}-480.webp`, large: `/images/mono/${note.slug}-960.webp` }
+            ? { small: `/images/color/${note.slug}-480.webp`, large: `/images/color/${note.slug}-960.webp` }
             : { small: project.imageUrl, large: project.imageUrl },
         repo: project.githubLink?.includes("github.com") ? project.githubLink : undefined,
     };

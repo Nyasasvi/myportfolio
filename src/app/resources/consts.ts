@@ -19,7 +19,7 @@ export const footerButtonLinks = [{
     href: "https://www.instagram.com/yasasvi_reddy/profilecard/",
 }]
 
-export const aboutMe = "Full Stack & AI Engineer with 4+ years of experience designing scalable, distributed web applications and cloud-native microservices using Java, Python, and JavaScript/TypeScript. I specialize in microservices architecture, high-throughput backend systems, and API integrations across React, Spring Boot, and Node.js, and deploy cloud-native solutions with AWS, Docker, Kubernetes, and Jenkins. Today I'm focused on integrating AI and LLM-based systems (RAG, MCP, multi-agent orchestration, OpenAI/Gemini/Claude APIs) to make applications more intelligent and useful."
+export const aboutMe = "Full Stack & AI Engineer with 4+ years of experience designing scalable, distributed web applications and cloud-native microservices using Java, Python, and JavaScript/TypeScript. I specialize in microservices architecture, high-throughput backend systems, and API integrations across React, Spring Boot, and Node.js, and deploy cloud-native solutions with AWS, Docker, Kubernetes, and Jenkins. Since December 2024, at Twisted X, I've focused on integrating AI and LLM-based systems (RAG, MCP, multi-agent orchestration, OpenAI/Gemini/Claude APIs) to make applications more intelligent and useful."
 
 export const experience = [
   {

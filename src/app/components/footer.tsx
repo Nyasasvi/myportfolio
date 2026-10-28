@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { footerButtonLinks } from "../resources/consts";
-import { contactLinks, primaryNav, toolsNav } from "../resources/navigation";
+import { contactLinks, primaryNav } from "../resources/navigation";
 import "./footer.css";
 
 // Sets the visible [data-fit] lines to one size, the largest at which every line still runs
@@ -43,14 +43,6 @@ export default function Footer() {
                     <p className="site-footer__head">Pages</p>
                     <ul role="list">
                         {primaryNav.map((item) => (
-                            <li key={item.href}><Link href={item.href} className="site-footer__link">{item.label}</Link></li>
-                        ))}
-                    </ul>
-                </div>
-                <div className="site-footer__col">
-                    <p className="site-footer__head">Tools</p>
-                    <ul role="list">
-                        {toolsNav.map((item) => (
                             <li key={item.href}><Link href={item.href} className="site-footer__link">{item.label}</Link></li>
                         ))}
                     </ul>

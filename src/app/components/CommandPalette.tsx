@@ -3,14 +3,14 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowUpRight, Copy, CornerDownLeft, FileText, Github, Linkedin, Mail, Moon, Search, Sun } from "lucide-react";
-import { primaryNav, toolsNav, contactLinks } from "../resources/navigation";
+import { primaryNav, contactLinks } from "../resources/navigation";
 import "./command-palette.css";
 
 type Command = {
 	id: string;
 	label: string;
 	hint: string;
-	group: "Pages" | "Tools" | "Actions";
+	group: "Pages" | "Actions";
 	keywords: string;
 	icon?: React.ReactNode;
 	run: () => void;
@@ -47,14 +47,6 @@ export function CommandPalette({ open, onClose, theme, onThemeSwitch }: CommandP
 				label: item.label,
 				hint: item.description,
 				group: "Pages" as const,
-				keywords: [item.label, item.description, ...(item.keywords ?? [])].join(" ").toLowerCase(),
-				run: go(item.href),
-			})),
-			...toolsNav.map((item) => ({
-				id: item.href,
-				label: item.label,
-				hint: item.description,
-				group: "Tools" as const,
 				keywords: [item.label, item.description, ...(item.keywords ?? [])].join(" ").toLowerCase(),
 				run: go(item.href),
 			})),
@@ -173,7 +165,7 @@ export function CommandPalette({ open, onClose, theme, onThemeSwitch }: CommandP
 		}
 	};
 
-	const groups = (["Pages", "Tools", "Actions"] as const)
+	const groups = (["Pages", "Actions"] as const)
 		.map((group) => ({ group, items: results.filter((r) => r.group === group) }))
 		.filter((g) => g.items.length);
 

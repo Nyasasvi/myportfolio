@@ -8,7 +8,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       smtpUser: process.env.SMTP_USER ? 'Set ✅' : 'Not set ❌',
       smtpPass: process.env.SMTP_PASS ? 'Set ✅' : 'Not set ❌',
-      cronSecret: process.env.CRON_SECRET ? 'Set ✅' : 'Not set ❌',
       openaiKey: process.env.OPENAI_API_KEY ? 'Set ✅' : 'Not set ❌',
       nodeEnv: process.env.NODE_ENV || 'Not set',
       timestamp: new Date().toISOString()

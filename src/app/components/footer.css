@@ -22,8 +22,9 @@
 	row-gap: 32px;
 }
 
+/* Three columns: pages, elsewhere, contact */
 .site-footer__col {
-	grid-column: span 3;
+	grid-column: span 4;
 }
 
 .site-footer__head {

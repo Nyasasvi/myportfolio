@@ -1,8 +1,10 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useState } from 'react';
-import { EDGES, DIAGRAM, DIAGRAM_NARROW, HUBS, OUTPUTS, ROUTES, SOURCES, type Point } from '../signal/graph';
+import { useEffect, useRef, useState } from 'react';
+import { DIAGRAM, DIAGRAM_NARROW, TWISTED_X, hubOfEdgeStart, isHubEdge, type Point, type SystemGraph } from '../signal/graph';
+
+import { SHOW_ROUTE_EVENT, type ShowRouteDetail } from './systemEvents';
 
 const SignalField = dynamic(() => import('../signal/SignalField'), { ssr: false });
 
@@ -10,34 +12,72 @@ const SignalField = dynamic(() => import('../signal/SignalField'), { ssr: false 
 const pos = (wide: Point, narrow: Point) =>
 	({ '--x': `${wide.x * 100}%`, '--y': `${wide.y * 100}%`, '--xn': `${narrow.x * 100}%`, '--yn': `${narrow.y * 100}%` }) as React.CSSProperties;
 
+type Props = {
+	graph?: SystemGraph;
+	/** Put the diagram on the right, so consecutive companies alternate sides */
+	flip?: boolean;
+};
+
 /**
  * The live part of the page: pick a question and the diagram re-routes its light through the
  * system that answers it, while the steps beside it spell out the route.
  */
-export function Systems() {
+export function Systems({ graph = TWISTED_X, flip = false }: Props) {
 	const [active, setActive] = useState(0);
-	const route = ROUTES[active];
-	const litSources = new Set(EDGES.filter(([, hub]) => hub === route.hub).map(([src]) => src));
-	const summary = `${SOURCES.filter((_, i) => litSources.has(i)).map((source) => source.label).join(', ')} feed the ${HUBS[route.hub].label.toLowerCase()}, which returns: ${OUTPUTS[route.hub].toLowerCase()}.`;
+	const sectionRef = useRef<HTMLElement>(null);
+	const { sources, hubs, outputs, edges, routes } = graph;
+
+	// Other sections (the figures) can open this diagram on a specific question
+	useEffect(() => {
+		const onShow = (e: Event) => {
+			const { graph: graphId, route: routeId } = (e as CustomEvent<ShowRouteDetail>).detail;
+			if (graphId !== graph.id) return;
+			const index = routes.findIndex((r) => r.id === routeId);
+			if (index < 0) return;
+			setActive(index);
+			const section = sectionRef.current;
+			if (!section) return;
+			const smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+			section.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
+			// Move focus to the chosen question so keyboard and screen reader users land in context
+			section.querySelectorAll<HTMLButtonElement>('.question')[index]?.focus({ preventScroll: true });
+		};
+		window.addEventListener(SHOW_ROUTE_EVENT, onShow);
+		return () => window.removeEventListener(SHOW_ROUTE_EVENT, onShow);
+	}, [graph.id, routes]);
+	const route = routes[active];
+	const routeEdges = edges.filter(([, hub]) => hub === route.hub);
+	const litSources = new Set(routeEdges.filter(([src]) => !isHubEdge(src)).map(([src]) => src));
+	// Systems that feed the active one (for example the comparison API behind the monitoring agent)
+	const feedingHubs = new Set(routeEdges.filter(([src]) => isHubEdge(src)).map(([src]) => hubOfEdgeStart(src)));
+	const inputs = [
+		...sources.filter((_, i) => litSources.has(i)).map((source) => source.label),
+		...hubs.filter((_, i) => feedingHubs.has(i)).map((hub) => hub.label),
+	];
+	const summary = `${inputs.join(', ')} feed the ${hubs[route.hub].label.toLowerCase()}, which returns: ${outputs[route.hub].toLowerCase()}.`;
+	// Twisted X keeps the original anchor so existing #systems links still land
+	const sectionId = graph.id === TWISTED_X.id ? 'systems' : `systems-${graph.id}`;
+	const titleId = `${sectionId}-title`;
+	const stepsId = `${sectionId}-steps`;
 
 	return (
-		<section className="systems" id="systems" data-chapter="base" aria-labelledby="systems-title">
+		<section ref={sectionRef} className={`systems${flip ? ' systems--flip' : ''}`} id={sectionId} data-chapter="base" aria-labelledby={titleId}>
 			<div className="systems__stage">
 				<figure className="systems__diagram" data-reveal>
-					<SignalField variant="diagram" hub={route.hub} className="systems__canvas" />
+					<SignalField variant="diagram" hub={route.hub} edges={edges} className="systems__canvas" />
 					<div className="systems__labels" aria-hidden="true">
-						{SOURCES.map((source, i) => (
+						{sources.map((source, i) => (
 							<span key={source.id} className={`sys-node sys-node--source${litSources.has(i) ? ' is-lit' : ''}`} style={pos(DIAGRAM.sources[i], DIAGRAM_NARROW.sources[i])}>
 								{source.label}
 							</span>
 						))}
-						{HUBS.map((hub, i) => (
-							<span key={hub.id} className={`sys-node sys-node--hub${i === route.hub ? ' is-lit' : ''}`} style={pos(DIAGRAM.hubs[i], DIAGRAM_NARROW.hubs[i])}>
+						{hubs.map((hub, i) => (
+							<span key={hub.id} className={`sys-node sys-node--hub${i === route.hub || feedingHubs.has(i) ? ' is-lit' : ''}`} style={pos(DIAGRAM.hubs[i], DIAGRAM_NARROW.hubs[i])}>
 								<span className="sys-node__name">{hub.label}</span>
 								<span className="sys-node__detail">{hub.detail}</span>
 							</span>
 						))}
-						{OUTPUTS.map((output, i) => (
+						{outputs.map((output, i) => (
 							<span key={output} className={`sys-node sys-node--output${i === route.hub ? ' is-lit' : ''}`} style={pos(DIAGRAM.outputs[i], DIAGRAM_NARROW.outputs[i])}>
 								{output}
 							</span>
@@ -48,20 +88,19 @@ export function Systems() {
 			</div>
 
 			<div className="systems__text">
-				<h2 id="systems-title" className="section-title" data-reveal>Agents I built at Twisted X</h2>
+				<h2 id={titleId} className="section-title" data-reveal>{graph.title}</h2>
 				<p className="systems__intro" data-reveal style={{ '--i': 1 } as React.CSSProperties}>
-					Twisted X Global Brands is a footwear company in Texas. Since December 2024 I’ve built the AI systems its planners
-					and merchandisers use, on top of ERP, supplier and logistics data. Pick a question to see the route it takes.
+					{graph.intro}
 				</p>
 
-				<div className="systems__questions" role="group" aria-label="Choose a question" data-reveal style={{ '--i': 2 } as React.CSSProperties}>
-					{ROUTES.map((r, i) => (
+				<div className="systems__questions" role="group" aria-label={`Choose a question about ${graph.company}`} data-reveal style={{ '--i': 2 } as React.CSSProperties}>
+					{routes.map((r, i) => (
 						<button
 							key={r.id}
 							type="button"
 							className="question"
 							aria-pressed={i === active}
-							aria-controls="route-steps"
+							aria-controls={stepsId}
 							onClick={() => setActive(i)}
 						>
 							{r.question}
@@ -69,7 +108,7 @@ export function Systems() {
 					))}
 				</div>
 
-				<ol id="route-steps" className="systems__steps" key={route.id} aria-live="polite">
+				<ol id={stepsId} className="systems__steps" key={route.id} aria-live="polite">
 					{route.steps.map((step, i) => (
 						<li key={step.verb} style={{ '--i': i } as React.CSSProperties}>
 							<strong>{step.verb}</strong> {step.text}

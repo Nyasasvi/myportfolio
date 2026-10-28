@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { ChevronDown, Menu, Moon, Search, Sun, X } from "lucide-react";
-import { primaryNav, toolsNav, isActivePath } from "../resources/navigation";
+import { useEffect, useState } from "react";
+import { Menu, Moon, Search, Sun, X } from "lucide-react";
+import { primaryNav, isActivePath } from "../resources/navigation";
 import "./site-nav.css";
 
 interface SiteNavProps {
@@ -15,12 +15,9 @@ interface SiteNavProps {
 
 export function SiteNav({ theme, onThemeSwitch, onOpenPalette }: SiteNavProps) {
 	const pathname = usePathname() ?? "/";
-	const [toolsOpen, setToolsOpen] = useState(false);
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const [chapter, setChapter] = useState<string>("base");
 	const [isMac, setIsMac] = useState(true);
-	const toolsRef = useRef<HTMLLIElement>(null);
-	const toolsActive = toolsNav.some((item) => isActivePath(pathname, item.href));
 
 	useEffect(() => {
 		setIsMac(/Mac|iPhone|iPad/.test(navigator.platform));
@@ -56,27 +53,10 @@ export function SiteNav({ theme, onThemeSwitch, onOpenPalette }: SiteNavProps) {
 		};
 	}, [pathname]);
 
-	// Close menus on navigation
+	// Close the mobile menu on navigation
 	useEffect(() => {
-		setToolsOpen(false);
 		setMobileOpen(false);
 	}, [pathname]);
-
-	useEffect(() => {
-		if (!toolsOpen) return;
-		const onPointer = (e: PointerEvent) => {
-			if (!toolsRef.current?.contains(e.target as Node)) setToolsOpen(false);
-		};
-		const onKey = (e: KeyboardEvent) => {
-			if (e.key === "Escape") setToolsOpen(false);
-		};
-		document.addEventListener("pointerdown", onPointer);
-		document.addEventListener("keydown", onKey);
-		return () => {
-			document.removeEventListener("pointerdown", onPointer);
-			document.removeEventListener("keydown", onKey);
-		};
-	}, [toolsOpen]);
 
 	useEffect(() => {
 		document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -112,34 +92,6 @@ export function SiteNav({ theme, onThemeSwitch, onOpenPalette }: SiteNavProps) {
 							</li>
 						);
 					})}
-					<li className="site-nav__tools" ref={toolsRef}>
-						<button
-							type="button"
-							className={`site-nav__link${toolsActive ? " is-active" : ""}`}
-							aria-expanded={toolsOpen}
-							aria-controls="tools-menu"
-							onClick={() => setToolsOpen((open) => !open)}
-						>
-							Tools
-							<ChevronDown size={14} className="site-nav__chevron" aria-hidden="true" />
-						</button>
-						<div id="tools-menu" className="site-nav__menu ds-glass" data-open={toolsOpen} hidden={!toolsOpen}>
-							{toolsNav.map((item) => {
-								const active = isActivePath(pathname, item.href);
-								return (
-									<Link
-										key={item.href}
-										href={item.href}
-										className={`site-nav__menu-item${active ? " is-active" : ""}`}
-										aria-current={active ? "page" : undefined}
-									>
-										<span className="site-nav__menu-label">{item.label}</span>
-										<span className="site-nav__menu-desc">{item.description}</span>
-									</Link>
-								);
-							})}
-						</div>
-					</li>
 				</ul>
 
 				<div className="site-nav__actions">
@@ -176,17 +128,6 @@ export function SiteNav({ theme, onThemeSwitch, onOpenPalette }: SiteNavProps) {
 			<div id="mobile-nav" className="site-nav__sheet ds-glass" data-open={mobileOpen} hidden={!mobileOpen}>
 				<p className="site-nav__sheet-heading">Pages</p>
 				{primaryNav.map((item) => (
-					<Link
-						key={item.href}
-						href={item.href}
-						className={`site-nav__sheet-link${isActivePath(pathname, item.href) ? " is-active" : ""}`}
-						aria-current={isActivePath(pathname, item.href) ? "page" : undefined}
-					>
-						{item.label}
-					</Link>
-				))}
-				<p className="site-nav__sheet-heading">Tools</p>
-				{toolsNav.map((item) => (
 					<Link
 						key={item.href}
 						href={item.href}

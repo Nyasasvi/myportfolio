@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { DIAGRAM, DIAGRAM_NARROW, HERO_TALL, HERO_WIDE } from './graph';
+import { DIAGRAM, DIAGRAM_NARROW, HERO_TALL, HERO_WIDE, type Edge } from './graph';
 import { SignalRenderer, type Rect, type SignalOptions } from './renderer';
 
 type Variant = 'hero' | 'diagram';
@@ -32,6 +32,8 @@ type Props = {
 	variant: Variant;
 	/** Hub to light; null lights every route */
 	hub?: number | null;
+	/** The graph's [source, hub] edges; defaults to Twisted X */
+	edges?: ReadonlyArray<Edge>;
 	/** Elements whose boxes the trails dim under, so their text stays readable */
 	maskSelector?: string;
 	className?: string;
@@ -41,7 +43,7 @@ type Props = {
  * The canvas lives outside React's render cycle: React mounts it, hands it to SignalRenderer
  * once, and afterwards only forwards the route, theme and text boxes.
  */
-export default function SignalField({ variant, hub = null, maskSelector, className }: Props) {
+export default function SignalField({ variant, hub = null, edges, maskSelector, className }: Props) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const rendererRef = useRef<SignalRenderer | null>(null);
 	// The renderer may arrive after the first route is chosen, so keep the latest one to hand it
@@ -64,10 +66,10 @@ export default function SignalField({ variant, hub = null, maskSelector, classNa
 			else globalThis.clearTimeout(handle);
 			cleanup?.();
 		};
-	}, [variant, maskSelector]);
+	}, [variant, maskSelector, edges]);
 
 	const mount = (canvas: HTMLCanvasElement) => {
-		const renderer = new SignalRenderer(canvas, { ...PRESETS[variant], onFirstFrame: () => setReady(true) });
+		const renderer = new SignalRenderer(canvas, { ...PRESETS[variant], edges, onFirstFrame: () => setReady(true) });
 		rendererRef.current = renderer;
 		renderer.setRoute(hubRef.current);
 

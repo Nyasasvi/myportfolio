@@ -109,60 +109,6 @@
 	}
 }
 
-.site-nav__chevron {
-	transition: transform var(--t-ui) var(--ease-out);
-}
-
-.site-nav__link[aria-expanded="true"] .site-nav__chevron {
-	transform: rotate(180deg);
-}
-
-.site-nav__tools {
-	position: relative;
-}
-
-/* Menus float, so they are the one place depth belongs */
-.site-nav__menu {
-	position: absolute;
-	top: calc(100% + 8px);
-	right: 0;
-	width: 320px;
-	padding: 6px;
-	display: grid;
-	gap: 2px;
-	color: var(--ds-fg);
-	transform-origin: top right;
-	animation: ds-pop-in var(--t-ui) var(--ease-out) both;
-}
-
-.site-nav__menu[hidden] {
-	display: none;
-}
-
-.site-nav__menu-item {
-	display: grid;
-	gap: 2px;
-	padding: 12px 14px;
-	color: var(--ds-fg);
-	text-decoration: none;
-	transition: background-color var(--t-hover) ease;
-}
-
-.site-nav__menu-item:hover,
-.site-nav__menu-item.is-active {
-	background: var(--ds-surface-2);
-}
-
-.site-nav__menu-label {
-	font-size: var(--step-body);
-	font-weight: 500;
-}
-
-.site-nav__menu-desc {
-	font-size: var(--step-small);
-	color: var(--ds-fg-muted);
-}
-
 .site-nav__actions {
 	display: flex;
 	align-items: center;

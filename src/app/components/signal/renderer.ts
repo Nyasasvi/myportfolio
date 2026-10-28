@@ -14,13 +14,15 @@
  * long the field steps down from full to half to a quarter at 30fps, and finally to a still frame.
  */
 
-import { EDGES, type Layout } from './graph';
+import { EDGES, hubOfEdgeStart, isHubEdge, type Edge, type Layout } from './graph';
 
 export type Theme = 'dark' | 'light';
 export type Rect = { x0: number; y0: number; x1: number; y1: number };
 
 export type SignalOptions = {
 	layout: (aspect: number) => Layout;
+	/** [source, hub] pairs to draw; defaults to the Twisted X graph. At most MAX_EDGES, hubs below MAX_HUBS. */
+	edges?: ReadonlyArray<Edge>;
 	/** Particle counts for large and small screens */
 	count: [number, number];
 	/** Seconds for a particle to travel a whole path at full activity */
@@ -189,6 +191,7 @@ export class SignalRenderer {
 	private width = 1;
 	private height = 1;
 	private layout: Layout | null = null;
+	private edges: ReadonlyArray<Edge>;
 
 	private raf = 0;
 	private last = 0;
@@ -218,6 +221,7 @@ export class SignalRenderer {
 	constructor(canvas: HTMLCanvasElement, opts: SignalOptions) {
 		this.canvas = canvas;
 		this.opts = opts;
+		this.edges = (opts.edges ?? EDGES).slice(0, MAX_EDGES);
 		this.motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 		this.reduced = this.motionQuery.matches;
 		this.hidden = document.hidden;
@@ -254,7 +258,7 @@ export class SignalRenderer {
 	/** Light one system's edges and dim the rest; null lights everything */
 	setRoute(hub: number | null) {
 		for (let e = 0; e < MAX_EDGES; e++) {
-			const edge = EDGES[e];
+			const edge = this.edges[e];
 			this.targetW[e] = !edge ? 0 : hub === null || edge[1] === hub ? 1 : 0;
 		}
 		if (this.reduced || !this.loopWanted()) {
@@ -407,7 +411,7 @@ export class SignalRenderer {
 		const p = new Float32Array(this.count * 4);
 		const q = new Float32Array(this.count * 2);
 		for (let i = 0; i < this.count; i++) {
-			p[i * 4] = Math.floor(rand() * EDGES.length);
+			p[i * 4] = Math.floor(rand() * this.edges.length);
 			p[i * 4 + 1] = rand();
 			p[i * 4 + 2] = 0.7 + rand() * 0.6;
 			p[i * 4 + 3] = rand();
@@ -431,7 +435,7 @@ export class SignalRenderer {
 		this.buffers = [corner, pBuf, qBuf];
 
 		const hubOf = new Float32Array(MAX_EDGES);
-		EDGES.forEach(([, hub], e) => (hubOf[e] = hub));
+		this.edges.forEach(([, hub], e) => (hubOf[e] = hub));
 		gl.uniform1fv(this.u.u_inHub, hubOf);
 		return true;
 	}
@@ -464,8 +468,9 @@ export class SignalRenderer {
 		};
 		const inA = new Float32Array(MAX_EDGES * 4);
 		const inB = new Float32Array(MAX_EDGES * 4);
-		EDGES.forEach(([src, hub], e) => {
-			const [A, B] = curve(px(L.sources[src]), px(L.hubs[hub]));
+		this.edges.forEach(([src, hub], e) => {
+			const from = isHubEdge(src) ? L.hubs[hubOfEdgeStart(src)] : L.sources[src];
+			const [A, B] = curve(px(from), px(L.hubs[hub]));
 			inA.set(A, e * 4);
 			inB.set(B, e * 4);
 		});
@@ -638,12 +643,13 @@ export class SignalRenderer {
 				c.stroke();
 			}
 		};
-		EDGES.forEach(([src, hub], e) => {
+		this.edges.forEach(([src, hub], e) => {
 			const color = this.targetW[e] > 0.5 ? rgb(pal.a, 0.22) : rgb(pal.dim, 0.08);
-			strokeBundle(L.sources[src], L.hubs[hub], L.spread[0], L.spread[1], color);
+			const from = isHubEdge(src) ? L.hubs[hubOfEdgeStart(src)] : L.sources[src];
+			strokeBundle(from, L.hubs[hub], L.spread[0], L.spread[1], color);
 		});
 		L.hubs.forEach((hub, h) => {
-			const lit = EDGES.some(([, eh], e) => eh === h && this.targetW[e] > 0.5);
+			const lit = this.edges.some(([, eh], e) => eh === h && this.targetW[e] > 0.5);
 			strokeBundle(hub, L.outputs[h], L.spread[1], L.spread[2], lit ? rgb(pal.b, 0.2) : rgb(pal.dim, 0.08));
 		});
 	}
