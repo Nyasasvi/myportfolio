@@ -17,18 +17,44 @@ export function SiteNav({ theme, onThemeSwitch, onOpenPalette }: SiteNavProps) {
 	const pathname = usePathname() ?? "/";
 	const [toolsOpen, setToolsOpen] = useState(false);
 	const [mobileOpen, setMobileOpen] = useState(false);
-	const [scrolled, setScrolled] = useState(false);
+	const [chapter, setChapter] = useState<string>("base");
 	const [isMac, setIsMac] = useState(true);
 	const toolsRef = useRef<HTMLLIElement>(null);
 	const toolsActive = toolsNav.some((item) => isActivePath(pathname, item.href));
 
 	useEffect(() => {
 		setIsMac(/Mac|iPhone|iPad/.test(navigator.platform));
-		const onScroll = () => setScrolled(window.scrollY > 8);
-		onScroll();
-		window.addEventListener("scroll", onScroll, { passive: true });
-		return () => window.removeEventListener("scroll", onScroll);
 	}, []);
+
+	// The bar takes the ground of the chapter beneath it (transparent over the hero, stone over
+	// the paper chapter, coral over the stack), so it never reads as a floating panel
+	useEffect(() => {
+		const chapters = Array.from(document.querySelectorAll<HTMLElement>("[data-chapter]"));
+		if (!chapters.length) {
+			setChapter("base");
+			return;
+		}
+		let io: IntersectionObserver | null = null;
+		const observe = () => {
+			io?.disconnect();
+			const line = 32;
+			io = new IntersectionObserver(
+				(entries) => {
+					for (const entry of entries) {
+						if (entry.isIntersecting) setChapter((entry.target as HTMLElement).dataset.chapter ?? "base");
+					}
+				},
+				{ rootMargin: `-${line}px 0px -${Math.max(0, window.innerHeight - line - 1)}px 0px` },
+			);
+			chapters.forEach((el) => io!.observe(el));
+		};
+		observe();
+		window.addEventListener("resize", observe);
+		return () => {
+			io?.disconnect();
+			window.removeEventListener("resize", observe);
+		};
+	}, [pathname]);
 
 	// Close menus on navigation
 	useEffect(() => {
@@ -65,15 +91,14 @@ export function SiteNav({ theme, onThemeSwitch, onOpenPalette }: SiteNavProps) {
 	const ThemeIcon = theme === "dark" ? Sun : Moon;
 
 	return (
-		<header className={`site-nav-wrap${scrolled ? " is-scrolled" : ""}`}>
-			<nav className="site-nav ds-glass" aria-label="Main">
+		<header className="site-nav-wrap" data-chapter={chapter}>
+			<nav className="site-nav" aria-label="Main">
 				<Link href="/" className="site-nav__brand" aria-label="Yasasvi Nellore, home">
-					<span className="site-nav__monogram" aria-hidden="true">YN</span>
-					<span className="site-nav__name">Yasasvi Nellore</span>
+					Yasasvi Nellore
 				</Link>
 
-				<ul className="site-nav__links" role="list">
-					{primaryNav.map((item) => {
+				<ul className="site-nav__links" role="list" data-signal-mask>
+					{primaryNav.filter((item) => item.href !== "/").map((item) => {
 						const active = isActivePath(pathname, item.href);
 						return (
 							<li key={item.href}>
@@ -136,13 +161,13 @@ export function SiteNav({ theme, onThemeSwitch, onOpenPalette }: SiteNavProps) {
 					</button>
 					<button
 						type="button"
-						className="ds-icon-btn site-nav__menu-toggle"
+						className="site-nav__menu-toggle"
 						aria-expanded={mobileOpen}
 						aria-controls="mobile-nav"
-						aria-label={mobileOpen ? "Close menu" : "Open menu"}
 						onClick={() => setMobileOpen((open) => !open)}
 					>
 						{mobileOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
+						{mobileOpen ? "Close" : "Menu"}
 					</button>
 				</div>
 			</nav>

@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Flex, Text, IconButton, Button, Icon } from '@/once-ui/components';
+import { MessageSquareText, Send, X } from 'lucide-react';
 import './chatbot.css';
 
 interface Message {
@@ -39,6 +40,25 @@ export default function AIChatbot({ theme = 'light' }: AIChatbotProps) {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Step aside while a screen that holds its own action or the closing wordmark is in view
+  // (the hero, the footer), so the launcher never sits on top of display type
+  const pathname = usePathname();
+  const [fabHidden, setFabHidden] = useState(false);
+  useEffect(() => {
+    const blockers = Array.from(document.querySelectorAll('[data-hide-fab]'));
+    if (!blockers.length) {
+      setFabHidden(false);
+      return;
+    }
+    const visible = new Set<Element>();
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => (entry.isIntersecting ? visible.add(entry.target) : visible.delete(entry.target)));
+      setFabHidden(visible.size > 0);
+    }, { threshold: 0.15 });
+    blockers.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [pathname]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -103,18 +123,11 @@ export default function AIChatbot({ theme = 'light' }: AIChatbotProps) {
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
-
   return (
     <>
       {/* Floating Chat Button */}
       <AnimatePresence>
-        {!isOpen && (
+        {!isOpen && !fabHidden && (
           <motion.div
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -125,9 +138,10 @@ export default function AIChatbot({ theme = 'light' }: AIChatbotProps) {
               type="button"
               className="chatbot-fab-button"
               onClick={() => setIsOpen(true)}
-              aria-label="Open AI Assistant"
+              aria-label="Ask about me"
             >
-              <span className="chatbot-fab-icon" aria-hidden="true">🤖</span>
+              <MessageSquareText aria-hidden="true" />
+              <span className="chatbot-fab-label">Ask about me</span>
             </button>
           </motion.div>
         )}
@@ -145,29 +159,13 @@ export default function AIChatbot({ theme = 'light' }: AIChatbotProps) {
           >
             {/* Header */}
             <div className="chatbot-header">
-              <Flex alignItems="center" gap="s">
-                <div className="chatbot-avatar">
-                  <span>🤖</span>
-                </div>
-                <Flex direction="column" gap="2">
-                  <Text variant="label-strong-s" onBackground="neutral-strong">
-                    AI Assistant
-                  </Text>
-                  <Flex alignItems="center" gap="xs">
-                    <div className="status-dot" />
-                    <Text variant="label-default-xs" onBackground="neutral-medium">
-                      Online
-                    </Text>
-                  </Flex>
-                </Flex>
-              </Flex>
-              <IconButton
-                icon="close"
-                onClick={() => setIsOpen(false)}
-                variant="ghost"
-                size="s"
-                aria-label="Close chat"
-              />
+              <div>
+                <p className="chatbot-title">Ask about Yasasvi</p>
+                <p className="chatbot-subtitle">An AI assistant that knows his resume</p>
+              </div>
+              <button type="button" className="ds-icon-btn" onClick={() => setIsOpen(false)} aria-label="Close chat">
+                <X aria-hidden="true" />
+              </button>
             </div>
 
             {/* Messages */}
@@ -180,20 +178,11 @@ export default function AIChatbot({ theme = 'light' }: AIChatbotProps) {
                   className={`message ${message.sender}`}
                 >
                   <div className="message-content">
-                    <Text 
-                      variant="body-default-s" 
-                      onBackground={message.sender === 'ai' ? 'neutral-strong' : 'brand-strong'}
-                    >
-                      {message.text}
-                    </Text>
+                    <p>{message.text}</p>
                   </div>
-                  <Text 
-                    variant="label-default-xs" 
-                    onBackground="neutral-weak"
-                    className="message-time"
-                  >
+                  <span className="message-time">
                     {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </Text>
+                  </span>
                 </motion.div>
               ))}
 
@@ -222,24 +211,19 @@ export default function AIChatbot({ theme = 'light' }: AIChatbotProps) {
                   transition={{ delay: 0.3 }}
                   className="suggested-questions"
                 >
-                  <Text variant="label-default-xs" onBackground="neutral-medium">
-                    Suggested questions:
-                  </Text>
-                  <Flex direction="column" gap="xs" paddingTop="xs">
+                  <p className="suggested-questions__label">Try asking</p>
+                  <div className="suggested-questions__list">
                     {suggestedQuestions.slice(0, 3).map((question, index) => (
-                      <motion.button
+                      <button
                         key={index}
+                        type="button"
                         className="suggested-question-btn"
                         onClick={() => handleSendMessage(question)}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
                       >
-                        <Text variant="body-default-xs" onBackground="neutral-medium">
-                          {question}
-                        </Text>
-                      </motion.button>
+                        {question}
+                      </button>
                     ))}
-                  </Flex>
+                  </div>
                 </motion.div>
               )}
 
@@ -248,65 +232,35 @@ export default function AIChatbot({ theme = 'light' }: AIChatbotProps) {
 
             {/* Input */}
             <div className="chatbot-input-container">
-              <Flex gap="s" alignItems="flex-end">
-                <div className="chatbot-input-wrapper">
-                  <div
-                    className="chatbot-input"
-                    style={{
-                      backgroundColor: theme === 'light' ? '#ffffff' : '#3a3a3a',
-                      color: theme === 'light' ? '#000000' : '#e0e0e0',
-                      borderColor: theme === 'light' ? '#dee2e6' : '#555',
-                      width: '100%',
-                      padding: '12px 16px',
-                      border: `1px solid ${theme === 'light' ? '#dee2e6' : '#555'}`,
-                      borderRadius: '12px',
-                      fontSize: '14px',
-                      outline: 'none',
-                      minHeight: '20px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      cursor: 'text',
-                      transition: 'all 0.3s ease',
-                    }}
-                    onClick={() => inputRef.current?.focus()}
-                  >
-                    <input
-                      ref={inputRef}
-                      type="text"
-                      value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      disabled={isLoading}
-                      style={{
-                        border: 'none',
-                        outline: 'none',
-                        background: 'transparent',
-                        width: '100%',
-                        color: theme === 'light' ? '#000000' : '#e0e0e0',
-                        fontSize: '14px',
-                        fontFamily: 'inherit',
-                      }}
-                    />
-                  </div>
-                </div>
-                <motion.button
+              <form
+                className="chatbot-input-row"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSendMessage();
+                }}
+              >
+                <label htmlFor="chatbot-input" className="ds-visually-hidden">Your question</label>
+                <input
+                  id="chatbot-input"
+                  ref={inputRef}
+                  type="text"
+                  className="chatbot-input"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  disabled={isLoading}
+                  placeholder="Ask about projects, skills or experience"
+                  autoComplete="off"
+                />
+                <button
+                  type="submit"
                   className="chatbot-send-btn"
-                  onClick={() => handleSendMessage()}
                   disabled={!inputValue.trim() || isLoading}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
                   aria-label="Send message"
                 >
-                  <Icon name="send" size="s" />
-                </motion.button>
-              </Flex>
-              <Text 
-                variant="label-default-xs" 
-                onBackground="neutral-weak"
-                style={{ marginTop: '8px', textAlign: 'center' }}
-              >
-                Powered by AI • Showcasing ML expertise • {theme} mode
-              </Text>
+                  <Send aria-hidden="true" />
+                </button>
+              </form>
+              <p className="chatbot-note">Answers come from an AI model and can be wrong.</p>
             </div>
           </motion.div>
         )}

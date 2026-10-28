@@ -1,36 +1,108 @@
+/*
+ * The footer is the paper chapter again, inverted from the page. The name closes the site at full width.
+ */
 .site-footer {
+	position: relative;
+	flex-shrink: 0;
+	display: grid;
+	gap: clamp(56px, 9vh, 112px);
 	width: 100%;
-	border-top: 1px solid var(--ds-border);
+	padding: clamp(40px, 6vw, 72px) var(--ds-margin) 20px;
+	background: var(--chapter-alt-bg);
+	color: var(--chapter-alt-fg);
+	--ds-fg: var(--chapter-alt-fg);
+	--ds-fg-muted: var(--chapter-alt-muted);
+	--ds-accent: var(--chapter-alt-accent);
 }
 
-.site-footer__inner {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: var(--ds-space-4);
-	max-width: var(--ds-content-width);
-	margin: 0 auto;
-	padding: var(--ds-space-5) var(--ds-gutter);
+.site-footer__cols {
+	display: grid;
+	grid-template-columns: repeat(12, minmax(0, 1fr));
+	column-gap: var(--ds-gutter);
+	row-gap: 32px;
 }
 
-.site-footer__copy {
-	margin: 0;
-	font-size: var(--ds-text-xs);
-	color: var(--ds-fg-subtle);
+.site-footer__col {
+	grid-column: span 3;
 }
 
-.site-footer__links {
-	display: flex;
-	gap: var(--ds-space-1);
+.site-footer__head {
+	margin: 0 0 8px;
+	font-weight: 500;
+}
+
+.site-footer__col ul {
+	display: grid;
+	gap: 2px;
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
 
-@media (max-width: 560px) {
-	.site-footer__inner {
-		flex-direction: column-reverse;
-		/* Leave room for the floating chat button */
-		padding-bottom: 88px;
+.site-footer__link {
+	display: inline-flex;
+	align-items: center;
+	min-height: 32px;
+	color: var(--ds-fg-muted);
+	text-decoration: underline;
+	text-decoration-thickness: 0.07em;
+	text-underline-offset: 0.2em;
+	text-decoration-color: transparent;
+	overflow-wrap: anywhere;
+	transition: color var(--t-hover) ease, text-decoration-color var(--t-hover) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+	.site-footer__link:hover {
+		color: var(--ds-fg);
+		text-decoration-color: currentColor;
+	}
+}
+
+.site-footer__mark {
+	display: grid;
+	overflow: hidden;
+	user-select: none;
+}
+
+.site-footer__line {
+	justify-self: start;
+	display: inline-block;
+	white-space: nowrap;
+	font: 900 15vw / 0.82 var(--ds-font-display);
+	letter-spacing: -0.06em;
+	/* Pull the first letter onto the margin optically */
+	margin-left: -0.04em;
+	padding-right: 0.04em;
+}
+
+.site-footer__line--two {
+	display: none;
+}
+
+.site-footer__legal {
+	max-width: 62ch;
+	margin: 0;
+	font-size: var(--step-small);
+	color: var(--ds-fg-muted);
+}
+
+@media (max-width: 1000px) {
+	.site-footer__col {
+		grid-column: span 6;
+	}
+}
+
+@media (max-width: 600px) {
+	.site-footer {
+		gap: 56px;
+	}
+
+	.site-footer__line--one {
+		display: none;
+	}
+
+	.site-footer__line--two {
+		display: inline-block;
 	}
 }
