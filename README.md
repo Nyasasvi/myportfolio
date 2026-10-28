@@ -1,281 +1,153 @@
-# My Portfolio
+# Yasasvi Nellore — portfolio
 
-A modern, AI-powered portfolio website built with Next.js 14, featuring advanced job matching and automated job discovery capabilities.
+The personal site of Yasasvi Nellore, a software engineer in Dallas who builds AI agents and the
+full-stack software around them. It is built with Next.js 14 and leans on live, interactive pieces
+instead of static lists: system diagrams you can route light through, a career timeline you can
+scrub, and an About page whose background changes with each employer.
 
-## 🌟 Features
+## What's on the site
 
-### 📰 AI-Powered Newsletter (NEW!)
-Curated AI news from 6 trusted sources:
-- **Hacker News** - Top tech community discussions
-- **Dev.to** - Quality developer articles  
-- **NewsAPI** - TechCrunch, Wired, MIT Tech Review (optional)
-- **ArXiv** - Latest AI research papers
-- **GitHub Trending** - Popular AI projects
-- **RSS Feeds** - VentureBeat, TechCrunch, MIT Tech Review
-- **Smart ranking** - Quality, relevance, and recency scoring
-- **Auto-generation** - Weekly curated top 10 AI updates
-- **Email delivery** - Subscribers get beautifully formatted newsletters
+### Home (`/`)
 
-### 📊 Job Match Analyzer
-Analyze your compatibility with any job posting using AI:
-- Compare your skills against job requirements
-- Get detailed gap analysis and recommendations
-- View personalized learning paths
-- Support for custom resumes or default profile
+- **Hero** — the name set large over a WebGL field of light trails that follow the systems below.
+- **Live system diagrams** — one per company (Twisted X, JPMorgan Chase, Colombo AI, HCL). Pick a
+  question and the light re-routes through the system that answers it, with the steps beside it.
+- **What changed** — the headline results, counted up as they scroll in. A chart beside them redraws
+  for whichever result is pointed at or tapped; the HCL figure fills live through the Dallas day.
+- **Projects** — an index in large type with a pinned preview, category filters and a live check
+  that marks deployed demos that are online right now.
+- **From banking to boots** — the career as a timeline drawn to scale. Drag the playhead, press
+  play, or tap a role; the current role grows to today's date.
+- **What I use** — pick a tool to see where it was used and what it changed, with a link into the
+  matching diagram.
+- **About** — the bio at the length the reader has time for (5 seconds, 30 seconds, 2 minutes).
+- **Get in touch** — contact channels and a live clock for Dallas.
 
-### 🔍 Automated Job Finder
-AI-powered job discovery and matching:
-- **Auto-scrapes job boards** for positions posted recently (customizable time range)
-- **AI analyzes each job** against your resume
-- **Filters to 80%+ matches** - only the best opportunities
-- **Email delivery** - all matching jobs sent directly to your inbox
-- **Real-time analysis** with detailed compatibility scores
+### About (`/about`)
 
-### 🎨 Modern UI/UX
-- Beautiful, responsive design with dark/light theme support
-- Smooth animations and transitions
-- Interactive 3D elements
-- Particle effects and dynamic backgrounds
+Five chapters, newest first. Scrolling into each one hands the background to an animated scene from
+that employer's world, drawn in original shapes (no logos):
 
-### 🤖 AI Chatbot
-Intelligent assistant to answer questions about your experience and skills.
+| Chapter | Background | Interaction |
+| --- | --- | --- |
+| Twisted X | Boot prints and shipments along a supply route | The walker follows the pointer |
+| JPMorgan Chase | A live candlestick tape | Point at a candle to light it |
+| Colombo AI | Likes and comments rising like a feed | Click, tap or "Send a like" |
+| UT Arlington | A neural network firing | Move near a neuron to fire it |
+| HCL Technologies | Data packets through a processing column | The nearest lane speeds up |
 
-### 📧 Contact Form
-Direct communication with integrated email functionality.
+A sticky chapter bar shows reading progress and has a **Pause background** control.
 
-## 🚀 Quick Start
+### Other pages
 
-### Prerequisites
-- Node.js 18+ and npm
-- OpenAI API key (for AI features)
-- Gmail account (for email features)
+- **Projects** (`/projects`), **Skills** (`/skills`) and **Contact** (`/contact`).
+- **AR Experience** (`/ar-experience`) — a Three.js scene and a small bug-catching game, with a QR
+  code to open it on a phone.
+- Site-wide: light and dark themes, a <kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>K</kbd> command palette,
+  and an "Ask about me" chatbot.
 
-### Installation
+## Tech stack
 
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd myportfolio
-   ```
+- **Framework:** Next.js 14 (App Router), React 18, TypeScript
+- **Styling:** plain CSS with design tokens (`src/app/design-system.css`), on top of the Once UI
+  base styles; one variable typeface, Epilogue
+- **Graphics:** WebGL for the homepage light field, Canvas 2D for the About scenes, Three.js and
+  React Three Fiber for the AR page
+- **Motion:** CSS transitions and Framer Motion
+- **Other:** lucide-react icons, nodemailer for the contact form, Vercel Analytics
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+## Getting started
 
-3. **Set up environment variables**
-   
-   Create a `.env.local` file in the root directory:
-   ```env
-   # Required for AI features
-   OPENAI_API_KEY=your_openai_api_key_here
-   
-   # Required for email features
-   EMAIL_USER=your_email@gmail.com
-   EMAIL_PASSWORD=your_gmail_app_password
-   
-   # Optional: Enhanced newsletter with premium sources (free tier: 100 requests/day)
-   NEWS_API_KEY=your_newsapi_key_here
-   
-   # Optional: For enhanced job scraping (7 sources work without these)
-   RAPID_API_KEY=your_rapidapi_key_here    # JSearch - 150 req/month free
-   ADZUNA_APP_ID=your_adzuna_app_id        # Adzuna - 1000 req/month free
-   ADZUNA_API_KEY=your_adzuna_api_key
-   ```
+Requires Node.js 18.17 or later.
 
-4. **Run the development server**
-   ```bash
-   npm run dev
-   ```
-
-5. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
-
-## 🔧 Configuration Guide
-
-### OpenAI API Key
-1. Visit [OpenAI Platform](https://platform.openai.com/api-keys)
-2. Create an account or log in
-3. Generate a new API key
-4. Add to `.env.local`
-
-### Gmail App Password
-1. Enable 2-Step Verification in your Google Account
-2. Go to [App Passwords](https://myaccount.google.com/apppasswords)
-3. Generate a new app password for "Mail"
-4. Use this password in `.env.local` (remove spaces)
-
-### NewsAPI (Optional - For Premium Newsletter Sources)
-1. Sign up at [NewsAPI.org](https://newsapi.org/register)
-2. Get your free API key (100 requests/day)
-3. Add to `.env.local` as `NEWS_API_KEY`
-4. Newsletter will now include articles from TechCrunch, Wired, MIT Tech Review, etc.
-
-**Note:** The newsletter works great without this! It uses 5 other free sources (Hacker News, Dev.to, ArXiv, GitHub, RSS feeds).
-
-### RapidAPI - JSearch (Optional - For Google Jobs Access)
-1. Sign up at [RapidAPI.com](https://rapidapi.com/)
-2. Subscribe to [JSearch API](https://rapidapi.com/letscrape-6bRBa3QguO5/api/jsearch) (Free plan)
-3. Copy your RapidAPI key
-4. Add to `.env.local` as `RAPID_API_KEY`
-5. You'll now get jobs from Google Jobs (includes LinkedIn, Indeed, Glassdoor)
-
-**Note:** Free tier gives 150 requests/month. The job scraper works great with 7 free sources even without this!
-
-### Adzuna API (Optional - For Additional Job Aggregation)
-1. Sign up at [Adzuna Developer Portal](https://developer.adzuna.com/)
-2. Create an application
-3. Copy App ID and API Key
-4. Add to `.env.local`
-5. You'll now get jobs from LinkedIn, Indeed, Monster, CareerBuilder via Adzuna
-
-**Note:** Free tier gives 1000 requests/month.
-
-For detailed setup instructions, see [JOB_SCRAPER_SETUP.md](./JOB_SCRAPER_SETUP.md)
-
-## 📖 Usage
-
-### Job Match Analyzer
-1. Navigate to the "Job Match" page
-2. Choose "Analyze Single Job" tab
-3. Paste a job description
-4. Optionally provide your own resume
-5. Click "Analyze Match" to get instant AI-powered insights
-
-### Automated Job Finder
-1. Navigate to the "Job Match" page
-2. Choose "Find Matching Jobs" tab
-3. Enter your email address
-4. Paste your complete resume
-5. Click "Find Matching Jobs"
-6. Wait for analysis (10-30 seconds)
-7. Check your email for curated job matches!
-
-## 🛠️ Tech Stack
-
-- **Framework**: Next.js 14 (App Router)
-- **Language**: TypeScript
-- **Styling**: SCSS with custom design system
-- **AI**: OpenAI GPT-4o-mini
-- **Email**: Nodemailer
-- **3D Graphics**: Three.js, React Three Fiber
-- **Animations**: Framer Motion
-- **Icons**: React Icons
-
-## 📁 Project Structure
-
-```
-myportfolio/
-├── src/
-│   ├── app/
-│   │   ├── about/          # About page
-│   │   ├── api/            # API routes
-│   │   │   ├── chatbot/    # AI chatbot endpoint
-│   │   │   ├── contact/    # Contact form endpoint
-│   │   │   └── job-match/  # Job matching endpoint
-│   │   │   └── job-scraper/# Job scraping endpoint (NEW)
-│   │   ├── components/     # Reusable components
-│   │   ├── contact/        # Contact page
-│   │   ├── job-match/      # Job matching pages
-│   │   ├── projects/       # Projects showcase
-│   │   ├── skills/         # Skills page
-│   │   └── resources/      # Constants and data
-│   └── once-ui/            # Custom UI component library
-├── public/                 # Static assets
-└── ...config files
+```bash
+npm install
+npm run dev
 ```
 
-## 🎯 Key Features Explained
+Then open [http://localhost:3000](http://localhost:3000).
 
-### AI Job Matching
-- Uses natural language processing to understand job requirements
-- Compares skills, experience levels, and qualifications
-- Provides actionable recommendations for skill improvement
-- Generates personalized learning paths
+For a production build:
 
-### Job Scraping Engine
-- Integrates with **9 job sources** (7 free, 2 optional):
-  - **Adzuna** (optional) - Aggregates from LinkedIn, Indeed, Monster, CareerBuilder
-  - **JSearch/RapidAPI** (optional) - Google Jobs: LinkedIn, Indeed, Glassdoor, ZipRecruiter
-  - **Remotive** (free) - Remote tech positions
-  - **Indeed RSS** (free) - Direct Indeed job postings
-  - **RemoteOK** (free) - Remote positions from tech companies
-  - **GitHub Jobs** (free) - Tech and open-source positions
-  - **TheMuse** (free) - Diverse companies and roles
-  - **Y Combinator** (free) - YC startup job board
-  - **Hacker News** (free) - Tech startup community postings
-- **7 sources work without any API keys!**
-- Filters jobs with customizable time range (1-30 days)
-- Uses AI (GPT-4) to calculate compatibility scores
-- Sends beautifully formatted HTML emails with job matches
-- Multi-source parallel scraping for best performance
+```bash
+npm run build
+npm start
+```
 
-### Smart Filtering
-- Minimum 80% match threshold ensures quality (falls back to 30%+ if needed)
-- Considers required vs. preferred qualifications
-- Weights critical skills higher in scoring
-- Shows all matching positions sorted by compatibility score
+The site builds and runs without any environment variables; the contact form and the chatbot's AI
+answers need the settings below.
 
-## 🔒 Privacy & Security
+## Environment variables
 
-- Resumes are processed in-memory only (never stored)
-- Email addresses used only for delivery (not stored)
-- All API communications use HTTPS
-- Environment variables for sensitive data
-- No tracking or analytics
+Create `.env.local` in the project root:
 
-## 🐛 Troubleshooting
+```env
+# Contact form: messages are sent through Gmail
+SMTP_USER=your.address@gmail.com
+SMTP_PASS=your_gmail_app_password
 
-**Email not sending?**
-- Verify Gmail app password is correct
-- Check 2-Step Verification is enabled
-- Review server logs for error messages
+# Chatbot: without it, the chatbot answers from built-in replies
+OPENAI_API_KEY=your_openai_api_key
+```
 
-**No jobs found?**
-- System will use mock data if APIs aren't configured
-- Check Adzuna API limits if using real data
-- Ensure resume is detailed enough (100+ characters)
+| Variable | Used by | Notes |
+| --- | --- | --- |
+| `SMTP_USER` | Contact form | The Gmail address that sends the message |
+| `SMTP_PASS` | Contact form | A Gmail [app password](https://myaccount.google.com/apppasswords) (needs 2-Step Verification) |
+| `OPENAI_API_KEY` | Chatbot | Optional; uses `gpt-4o-mini` |
 
-**Low match scores?**
-- Include more technical keywords in resume
-- Ensure resume covers all relevant experience
-- Try adjusting the match threshold in code
+## Editing the content
 
-## 📝 Environment Variables
+Most text and numbers come from data files, so the pages stay in step with each other:
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `OPENAI_API_KEY` | Yes | OpenAI API key for AI features |
-| `EMAIL_USER` | Yes | Gmail address for sending emails |
-| `EMAIL_PASSWORD` | Yes | Gmail app-specific password |
-| `NEWS_API_KEY` | No | NewsAPI key for premium newsletter sources (100 req/day free) |
-| `RAPID_API_KEY` | No | RapidAPI key for JSearch/Google Jobs (150 req/month free) |
-| `ADZUNA_APP_ID` | No | Adzuna API app ID (1000 req/month free) |
-| `ADZUNA_API_KEY` | No | Adzuna API key (1000 req/month free) |
+| What | Where |
+| --- | --- |
+| Experience, research, projects, skills, short bio | `src/app/resources/consts.ts` |
+| Project write-ups and cover images | `src/app/resources/showcase.ts` |
+| Company diagrams (sources, systems, questions, steps) | `src/app/components/signal/graph.ts` |
+| Homepage results and their charts | `src/app/components/home/Figures.tsx` |
+| About chapters, figures and scenes | `src/app/about/page.tsx`, `src/app/about/scenes.ts` |
+| Navigation and contact links | `src/app/resources/navigation.ts` |
+| Resume PDF | `public/assets/resume.pdf` |
+| Photos (resized WebP) | `public/images/color/` |
 
-## 🚀 Deployment
+## Project structure
 
-### Vercel (Recommended)
-1. Push code to GitHub
-2. Import project in Vercel
-3. Add environment variables in Vercel dashboard
-4. Deploy!
+```
+src/
+├── app/
+│   ├── page.tsx              # Homepage, composed from components/home
+│   ├── about/                # About page, its scenes and background stage
+│   ├── projects/  skills/  contact/  ar-experience/
+│   ├── api/
+│   │   ├── chatbot/          # Chatbot answers
+│   │   ├── contact/          # Contact form email
+│   │   └── check-env/        # Reports which settings are present
+│   ├── components/
+│   │   ├── home/             # Homepage sections
+│   │   ├── signal/           # WebGL light field and the company graphs
+│   │   └── ...               # Navigation, footer, command palette, chatbot, AR scene
+│   ├── resources/            # Content data
+│   ├── design-system.css     # Tokens and shared styles
+│   └── homepage.css
+└── once-ui/                  # Base UI styles and tokens
+public/                       # Resume, photos, project images
+```
 
-### Other Platforms
-The app can be deployed to any platform that supports Next.js:
-- Netlify
-- AWS Amplify  
-- Railway
-- Render
+## Accessibility and performance
 
-## 🤝 Contributing
+- Everything that moves on its own respects `prefers-reduced-motion`, and the About backgrounds
+  have a pause control.
+- Animations run only while on screen and in a visible tab; the WebGL field steps down its quality
+  on slow devices.
+- Interactive pieces work from the keyboard, charts have text descriptions, and content is
+  server-rendered so it reads without JavaScript.
 
-This is a personal portfolio project, but suggestions and feedback are welcome!
+## Deployment
 
-## 📄 License
+The site is set up for Vercel (it uses Vercel Analytics): import the repository in Vercel and add the
+environment variables above in the project settings. Any host that runs Next.js 14 works too.
 
-© 2025 - All rights reserved
+## License
 
-## 📧 Contact
-
-For questions or feedback about the job scraper feature, see the [setup guide](./JOB_SCRAPER_SETUP.md).
+© Yasasvi Nellore. All rights reserved.
