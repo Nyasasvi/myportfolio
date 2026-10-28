@@ -1,86 +1,139 @@
 /*
- * Design system: semantic tokens, base typography, glass surfaces and shared primitives.
- * Theme follows the existing data-theme attribute that Once UI already sets on <html>.
+ * Design system: tokens, base type and the shared primitives every page uses.
+ *
+ * Identity: an obsidian ground lit by one colour, tail-light coral, with sodium amber kept for the
+ * light trails of the homepage field. One typeface (Epilogue), square corners, surfaces told apart
+ * by tone rather than lines or shadows. Theme follows the data-theme attribute on <html>.
+ *
+ * Token names keep the --ds-* prefix so the tool pages (job match, newsletter, quiz, AR, analytics)
+ * pick up the new identity without their own rewrites.
  */
 
 :root,
 [data-theme="dark"] {
-	--ds-bg: #0f1220;
-	--ds-surface-1: #151929;
-	--ds-surface-2: #1c2135;
-	--ds-surface-3: #252b42;
-	--ds-fg: #eceef6;
-	--ds-fg-muted: #a3a9c0;
-	--ds-fg-subtle: #7c839c;
-	--ds-border: rgba(236, 238, 246, 0.09);
-	--ds-border-strong: rgba(236, 238, 246, 0.18);
-	--ds-accent: #8e9bff;
-	--ds-accent-strong: #aab4ff;
-	--ds-accent-soft: rgba(142, 155, 255, 0.14);
-	--ds-on-accent: #0f1220;
-	--ds-signal: #5ed3a5;
-	--ds-signal-soft: rgba(94, 211, 165, 0.12);
-	--ds-danger: #ff8a8a;
-	/* Chart marks: validated for lightness band and 3:1 contrast on surface-1 (dataviz validator) */
-	--ds-chart-1: #6f7ff0;
-	--ds-chart-grid: rgba(236, 238, 246, 0.07);
-	--ds-ambient: radial-gradient(60rem 28rem at 50% -10rem, rgba(142, 155, 255, 0.16), transparent 70%);
+	/* Ground and its tone steps */
+	--ds-bg: #111315;
+	--ds-surface-1: #1a1c1f;
+	--ds-surface-2: #24262a;
+	--ds-surface-3: #2e3035;
 
-	--ds-glass-bg: rgba(24, 28, 46, 0.62);
-	--ds-glass-bg-solid: #1a1e31;
-	--ds-glass-edge: rgba(255, 255, 255, 0.12);
-	--ds-glass-highlight: rgba(255, 255, 255, 0.08);
-	--ds-glass-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.25);
-	--ds-overlay: rgba(8, 10, 18, 0.55);
+	/* Ink */
+	--ds-fg: #e7e5e0;
+	--ds-fg-muted: #a19c94;
+	--ds-fg-subtle: #8a857e;
+
+	/* Lines are reserved for form fields and real tables */
+	--ds-border: rgba(231, 229, 224, 0.1);
+	--ds-border-strong: rgba(231, 229, 224, 0.22);
+
+	/* The one accent: tail-light coral */
+	--ds-accent: #ff654a;
+	--ds-accent-strong: #ff7d66;
+	--ds-accent-soft: rgba(255, 101, 74, 0.14);
+	--ds-on-accent: #111315;
+
+	/* Light used only by the homepage field and one chart mark */
+	--ds-amber: #f7aa58;
+
+	--ds-signal: #7fcf9f;
+	--ds-signal-soft: rgba(127, 207, 159, 0.12);
+	--ds-danger: #ff8a7a;
+	--ds-chart-1: #ff654a;
+	--ds-chart-grid: rgba(231, 229, 224, 0.08);
+
+	/* Chapters: the main ground, the paper chapter and the one coral field */
+	--chapter-alt-bg: #e2e0db;
+	--chapter-alt-surface: #d6d4ce;
+	--chapter-alt-fg: #131416;
+	--chapter-alt-muted: #55524d;
+	--chapter-alt-accent: #ff654a;
+	--chapter-alt-accent-strong: #ff7d66;
+	--chapter-alt-on-accent: #111315;
+	--chapter-hot-bg: #ff654a;
+	--chapter-hot-fg: #111315;
+
+	/* Floating layers (menus, dialogs) are opaque; only things that float get depth */
+	--ds-glass-bg: #1d1f22;
+	--ds-glass-bg-solid: #1d1f22;
+	--ds-glass-edge: transparent;
+	--ds-glass-highlight: transparent;
+	--ds-glass-shadow: 0 24px 48px -16px rgba(0, 0, 0, 0.7);
+	--ds-overlay: rgba(8, 9, 10, 0.6);
+	--ds-ambient: none;
 	color-scheme: dark;
 }
 
 [data-theme="light"] {
-	--ds-bg: #f4f5f9;
-	--ds-surface-1: #ffffff;
-	--ds-surface-2: #eef0f6;
-	--ds-surface-3: #e3e6f0;
-	--ds-fg: #141726;
-	--ds-fg-muted: #555b74;
-	--ds-fg-subtle: #737a93;
-	--ds-border: rgba(20, 23, 38, 0.09);
-	--ds-border-strong: rgba(20, 23, 38, 0.18);
-	--ds-accent: #4351d6;
-	--ds-accent-strong: #3340b8;
-	--ds-accent-soft: rgba(67, 81, 214, 0.1);
-	--ds-on-accent: #ffffff;
-	--ds-signal: #0f7f56;
-	--ds-signal-soft: rgba(15, 127, 86, 0.1);
-	--ds-danger: #c43c3c;
-	--ds-chart-1: #4351d6;
-	--ds-chart-grid: rgba(20, 23, 38, 0.07);
-	--ds-ambient: radial-gradient(60rem 28rem at 50% -10rem, rgba(67, 81, 214, 0.1), transparent 70%);
+	--ds-bg: #e2e0db;
+	--ds-surface-1: #d8d6d0;
+	--ds-surface-2: #cdcbc4;
+	--ds-surface-3: #c2c0b9;
 
-	--ds-glass-bg: rgba(255, 255, 255, 0.7);
-	--ds-glass-bg-solid: #ffffff;
-	--ds-glass-edge: rgba(20, 23, 38, 0.1);
-	--ds-glass-highlight: rgba(255, 255, 255, 0.9);
-	--ds-glass-shadow: 0 12px 32px -14px rgba(20, 23, 38, 0.22), 0 2px 6px rgba(20, 23, 38, 0.06);
-	--ds-overlay: rgba(20, 23, 38, 0.28);
+	--ds-fg: #131416;
+	--ds-fg-muted: #55524d;
+	--ds-fg-subtle: #5f5b55;
+
+	--ds-border: rgba(19, 20, 22, 0.12);
+	--ds-border-strong: rgba(19, 20, 22, 0.26);
+
+	/* On the light ground coral would fall to 2.2:1, so text and fills take the deep cut */
+	--ds-accent: #b3290f;
+	--ds-accent-strong: #9a220b;
+	--ds-accent-soft: rgba(179, 41, 15, 0.1);
+	--ds-on-accent: #ffffff;
+
+	--ds-amber: #b8640f;
+
+	--ds-signal: #1f6e45;
+	--ds-signal-soft: rgba(31, 110, 69, 0.1);
+	--ds-danger: #a3200c;
+	--ds-chart-1: #b3290f;
+	--ds-chart-grid: rgba(19, 20, 22, 0.08);
+
+	--chapter-alt-bg: #111315;
+	--chapter-alt-surface: #1a1c1f;
+	--chapter-alt-fg: #e7e5e0;
+	--chapter-alt-muted: #a19c94;
+	--chapter-alt-accent: #ff654a;
+	--chapter-alt-accent-strong: #ff7d66;
+	--chapter-alt-on-accent: #111315;
+	--chapter-hot-bg: #ff654a;
+	--chapter-hot-fg: #111315;
+
+	--ds-glass-bg: #ecebe7;
+	--ds-glass-bg-solid: #ecebe7;
+	--ds-glass-edge: transparent;
+	--ds-glass-highlight: transparent;
+	--ds-glass-shadow: 0 24px 48px -18px rgba(19, 20, 22, 0.35);
+	--ds-overlay: rgba(19, 20, 22, 0.32);
+	--ds-ambient: none;
 	color-scheme: light;
 }
 
 :root {
-	/* Type: Bricolage Grotesque for display, Instrument Sans for reading and UI */
-	--ds-font-display: var(--font-secondary), system-ui, sans-serif;
-	--ds-font-body: var(--font-primary), system-ui, -apple-system, "Segoe UI", sans-serif;
+	/* One family. Epilogue at 900 is the monument; 400 and 500 carry everything else */
+	--font-secondary: var(--font-primary);
+	--ds-font-display: var(--font-secondary), "Helvetica Neue", Arial, sans-serif;
+	--ds-font-body: var(--font-primary), "Helvetica Neue", Arial, sans-serif;
+	--ds-font-code: var(--font-code), ui-monospace, Menlo, Consolas, monospace; /* taste-skill-ignore: literal code blocks only */
 
-	/* Modular scale (1.25) */
-	--ds-text-xs: 0.8125rem;
-	--ds-text-sm: 0.9375rem;
-	--ds-text-md: 1.0625rem;
-	--ds-text-lg: 1.3125rem;
-	--ds-text-xl: 1.625rem;
-	--ds-text-2xl: clamp(1.75rem, 1.2rem + 1.6vw, 2.125rem);
-	--ds-text-3xl: clamp(2.25rem, 1.4rem + 2.8vw, 3rem);
-	--ds-text-hero: clamp(3rem, 1.2rem + 7vw, 6.5rem);
+	/* Five steps, far apart (taste-skill type.md §2). Older names map onto them. */
+	--step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+	--step-body: clamp(1.125rem, 1.05rem + 0.2vw, 1.1875rem);
+	--step-lead: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+	--step-head: clamp(2.25rem, 1rem + 4.2vw, 5rem);
+	--step-display: clamp(6rem, 30vw, 36rem);
 
-	/* Spacing (4px base) */
+	--ds-text-xs: var(--step-small);
+	--ds-text-sm: var(--step-small);
+	--ds-text-md: var(--step-body);
+	--ds-text-lg: var(--step-lead);
+	--ds-text-xl: var(--step-lead);
+	--ds-text-2xl: clamp(1.75rem, 1.2rem + 1.8vw, 2.5rem);
+	--ds-text-3xl: var(--step-head);
+	--ds-text-hero: var(--step-head);
+
+	/* Spacing on an 8px grid with 4px subdivisions */
 	--ds-space-1: 4px;
 	--ds-space-2: 8px;
 	--ds-space-3: 12px;
@@ -90,20 +143,40 @@
 	--ds-space-7: 48px;
 	--ds-space-8: 64px;
 	--ds-space-9: 96px;
+	--ds-space-10: 128px;
+	--ds-space-11: 192px;
 
-	/* Radii follow hierarchy: chips < controls < cards < floating pill */
-	--ds-radius-chip: 6px;
-	--ds-radius-control: 10px;
-	--ds-radius-card: 18px;
+	/* Square corners everywhere; round only for things that are truly round (dots, toggles) */
+	--ds-radius-chip: 0px;
+	--ds-radius-control: 0px;
+	--ds-radius-card: 0px;
 	--ds-radius-pill: 999px;
 
-	--ds-content-width: 1180px;
-	--ds-gutter: clamp(16px, 4vw, 32px);
+	/* One frame: tight equal margins, a 12-column grid, large things run to the edges */
+	--ds-margin: clamp(16px, 2.2vw, 32px);
+	--ds-gutter: clamp(12px, 1.4vw, 24px);
+	--ds-layout-max: 1760px;
+	--ds-content-width: 1240px;
+	--ds-section-gap: clamp(96px, 12vw, 200px);
 
-	--ds-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
-	--ds-dur-fast: 140ms;
-	--ds-dur: 220ms;
-	--ds-dur-slow: 360ms;
+	/* Motion tokens (taste-skill motion.md §4) */
+	--ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+	--ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+	--ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+	--ease-soft: cubic-bezier(0.33, 1, 0.68, 1);
+	--ease-exit: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+	--t-press: 140ms;
+	--t-hover: 180ms;
+	--t-ui: 240ms;
+	--t-reveal: 800ms;
+	--t-open: 1200ms;
+	--stagger-line: 90ms;
+	--stagger-item: 70ms;
+
+	--ds-ease: var(--ease-out);
+	--ds-dur-fast: var(--t-press);
+	--ds-dur: var(--t-ui);
+	--ds-dur-slow: 420ms;
 }
 
 /*
@@ -131,7 +204,7 @@ html.root[data-theme] {
 	--brand-solid-medium: var(--ds-accent-strong);
 	--brand-on-solid-strong: var(--ds-on-accent);
 	--brand-on-solid-medium: var(--ds-on-accent);
-	--brand-on-background-strong: var(--ds-accent-strong);
+	--brand-on-background-strong: var(--ds-accent);
 	--brand-on-background-medium: var(--ds-accent);
 	--brand-on-background-weak: var(--ds-accent);
 	--brand-background-weak: var(--ds-accent-soft);
@@ -142,7 +215,7 @@ html.root[data-theme] {
 	--brand-strong: var(--ds-accent);
 
 	--accent-solid-strong: var(--ds-accent);
-	--accent-on-background-strong: var(--ds-accent-strong);
+	--accent-on-background-strong: var(--ds-accent);
 	--accent-on-background-medium: var(--ds-accent);
 	--accent-background-medium: var(--ds-accent-soft);
 	--accent-alpha-weak: var(--ds-accent-soft);
@@ -151,35 +224,57 @@ html.root[data-theme] {
 /* ---------- Base ---------- */
 
 html.root {
+	/* Once UI scales the root to 15px and 14px on smaller screens; the type steps assume 16px */
+	font-size: 100%;
 	background: var(--ds-bg);
-	/* Keep focused fields and anchor targets clear of the sticky nav */
-	scroll-padding-top: 96px;
+	/* Keep focused fields and anchor targets clear of the sticky bar */
+	scroll-padding-top: 88px;
 }
 
 body.ds-body {
 	position: relative;
 	width: 100%;
-	min-height: 100vh;
+	min-height: 100svh;
 	margin: 0;
-	background: var(--ds-ambient), var(--ds-bg);
-	background-repeat: no-repeat;
+	background: var(--ds-bg);
 	color: var(--ds-fg);
 	font-family: var(--ds-font-body);
-	font-size: var(--ds-text-md);
-	line-height: 1.6;
+	font-size: var(--step-body);
+	font-weight: 400;
+	line-height: 1.55;
+	font-kerning: normal;
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
-	overflow-x: hidden;
+	overflow-x: clip;
 }
 
+/* The page sits above the footer so the footer can be uncovered from underneath (curtain) */
+.ds-page {
+	position: relative;
+	z-index: 1;
+	/* body is a full-height flex column (Once UI); never let the page shrink to the viewport */
+	flex: 1 0 auto;
+	background: var(--ds-bg);
+	display: flex;
+	flex-direction: column;
+	min-height: 100svh;
+}
+
+/* Every page sits on the same pair of margins as the bar above it */
 .ds-main {
 	width: 100%;
-	max-width: var(--ds-content-width);
+	max-width: var(--ds-layout-max);
 	margin: 0 auto;
-	padding: var(--ds-space-6) var(--ds-gutter) var(--ds-space-8);
+	padding: var(--ds-space-6) var(--ds-margin) var(--ds-space-10);
 	flex: 1;
 	display: flex;
 	justify-content: center;
+}
+
+/* The homepage composes its own full-bleed chapters */
+.ds-main:has(> .home) {
+	max-width: none;
+	padding: 0;
 }
 
 .ds-main > * {
@@ -187,26 +282,25 @@ body.ds-body {
 }
 
 ::selection {
-	background: var(--ds-accent-soft);
-	color: var(--ds-fg);
+	background: var(--ds-accent);
+	color: var(--ds-on-accent);
 }
 
-:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
 	outline: 2px solid var(--ds-accent);
-	outline-offset: 2px;
-	border-radius: var(--ds-radius-control);
+	outline-offset: 3px;
+	border-radius: 0;
 }
 
 .ds-skip-link {
 	position: absolute;
-	left: var(--ds-space-4);
+	left: var(--ds-margin);
 	top: -100px;
 	z-index: 200;
 	padding: var(--ds-space-2) var(--ds-space-4);
-	border-radius: var(--ds-radius-control);
 	background: var(--ds-accent);
 	color: var(--ds-on-accent);
-	font-weight: 600;
+	font-weight: 500;
 	text-decoration: none;
 }
 
@@ -227,107 +321,88 @@ body.ds-body {
 
 .ds-display {
 	font-family: var(--ds-font-display);
-	font-weight: 600;
-	letter-spacing: -0.035em;
-	line-height: 0.95;
-	font-variation-settings: "opsz" 96;
+	font-weight: 900;
+	letter-spacing: -0.045em;
+	line-height: 0.86;
 }
 
 .ds-h1 {
 	font-family: var(--ds-font-display);
-	font-size: var(--ds-text-3xl);
-	font-weight: 600;
-	letter-spacing: -0.025em;
-	line-height: 1.08;
+	font-size: var(--step-head);
+	font-weight: 900;
+	letter-spacing: -0.04em;
+	line-height: 0.92;
 	margin: 0;
+	text-wrap: balance;
 }
 
 .ds-h2 {
 	font-family: var(--ds-font-display);
 	font-size: var(--ds-text-2xl);
-	font-weight: 600;
-	letter-spacing: -0.02em;
-	line-height: 1.15;
+	font-weight: 900;
+	letter-spacing: -0.035em;
+	line-height: 1.02;
 	margin: 0;
+	text-wrap: balance;
 }
 
 .ds-h3 {
 	font-family: var(--ds-font-display);
-	font-size: var(--ds-text-lg);
-	font-weight: 600;
-	letter-spacing: -0.01em;
-	line-height: 1.25;
+	font-size: var(--step-lead);
+	font-weight: 700;
+	letter-spacing: -0.015em;
+	line-height: 1.15;
 	margin: 0;
+	text-wrap: balance;
 }
 
 .ds-lede {
-	font-size: var(--ds-text-lg);
-	line-height: 1.55;
-	color: var(--ds-fg-muted);
-	max-width: 60ch;
+	font-size: var(--step-lead);
+	line-height: 1.38;
+	color: var(--ds-fg);
+	max-width: 44ch;
 	margin: 0;
+	text-wrap: pretty;
 }
 
 .ds-body-text {
-	color: var(--ds-fg-muted);
-	max-width: 68ch;
+	color: var(--ds-fg);
+	max-width: 62ch;
 	margin: 0;
+	text-wrap: pretty;
 }
 
 .ds-meta {
-	font-size: var(--ds-text-xs);
-	color: var(--ds-fg-subtle);
+	font-size: var(--step-small);
+	color: var(--ds-fg-muted);
 }
 
-/* ---------- Glass (floating controls only) ---------- */
+/* Inline links inside running text: ink with an offset underline that answers the pointer */
+.ds-link {
+	color: inherit;
+	text-decoration: underline;
+	text-decoration-thickness: 0.07em;
+	text-underline-offset: 0.2em;
+	text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+	transition: text-decoration-color var(--t-hover) ease, color var(--t-hover) ease;
+}
 
-/* :where() keeps specificity at zero so components can set their own positioning */
+@media (hover: hover) and (pointer: fine) {
+	.ds-link:hover {
+		text-decoration-color: currentColor;
+	}
+}
+
+/* ---------- Floating layers ---------- */
+
+/* Kept as a class name for menus and dialogs: an opaque raised layer, never a blur */
 :where(.ds-glass) {
 	position: relative;
 }
 
 .ds-glass {
 	background: var(--ds-glass-bg);
-	-webkit-backdrop-filter: blur(18px) saturate(160%);
-	backdrop-filter: blur(18px) saturate(160%);
-	border: 1px solid var(--ds-glass-edge);
-	box-shadow: inset 0 1px 0 var(--ds-glass-highlight), var(--ds-glass-shadow);
-}
-
-/* Specular top edge: a thin light line that sells the floating surface */
-.ds-glass::before {
-	content: "";
-	position: absolute;
-	inset: 0;
-	border-radius: inherit;
-	pointer-events: none;
-	background: linear-gradient(180deg, var(--ds-glass-highlight), transparent 40%);
-	opacity: 0.6;
-	mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
-	-webkit-mask-composite: xor;
-	mask-composite: exclude;
-	padding: 1px;
-}
-
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-	.ds-glass {
-		background: var(--ds-glass-bg-solid);
-	}
-}
-
-@media (prefers-reduced-transparency: reduce) {
-	.ds-glass {
-		background: var(--ds-glass-bg-solid);
-		-webkit-backdrop-filter: none;
-		backdrop-filter: none;
-	}
-}
-
-@media (prefers-contrast: more) {
-	.ds-glass {
-		background: var(--ds-glass-bg-solid);
-		border-color: var(--ds-border-strong);
-	}
+	box-shadow: var(--ds-glass-shadow); /* taste-skill-ignore: menus and dialogs float over the page */
 }
 
 /* ---------- Buttons ---------- */
@@ -335,84 +410,85 @@ body.ds-body {
 .ds-btn {
 	--btn-bg: var(--ds-surface-2);
 	--btn-fg: var(--ds-fg);
-	--btn-border: var(--ds-border);
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	gap: var(--ds-space-2);
-	min-height: 44px;
+	min-height: 48px;
 	padding: 0 var(--ds-space-5);
-	border-radius: var(--ds-radius-control);
-	border: 1px solid var(--btn-border);
+	border-radius: 0;
+	border: 0;
 	background: var(--btn-bg);
 	color: var(--btn-fg);
-	font: 600 var(--ds-text-sm) / 1 var(--ds-font-body);
+	font: 500 var(--step-body) / 1 var(--ds-font-body);
 	text-decoration: none;
 	cursor: pointer;
 	white-space: nowrap;
 	transition:
-		background-color var(--ds-dur-fast) var(--ds-ease),
-		border-color var(--ds-dur-fast) var(--ds-ease),
-		transform var(--ds-dur-fast) var(--ds-ease),
-		color var(--ds-dur-fast) var(--ds-ease);
+		background-color var(--t-hover) ease,
+		color var(--t-hover) ease,
+		transform var(--t-press) var(--ease-out);
 }
 
-.ds-btn:hover {
-	--btn-bg: var(--ds-surface-3);
-	--btn-border: var(--ds-border-strong);
+@media (hover: hover) and (pointer: fine) {
+	.ds-btn:hover {
+		--btn-bg: var(--ds-surface-3);
+	}
+
+	.ds-btn--primary:hover {
+		--btn-bg: var(--ds-accent-strong);
+	}
+
+	.ds-btn--ghost:hover {
+		--btn-bg: var(--ds-surface-1);
+	}
 }
 
 .ds-btn:active {
 	transform: scale(0.97);
 }
 
+.ds-btn:disabled {
+	cursor: not-allowed;
+	opacity: 0.6;
+}
+
 .ds-btn--primary {
 	--btn-bg: var(--ds-accent);
 	--btn-fg: var(--ds-on-accent);
-	--btn-border: transparent;
-}
-
-.ds-btn--primary:hover {
-	--btn-bg: var(--ds-accent-strong);
-	--btn-border: transparent;
 }
 
 .ds-btn--ghost {
 	--btn-bg: transparent;
-	--btn-border: transparent;
-}
-
-.ds-btn--ghost:hover {
-	--btn-bg: var(--ds-surface-2);
-	--btn-border: transparent;
 }
 
 .ds-btn svg {
-	width: 16px;
-	height: 16px;
+	width: 18px;
+	height: 18px;
 	flex-shrink: 0;
 }
 
 .ds-icon-btn {
 	display: inline-grid;
 	place-items: center;
-	width: 40px;
-	height: 40px;
+	width: 44px;
+	height: 44px;
 	padding: 0;
-	border-radius: var(--ds-radius-pill);
-	border: 1px solid transparent;
+	border: 0;
+	border-radius: 0;
 	background: transparent;
-	color: var(--ds-fg-muted);
+	color: var(--ds-fg);
 	cursor: pointer;
 	transition:
-		background-color var(--ds-dur-fast) var(--ds-ease),
-		color var(--ds-dur-fast) var(--ds-ease),
-		transform var(--ds-dur-fast) var(--ds-ease);
+		background-color var(--t-hover) ease,
+		color var(--t-hover) ease,
+		transform var(--t-press) var(--ease-out);
 }
 
-.ds-icon-btn:hover {
-	background: var(--ds-surface-2);
-	color: var(--ds-fg);
+@media (hover: hover) and (pointer: fine) {
+	.ds-icon-btn:hover {
+		background: var(--ds-surface-2);
+	}
 }
 
 .ds-icon-btn:active {
@@ -420,8 +496,8 @@ body.ds-body {
 }
 
 .ds-icon-btn svg {
-	width: 18px;
-	height: 18px;
+	width: 20px;
+	height: 20px;
 }
 
 /* ---------- Chips & keys ---------- */
@@ -431,35 +507,32 @@ body.ds-body {
 	align-items: center;
 	gap: 6px;
 	padding: 4px 10px;
-	border-radius: var(--ds-radius-chip);
+	border-radius: 0;
 	background: var(--ds-surface-2);
-	border: 1px solid var(--ds-border);
-	color: var(--ds-fg-muted);
-	font-size: var(--ds-text-xs);
-	font-weight: 500;
+	color: var(--ds-fg);
+	font-size: var(--step-small);
+	font-weight: 400;
 	line-height: 1.5;
 }
 
 .ds-kbd {
 	display: inline-grid;
 	place-items: center;
-	min-width: 20px;
-	height: 20px;
-	padding: 0 5px;
-	border-radius: 5px;
-	border: 1px solid var(--ds-border-strong);
-	background: var(--ds-surface-1);
-	color: var(--ds-fg-subtle);
-	font: 500 11px / 1 var(--ds-font-body);
+	min-width: 22px;
+	height: 22px;
+	padding: 0 6px;
+	border-radius: 0;
+	background: var(--ds-surface-2);
+	color: var(--ds-fg-muted);
+	font: 500 var(--step-small) / 1 var(--ds-font-body);
 }
 
-/* ---------- Cards ---------- */
+/* ---------- Cards: a tone step, no outline ---------- */
 
 .ds-card {
 	position: relative;
 	background: var(--ds-surface-1);
-	border: 1px solid var(--ds-border);
-	border-radius: var(--ds-radius-card);
+	border-radius: 0;
 	padding: var(--ds-space-5);
 }
 
@@ -468,15 +541,13 @@ a.ds-card,
 	color: inherit;
 	text-decoration: none;
 	transition:
-		border-color var(--ds-dur) var(--ds-ease),
-		background-color var(--ds-dur) var(--ds-ease),
-		transform var(--ds-dur) var(--ds-ease);
+		background-color var(--t-hover) ease,
+		transform var(--t-press) var(--ease-out);
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
 	a.ds-card:hover,
 	.ds-card--interactive:hover {
-		border-color: var(--ds-border-strong);
 		background: var(--ds-surface-2);
 	}
 }
@@ -491,11 +562,10 @@ a.ds-card:active,
 	display: inline-flex;
 	align-self: flex-start;
 	flex-wrap: wrap;
-	gap: 2px;
+	gap: 0;
 	padding: 4px;
-	border-radius: var(--ds-radius-pill);
+	border-radius: 0;
 	background: var(--ds-surface-1);
-	border: 1px solid var(--ds-border);
 	max-width: 100%;
 }
 
@@ -504,31 +574,32 @@ a.ds-card:active,
 	display: inline-flex;
 	align-items: center;
 	gap: var(--ds-space-2);
-	height: 36px;
-	padding: 0 14px;
+	min-height: 44px;
+	padding: 0 16px;
 	border: 0;
-	border-radius: var(--ds-radius-pill);
+	border-radius: 0;
 	background: transparent;
 	color: var(--ds-fg-muted);
-	font: 500 var(--ds-text-sm) / 1 var(--ds-font-body);
+	font: 500 var(--step-small) / 1 var(--ds-font-body);
 	cursor: pointer;
-	transition: color var(--ds-dur-fast) var(--ds-ease);
+	transition: color var(--t-hover) ease;
 }
 
-.ds-segmented__btn:hover {
-	color: var(--ds-fg);
+@media (hover: hover) and (pointer: fine) {
+	.ds-segmented__btn:hover {
+		color: var(--ds-fg);
+	}
 }
 
 .ds-segmented__btn.is-active {
-	color: var(--ds-fg);
+	color: var(--ds-on-accent);
 }
 
 .ds-segmented__indicator {
 	position: absolute;
 	inset: 0;
-	border-radius: inherit;
-	background: var(--ds-surface-3);
-	box-shadow: inset 0 1px 0 var(--ds-glass-highlight);
+	border-radius: 0;
+	background: var(--ds-accent);
 }
 
 .ds-segmented__label,
@@ -537,48 +608,44 @@ a.ds-card:active,
 }
 
 .ds-segmented__count {
-	font-size: var(--ds-text-xs);
-	color: var(--ds-fg-subtle);
+	font-size: var(--step-small);
+	opacity: 0.75;
 	font-variant-numeric: tabular-nums;
 }
 
 @media (max-width: 560px) {
 	.ds-segmented {
-		flex-wrap: nowrap;
-		overflow-x: auto;
-		scrollbar-width: none;
 		align-self: stretch;
-		/* Fade the trailing edge so it's clear more filters scroll into view */
-		-webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 32px), transparent);
-		mask-image: linear-gradient(90deg, #000 calc(100% - 32px), transparent);
-	}
-
-	.ds-segmented__btn {
-		flex-shrink: 0;
 	}
 }
 
-/* ---------- Status dot ---------- */
+/* ---------- Status ---------- */
 
 .ds-status {
 	display: inline-flex;
 	align-items: center;
 	gap: var(--ds-space-2);
-	padding: 6px 12px 6px 10px;
-	border-radius: var(--ds-radius-pill);
-	background: var(--ds-signal-soft);
 	color: var(--ds-signal);
-	font-size: var(--ds-text-xs);
-	font-weight: 600;
+	font-size: var(--step-small);
+	font-weight: 500;
 }
 
-.ds-status::before {
-	content: "";
-	width: 7px;
-	height: 7px;
-	border-radius: 50%;
-	background: currentColor;
-	box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 25%, transparent);
+/* ---------- Reveal once (taste-skill motion.md "Reveal on scroll") ---------- */
+/* Hidden states only exist when scripting runs (html.js) and motion is welcome */
+@media (prefers-reduced-motion: no-preference) {
+	.js [data-reveal] {
+		opacity: 0;
+		transform: translateY(24px);
+		transition:
+			opacity 700ms var(--ease-out),
+			transform 900ms var(--ease-expo);
+		transition-delay: calc(var(--i, 0) * var(--stagger-item));
+	}
+
+	.js [data-reveal].is-in {
+		opacity: 1;
+		transform: none;
+	}
 }
 
 /* ---------- Motion preferences ---------- */
@@ -596,4 +663,10 @@ a.ds-card:active,
 
 @view-transition {
 	navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation-duration: 320ms;
+	animation-timing-function: var(--ease-out);
 }
