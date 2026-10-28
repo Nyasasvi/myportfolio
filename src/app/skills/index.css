@@ -1,15 +1,29 @@
+/* The skills page composes its own full-bleed chapters, so the field behind them reaches both edges */
+.ds-main:has(> .skills) {
+	max-width: none;
+	padding: 0;
+}
+
 .skills {
+	/* The page's usual margins, measured from a full-width box */
+	--skills-pad: max(var(--ds-margin), calc((100% - var(--ds-layout-max)) / 2 + var(--ds-margin)));
+	--filter-h: 0px;
+	--field-top: calc(var(--nav-h) + var(--filter-h));
 	width: 100%;
 	display: flex;
 	flex-direction: column;
-	gap: var(--ds-space-5);
-	padding-top: var(--ds-space-7);
 }
 
 .skills-intro {
 	display: grid;
 	gap: var(--ds-space-5);
-	margin-bottom: var(--ds-space-3);
+	padding: calc(var(--ds-space-6) + var(--ds-space-7)) var(--skills-pad) var(--ds-space-6);
+}
+
+.skills-intro__note {
+	margin: 0;
+	max-width: 52ch;
+	color: var(--ds-fg-muted);
 }
 
 .skills-legend {
@@ -26,36 +40,144 @@
 	gap: var(--ds-space-2);
 }
 
-/* Groups flow down three columns, so every screen of the list is full */
-.skills-groups {
-	columns: 3;
-	column-gap: var(--ds-space-8);
-	margin-top: var(--ds-space-6);
+/* ---------- Filter: stays under the bar on wide screens, and marks the chapter being read ---------- */
+
+.skills-filter {
+	position: relative;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	padding: 0 var(--skills-pad) var(--ds-space-5);
+	background: var(--ds-bg);
 }
 
-.skills-group {
-	display: flex;
-	flex-direction: column;
-	gap: var(--ds-space-4);
-	min-width: 0;
-	break-inside: avoid;
-	margin-bottom: clamp(48px, 5vw, 72px);
+.skills-filter .ds-segmented__btn[data-current]:not(.is-active) {
+	color: var(--ds-fg);
 }
 
-.skills-group__title {
-	display: flex;
-	align-items: baseline;
+.skills-filter .ds-segmented__btn[data-current]::after {
+	content: "";
+	position: absolute;
+	left: 16px;
+	right: 16px;
+	bottom: 7px;
+	height: 2px;
+	background: var(--ds-accent);
+}
+
+@media (min-width: 1200px) {
+	.skills {
+		--filter-h: 72px;
+	}
+
+	.skills-filter {
+		position: sticky;
+		top: var(--nav-h);
+		height: var(--filter-h);
+		padding-bottom: 0;
+	}
+}
+
+/* ---------- Chapters over the field ---------- */
+
+.skills-chapters {
+	position: relative;
+	scroll-margin-top: var(--field-top);
+}
+
+/* One canvas for all seven scenes, held to the screen below the bars while the chapters pass */
+.skills-field {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+}
+
+.skills-field canvas {
+	position: sticky;
+	top: var(--field-top);
+	display: block;
+	width: 100%;
+	height: calc(100vh - var(--field-top));
+	height: calc(100lvh - var(--field-top));
+	opacity: 0;
+	transition: opacity 700ms var(--ease-out);
+}
+
+.skills-field canvas[data-ready] {
+	opacity: 1;
+}
+
+/* Each area fills the field once: title held on the left, the list on the right */
+.skills-chapter {
+	position: relative;
+	z-index: 1;
+	display: grid;
+	grid-template-columns: repeat(12, minmax(0, 1fr));
+	column-gap: var(--ds-gutter);
+	align-items: start;
+	min-height: calc(100vh - var(--field-top));
+	min-height: calc(100lvh - var(--field-top));
+	padding: clamp(56px, 9vh, 112px) var(--skills-pad);
+}
+
+.skills-chapter[hidden] {
+	display: none;
+}
+
+.skills-chapter__head {
+	grid-column: 1 / span 5;
+	position: sticky;
+	top: calc(var(--field-top) + clamp(32px, 6vh, 64px));
+	display: grid;
+	justify-items: start;
 	gap: var(--ds-space-3);
-	margin: 0;
-	font: 900 clamp(1.75rem, 1.2rem + 1.4vw, 2.5rem) / 1 var(--ds-font-display);
-	letter-spacing: -0.035em;
 }
 
-.skills-group__count {
-	font: 400 var(--step-small) / 1 var(--ds-font-body);
-	letter-spacing: 0;
+.skills-chapter__title {
+	margin: 0;
+	font: 900 clamp(2.75rem, 1.4rem + 3.6vw, 5.5rem) / 0.98 var(--ds-font-display);
+	letter-spacing: -0.045em;
+	text-wrap: balance;
+}
+
+/* Words sit on strips of the ground, so the scene behind never runs through them */
+.skills-chapter__title span,
+.skills-chapter__count span,
+.skills-chapter__scene span {
+	background: var(--ds-bg);
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
+}
+
+.skills-chapter__title span {
+	padding: 0 0.08em;
+	margin-inline: -0.08em;
+}
+
+.skills-chapter__count,
+.skills-chapter__scene {
+	margin: 0;
 	color: var(--ds-fg-muted);
+	line-height: 1.8;
+}
+
+.skills-chapter__count {
 	font-variant-numeric: tabular-nums;
+}
+
+.skills-chapter__scene {
+	max-width: 34ch;
+}
+
+.skills-chapter__count span,
+.skills-chapter__scene span {
+	padding: 3px 8px;
+	margin-inline: -8px;
+}
+
+.skills-chapter .skills-list {
+	grid-column: 7 / -1;
 }
 
 .skills-list {
@@ -66,21 +188,54 @@
 	list-style: none;
 }
 
-/* A dense, scannable row: name and context left, tenure and level right; rows told apart by space */
+/* A dense, scannable row: the scene shows through it dimmed, and its words sit on strips of ground */
 .skill-row {
+	position: relative;
 	display: grid;
 	grid-template-columns: minmax(0, 1fr) auto auto;
 	grid-template-areas: "text meter years";
 	align-items: baseline;
 	gap: var(--ds-space-4);
-	padding: 10px 12px;
-	margin: 0 -12px;
+	padding: 12px 14px;
+	margin: 0 -14px;
+	background: color-mix(in srgb, var(--ds-bg) 45%, transparent);
 	transition: background-color var(--t-hover) ease;
+}
+
+.skill-row__name,
+.skill-row__tags,
+.skill-row__years {
+	background: var(--ds-bg);
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
+	padding: 2px 4px;
+	margin-inline: -4px;
+}
+
+.skill-row:hover :is(.skill-row__name, .skill-row__tags, .skill-row__years) {
+	background: transparent;
+}
+
+/* The row being pointed at is the one setting off the scene */
+.skill-row::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 3px;
+	background: var(--ds-accent);
+	transform: scaleY(0);
+	transition: transform 300ms var(--ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {
 	.skill-row:hover {
 		background: var(--ds-surface-1);
+	}
+
+	.skill-row:hover::before {
+		transform: none;
 	}
 }
 
@@ -112,6 +267,13 @@
 	display: inline-flex;
 	gap: 3px;
 	align-self: center;
+	padding: 4px;
+	margin: -4px;
+	background: var(--ds-bg);
+}
+
+.skill-row:hover .skill-meter {
+	background: transparent;
 }
 
 .skill-meter i {
@@ -126,20 +288,33 @@
 	background: var(--ds-fg);
 }
 
-@media (max-width: 1100px) {
-	.skills-groups {
-		columns: 2;
+/* Narrow screens: each chapter opens on a window of its scene, then title and list in one column */
+@media (max-width: 900px) {
+	.skills-chapter {
+		grid-template-columns: minmax(0, 1fr);
+		row-gap: var(--ds-space-5);
+		min-height: 0;
+		padding-top: max(30svh, 200px);
+		padding-bottom: var(--ds-space-8);
 	}
-}
 
-@media (max-width: 700px) {
-	.skills-groups {
-		columns: 1;
+	.skills-chapter__head {
+		grid-column: 1;
+		position: static;
+	}
+
+	.skills-chapter .skills-list {
+		grid-column: 1;
 	}
 }
 
 @media (max-width: 560px) {
-	.skills {
-		padding-top: var(--ds-space-5);
+	.skills-intro {
+		padding-top: var(--ds-space-7);
+	}
+
+	.skill-row {
+		padding: 12px;
+		margin: 0 -12px;
 	}
 }
