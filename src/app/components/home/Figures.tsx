@@ -1,30 +1,124 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { ArrowDown } from 'lucide-react';
+import { ArrowDown, ArrowUp, Activity } from 'lucide-react';
 import { showSystemRoute } from './systemEvents';
+
+/*
+ * Each result carries the chart that shows it. Most results on the resume are relative changes
+ * with no published starting value, so those are drawn against an index where before = 100; the
+ * forecast uses its real WAPE ranges, and the HCL figure is a live view of one day at that rate.
+ */
+type Bar = { name: string; from: number; to: number; value: string };
+type Chart = {
+	title: string;
+	note: string;
+	max: number;
+	ticks: { at: number; label: string }[];
+	before: Bar;
+	after: Bar;
+	gain: { dir: 'up' | 'down' | 'live'; text: string };
+	/** Show where the "before" bar sat, behind the "after" bar */
+	ghost: boolean;
+	live?: 'day';
+	describe: string;
+};
+
+const INDEX_TICKS = [
+	{ at: 0, label: '0' },
+	{ at: 50, label: '50' },
+	{ at: 100, label: '100' },
+];
+
+const indexed = (opts: { title: string; better: 'lower' | 'higher'; afterName: string; after: number; gain: string; context: string }): Chart => ({
+	title: opts.title,
+	note: `Indexed so before = 100. ${opts.better === 'lower' ? 'Lower' : 'Higher'} is better.`,
+	max: 140,
+	ticks: INDEX_TICKS,
+	before: { name: 'Before', from: 0, to: 100, value: '100' },
+	after: { name: opts.afterName, from: 0, to: opts.after, value: String(opts.after) },
+	gain: { dir: opts.better === 'lower' ? 'down' : 'up', text: opts.gain },
+	ghost: true,
+	describe: `${opts.title}, indexed so before is 100: ${opts.context} it went to ${opts.after}.`,
+});
 
 // Results stated on the resume (resources/consts.ts); nothing here is rounded up or added.
 // `route` points at the live diagram question that explains the result, where one exists.
-const rows = [
-	{ value: '70%', text: 'less time spent on supply-chain reporting with the agentic platform at Twisted X.', company: 'Twisted X', route: { graph: 'twisted-x', id: 'stock' } },
-	{ value: '15%', text: 'better order fulfillment from the same platform.', company: 'Twisted X', route: { graph: 'twisted-x', id: 'stock' } },
-	{ value: '11–21%', text: 'forecast error across SKUs with a fine-tuned TimesFM model, down from 24–31% with rolling 12-month averages.', company: 'Twisted X' },
-	{ value: '40%', text: 'lower retrieval latency for the MCP tool-calling agents over NetSuite.', company: 'Twisted X' },
-	{ value: '30%', text: 'more engagement from the personalized feed I built at Colombo AI.', company: 'Colombo AI', route: { graph: 'colombo-ai', id: 'next' } },
-	{ value: '500 GB', text: 'of data a day through the Spark and Kafka pipelines I built at HCL Technologies.', company: 'HCL', route: { graph: 'hcl', id: 'pipeline' } },
+const rows: {
+	value: string;
+	text: string;
+	company: string;
+	route?: { graph: string; id: string };
+	chart: Chart;
+}[] = [
+	{
+		value: '70%',
+		text: 'less time spent on supply-chain reporting with the agentic platform at Twisted X.',
+		company: 'Twisted X',
+		route: { graph: 'twisted-x', id: 'stock' },
+		chart: indexed({ title: 'Time spent on supply-chain reporting', better: 'lower', afterName: 'With the agentic platform', after: 30, gain: '70% less time', context: 'with the agentic platform' }),
+	},
+	{
+		value: '15%',
+		text: 'better order fulfillment from the same platform.',
+		company: 'Twisted X',
+		route: { graph: 'twisted-x', id: 'stock' },
+		chart: indexed({ title: 'Order fulfillment', better: 'higher', afterName: 'With the agentic platform', after: 115, gain: '15% better', context: 'with the agentic platform' }),
+	},
+	{
+		value: '11–21%',
+		text: 'forecast error across SKUs with a fine-tuned TimesFM model, down from 24–31% with rolling 12-month averages.',
+		company: 'Twisted X',
+		chart: {
+			title: 'Forecast error across SKUs, as WAPE',
+			note: 'Lower is better.',
+			max: 35,
+			ticks: [0, 10, 20, 30].map((t) => ({ at: t, label: `${t}%` })),
+			before: { name: 'Rolling 12-month average', from: 24, to: 31, value: '24–31%' },
+			after: { name: 'Fine-tuned TimesFM', from: 11, to: 21, value: '11–21%' },
+			gain: { dir: 'down', text: '10–13 points lower at both ends' },
+			ghost: true,
+			describe: 'Forecast error fell from 24 to 31 percent with rolling 12-month averages to 11 to 21 percent with fine-tuned TimesFM.',
+		},
+	},
+	{
+		value: '40%',
+		text: 'lower retrieval latency for the MCP tool-calling agents over NetSuite.',
+		company: 'Twisted X',
+		chart: indexed({ title: 'Retrieval latency for the MCP agents', better: 'lower', afterName: 'Optimized RESTlet flows', after: 60, gain: '40% lower latency', context: 'with optimized RESTlet flows' }),
+	},
+	{
+		value: '30%',
+		text: 'more engagement from the personalized feed I built at Colombo AI.',
+		company: 'Colombo AI',
+		route: { graph: 'colombo-ai', id: 'next' },
+		chart: indexed({ title: 'Engagement with the feed', better: 'higher', afterName: 'Personalized feed', after: 130, gain: '30% more engagement', context: 'with the personalized feed' }),
+	},
+	{
+		value: '500 GB',
+		text: 'of data a day through the Spark and Kafka pipelines I built at HCL Technologies.',
+		company: 'HCL',
+		route: { graph: 'hcl', id: 'pipeline' },
+		chart: {
+			title: 'One day through the pipeline',
+			note: 'Live, on Dallas time: how much of today’s 500 GB has moved so far.',
+			max: 500,
+			ticks: [
+				{ at: 0, label: '0' },
+				{ at: 250, label: '250 GB' },
+				{ at: 500, label: '500 GB' },
+			],
+			before: { name: 'A full day', from: 0, to: 500, value: '500 GB' },
+			after: { name: 'So far today', from: 0, to: 0, value: '' },
+			gain: { dir: 'live', text: 'About 5.8 MB every second' },
+			ghost: false,
+			live: 'day',
+			describe: 'At 500 gigabytes a day, the pipeline moves about 5.8 megabytes a second.',
+		},
+	},
 ];
 
-// Forecast error (WAPE) ranges on one 0–35% axis: the baseline in grey, the change in the accent
-const AXIS_MAX = 35;
-const ranges = [
-	{ name: 'Rolling 12-month average', from: 24, to: 31, emphasis: false },
-	{ name: 'Fine-tuned TimesFM', from: 11, to: 21, emphasis: true },
-];
-const ticks = [0, 10, 20, 30];
-const pct = (v: number) => `${(v / AXIS_MAX) * 100}%`;
-// Points of improvement at each end of the range: 24 → 11 and 31 → 21
-const gain = [ranges[0].from - ranges[1].from, ranges[0].to - ranges[1].to].sort((a, b) => a - b);
+const DEFAULT_PICK = 2; // the forecast: the one result with real before-and-after values
 
 const prefersReducedMotion = () =>
 	typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -95,10 +189,109 @@ function CountUp({ value, run, delay = 0 }: { value: string; run: boolean; delay
 	);
 }
 
+/** Fraction of the day gone in Dallas, ticking once a second while `on` */
+function useDallasDay(on: boolean) {
+	const [fraction, setFraction] = useState<number | null>(null);
+	useEffect(() => {
+		if (!on) return;
+		const read = () => {
+			const parts = new Intl.DateTimeFormat('en-US', {
+				timeZone: 'America/Chicago',
+				hour: 'numeric',
+				minute: 'numeric',
+				second: 'numeric',
+				hourCycle: 'h23',
+			}).formatToParts(new Date());
+			const get = (t: string) => Number(parts.find((p) => p.type === t)?.value ?? 0);
+			setFraction((get('hour') * 3600 + get('minute') * 60 + get('second')) / 86400);
+		};
+		read();
+		const id = window.setInterval(read, 1000);
+		return () => window.clearInterval(id);
+	}, [on]);
+	return fraction;
+}
+
+function FigureChart({ chart, plotRef }: { chart: Chart; plotRef: React.RefObject<HTMLDivElement> }) {
+	const day = useDallasDay(chart.live === 'day');
+	let after = chart.after;
+	if (chart.live === 'day' && day !== null) {
+		const gb = 500 * day;
+		after = { ...after, to: gb, value: `${gb.toFixed(1)} GB` };
+	}
+	const pct = (v: number) => `${(v / chart.max) * 100}%`;
+	const bars = [
+		{ bar: chart.before, emphasis: false },
+		{ bar: after, emphasis: true },
+	];
+	const GainIcon = chart.gain.dir === 'up' ? ArrowUp : chart.gain.dir === 'down' ? ArrowDown : Activity;
+
+	return (
+		<>
+			{/* The words swap with a short fade; the bars below morph from the previous chart */}
+			<figcaption className="forecast__title" key={`${chart.title}-title`}>
+				<span className="forecast__heading">{chart.title}</span>
+				<span className="forecast__note">{chart.note}</span>
+			</figcaption>
+			<div ref={plotRef} className="forecast__plot" role="img" aria-label={chart.describe}>
+				{bars.map(({ bar, emphasis }, i) => (
+					<div key={i} className={`forecast__row${emphasis ? ' is-emphasis' : ''}`}>
+						<span className="forecast__name">{bar.name}</span>
+						<span className="forecast__lane">
+							<span className="forecast__track">
+								{emphasis && chart.ghost && (
+									<span
+										className="forecast__ghost"
+										aria-hidden="true"
+										style={{ left: pct(chart.before.from), width: pct(chart.before.to - chart.before.from) }}
+									/>
+								)}
+								<span
+									className="forecast__range"
+									style={{ left: pct(bar.from), width: pct(Math.max(0, bar.to - bar.from)) }}
+								/>
+							</span>
+							<span className="forecast__value">{bar.value || '…'}</span>
+						</span>
+					</div>
+				))}
+				<div className="forecast__axis" aria-hidden="true">
+					{chart.ticks.map((t) => (
+						<span key={t.label} style={{ left: pct(t.at) }} data-edge={t.at === 0 ? 'start' : t.at === chart.max ? 'end' : undefined}>
+							{t.label}
+						</span>
+					))}
+				</div>
+			</div>
+			<p className="forecast__gain" key={`${chart.title}-gain`}>
+				<GainIcon aria-hidden="true" />
+				{chart.gain.text}
+			</p>
+			<table className="ds-visually-hidden">
+				<caption>{chart.title}</caption>
+				<thead>
+					<tr><th scope="col">Series</th><th scope="col">Value</th></tr>
+				</thead>
+				<tbody>
+					{bars.map(({ bar }) => (
+						<tr key={bar.name}><th scope="row">{bar.name}</th><td>{bar.value}</td></tr>
+					))}
+				</tbody>
+			</table>
+		</>
+	);
+}
+
 export function Figures() {
 	const [listRef, listSeen] = useSeen<HTMLDListElement>();
 	const [chartRef, chartSeen] = useSeen<HTMLDivElement>();
 	const [focus, setFocus] = useState<number | null>(null);
+	const [picked, setPicked] = useState(DEFAULT_PICK);
+
+	const pick = (i: number) => {
+		setFocus(i);
+		setPicked(i);
+	};
 
 	return (
 		<section className="figures" data-chapter="base" aria-labelledby="figures-title">
@@ -115,14 +308,24 @@ export function Figures() {
 							key={i}
 							className="figure-row"
 							data-focus={focus === i || undefined}
+							data-picked={picked === i || undefined}
 							data-reveal
 							style={{ '--i': i } as React.CSSProperties}
-							onMouseEnter={() => setFocus(i)}
-							onFocus={() => setFocus(i)}
+							onMouseEnter={() => pick(i)}
+							onFocus={() => pick(i)}
 							onBlur={() => setFocus(null)}
+							onClick={() => setPicked(i)}
 						>
 							<dt className="figure-row__value">
-								<CountUp value={row.value} run={listSeen} delay={i * 90} />
+								<button
+									type="button"
+									className="figure-row__pick"
+									aria-pressed={picked === i}
+									aria-controls="figure-chart"
+									aria-label={`Show the chart for ${row.value} ${row.text}`}
+								>
+									<CountUp value={row.value} run={listSeen} delay={i * 90} />
+								</button>
 							</dt>
 							<dd className="figure-row__text">
 								{row.text}
@@ -147,59 +350,14 @@ export function Figures() {
 
 			{/* State goes in data attributes: the reveal script adds is-in to the class list, and a
 			    changing className would wipe it and hide the element */}
-			<figure className="forecast" data-seen={chartSeen || undefined} data-reveal style={{ '--i': 2 } as React.CSSProperties}>
-				<figcaption className="forecast__title">Forecast error across SKUs, as WAPE. Lower is better.</figcaption>
-				<div
-					ref={chartRef}
-					className="forecast__plot"
-					role="img"
-					aria-label={`Forecast error fell from 24 to 31 percent with rolling 12-month averages to 11 to 21 percent with fine-tuned TimesFM, ${gain[0]} to ${gain[1]} points lower.`}
-				>
-					{ranges.map((r, i) => (
-						<div key={r.name} className={`forecast__row${r.emphasis ? ' is-emphasis' : ''}`} style={{ '--i': i } as React.CSSProperties}>
-							<span className="forecast__name">{r.name}</span>
-							<span className="forecast__track">
-								{/* Where the error used to be, so the new range reads as a drop from it */}
-								{r.emphasis && (
-									<span className="forecast__ghost" aria-hidden="true" style={{ left: pct(ranges[0].from), width: pct(ranges[0].to - ranges[0].from) }} />
-								)}
-								<span
-									className="forecast__range"
-									style={{ left: pct(r.from), width: pct(r.to - r.from), '--shift': `${((ranges[0].from - r.from) / (r.to - r.from)) * 100}%` } as React.CSSProperties}
-									tabIndex={0}
-									data-tip={`${r.name}: ${r.from}–${r.to}%`}
-								/>
-								{/* The emphasis label sits left of its bar, clear of the ghost range on the right */}
-								<span
-									className="forecast__value"
-									style={r.emphasis ? { right: `calc(100% - ${pct(r.from)} + 8px)` } : { left: `calc(${pct(r.to)} + 8px)` }}
-								>
-									{r.from}–{r.to}%
-								</span>
-							</span>
-						</div>
-					))}
-					<div className="forecast__axis" aria-hidden="true">
-						{ticks.map((t) => (
-							<span key={t} style={{ left: pct(t) }}>{t}%</span>
-						))}
-					</div>
-				</div>
-				<p className="forecast__gain" aria-hidden="true">
-					<ArrowDown />
-					{gain[0]}–{gain[1]} points lower at both ends of the range
-				</p>
-				<table className="ds-visually-hidden">
-					<caption>Forecast error (WAPE) across SKUs</caption>
-					<thead>
-						<tr><th scope="col">Method</th><th scope="col">Low</th><th scope="col">High</th></tr>
-					</thead>
-					<tbody>
-						{ranges.map((r) => (
-							<tr key={r.name}><th scope="row">{r.name}</th><td>{r.from}%</td><td>{r.to}%</td></tr>
-						))}
-					</tbody>
-				</table>
+			<figure
+				id="figure-chart"
+				className="forecast"
+				data-seen={chartSeen || undefined}
+				data-reveal
+				style={{ '--i': 2 } as React.CSSProperties}
+			>
+				<FigureChart chart={rows[picked].chart} plotRef={chartRef} />
 			</figure>
 		</section>
 	);

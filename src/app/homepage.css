@@ -515,7 +515,11 @@
 	}
 }
 
-/* Forecast range chart: emphasis form, one hue for the change, grey for the baseline */
+/*
+ * The figure chart: one panel beside the results that redraws for whichever result is picked.
+ * Two bars in the emphasis form (grey before, coral after); when the pick changes the bars glide
+ * to their new place and length, so switching results reads as one movement.
+ */
 /* The chart stays beside the results while they scroll by, level with the first row */
 .forecast {
 	grid-column: 1 / span 4;
@@ -528,6 +532,7 @@
 	background: var(--ds-surface-1);
 	--mark-base: #6f6a64;
 	--mark-emph: #f2583e;
+	--value-col: 5.5em;
 }
 
 [data-theme="light"] .forecast {
@@ -536,15 +541,26 @@
 }
 
 .forecast__title {
-	margin: 0 0 28px;
+	display: grid;
+	gap: 4px;
+	margin: 0 0 26px;
+	min-height: 3.6em;
+	max-width: 34ch;
+}
+
+.forecast__heading {
+	font-weight: 500;
+	color: var(--ds-fg);
+}
+
+.forecast__note {
 	font-size: var(--step-small);
 	color: var(--ds-fg-muted);
-	max-width: 30ch;
 }
 
 .forecast__plot {
 	display: grid;
-	gap: 22px;
+	gap: 20px;
 }
 
 .forecast__row {
@@ -561,62 +577,56 @@
 	color: var(--ds-fg);
 }
 
+/* Track on the left, the value in its own column on the right, so labels never collide */
+.forecast__lane {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) var(--value-col);
+	align-items: center;
+	gap: 12px;
+}
+
 .forecast__track {
 	position: relative;
 	height: 14px;
-	margin-right: 4.5em;
 }
 
-.forecast__range {
+.forecast__range,
+.forecast__ghost {
 	position: absolute;
 	top: 0;
 	bottom: 0;
+	transition:
+		left 700ms var(--ease-expo),
+		width 700ms var(--ease-expo),
+		transform 800ms var(--ease-out);
+}
+
+.forecast__range {
 	background: var(--mark-base);
-	outline-offset: 2px;
+	transform-origin: 0 50%;
 }
 
 .forecast__row.is-emphasis .forecast__range {
 	background: var(--mark-emph);
 }
 
+/* Where the "before" bar sat, so the change reads against it */
+.forecast__ghost {
+	border: 1px dashed var(--mark-base);
+	pointer-events: none;
+}
+
 .forecast__value {
-	position: absolute;
-	top: 50%;
-	translate: 0 -50%;
 	font-size: var(--step-small);
 	font-weight: 500;
 	white-space: nowrap;
 	font-variant-numeric: tabular-nums;
 }
 
-/* Hover and focus: the mark names itself */
-.forecast__range::after {
-	content: attr(data-tip);
-	position: absolute;
-	left: 50%;
-	bottom: calc(100% + 10px);
-	translate: -50% 4px;
-	padding: 6px 10px;
-	background: var(--ds-glass-bg);
-	box-shadow: var(--ds-glass-shadow); /* taste-skill-ignore: tooltip floats over the chart */
-	color: var(--ds-fg);
-	font-size: var(--step-small);
-	white-space: nowrap;
-	opacity: 0;
-	pointer-events: none;
-	transition: opacity var(--t-hover) ease, translate var(--t-hover) var(--ease-out);
-}
-
-.forecast__range:hover::after,
-.forecast__range:focus-visible::after {
-	opacity: 1;
-	translate: -50% 0;
-}
-
 .forecast__axis {
 	position: relative;
 	height: 18px;
-	margin-right: 4.5em;
+	margin-right: calc(var(--value-col) + 12px);
 	font-size: var(--step-small);
 	color: var(--ds-fg-muted);
 	font-variant-numeric: tabular-nums;
@@ -626,18 +636,16 @@
 	position: absolute;
 	top: 0;
 	translate: -50% 0;
+	white-space: nowrap;
+	transition: left 700ms var(--ease-expo);
 }
 
-.forecast__axis span:first-child {
+.forecast__axis span[data-edge="start"] {
 	translate: 0 0;
 }
 
-.forecast__ghost {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	border: 1px dashed var(--mark-base);
-	pointer-events: none;
+.forecast__axis span[data-edge="end"] {
+	translate: -100% 0;
 }
 
 .forecast__gain {
@@ -655,69 +663,40 @@
 	height: 15px;
 }
 
-/*
- * Entrance, once the chart is in view: the baseline range grows from its left end, the TimesFM
- * range drops out of the ghost of the old range to its own place, then the gain line appears.
- * Without motion, everything is simply shown.
- */
-@media (prefers-reduced-motion: no-preference) {
-	.js .forecast__row:not(.is-emphasis) .forecast__range {
-		transform: scaleX(0);
-		transform-origin: 0 50%;
-		transition: transform 800ms var(--ease-out) 150ms;
-	}
-
-	.js .forecast__row.is-emphasis .forecast__range {
-		/* Start on top of the old range (--shift is the offset in the bar's own width), then slide */
-		transform: translateX(var(--shift));
-		opacity: 0;
-		transition:
-			opacity 250ms ease 750ms,
-			transform 1000ms var(--ease-out) 1000ms;
-	}
-
-	.js .forecast__ghost {
-		opacity: 0;
-		transition: opacity 400ms ease 650ms;
-	}
-
-	.js .forecast .forecast__value,
-	.js .forecast .forecast__gain {
-		opacity: 0;
-		transition: opacity 400ms ease;
-	}
-
-	.forecast__row:not(.is-emphasis) .forecast__value {
-		transition-delay: 800ms;
-	}
-
-	.forecast__row.is-emphasis .forecast__value {
-		transition-delay: 1900ms;
-	}
-
-	.forecast .forecast__gain {
-		transition-delay: 2200ms;
-	}
-
-	.js .forecast[data-seen] .forecast__range {
-		transform: none;
-		opacity: 1;
-	}
-
-	.js .forecast[data-seen] .forecast__ghost,
-	.js .forecast[data-seen] .forecast__value,
-	.js .forecast[data-seen] .forecast__gain {
-		opacity: 1;
-	}
-
-	.forecast[data-seen] .forecast__gain svg {
-		animation: gain-nudge 600ms var(--ease-out) 2300ms both;
-	}
+/* The picked result's figure takes the accent, tying it to the chart */
+.figure-row[data-picked] .figure-row__value {
+	color: var(--ds-accent);
 }
 
-@keyframes gain-nudge {
-	from {
-		transform: translateY(-6px);
+.figure-row__pick {
+	padding: 0;
+	border: 0;
+	background: none;
+	color: inherit;
+	font: inherit;
+	letter-spacing: inherit;
+	text-align: inherit;
+	cursor: pointer;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	/* New words fade up as the bars move */
+	.forecast__title,
+	.forecast__gain {
+		animation: step-in 420ms var(--ease-out) both;
+	}
+
+	/* First view: the bars grow from their left ends once the chart is on screen */
+	.js .forecast:not([data-seen]) .forecast__range {
+		transform: scaleX(0);
+	}
+
+	.js .forecast:not([data-seen]) .forecast__row.is-emphasis .forecast__range {
+		transition-delay: 0ms, 0ms, 450ms;
+	}
+
+	.js .forecast:not([data-seen]) .forecast__ghost {
+		opacity: 0;
 	}
 }
 
