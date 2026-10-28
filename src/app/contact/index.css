@@ -2,14 +2,13 @@
 	width: 100%;
 	display: flex;
 	flex-direction: column;
-	gap: var(--ds-space-6);
-	padding-top: var(--ds-space-6);
+	gap: var(--ds-space-7);
+	padding-top: var(--ds-space-7);
 }
 
 .contact-intro {
-	display: flex;
-	flex-direction: column;
-	gap: var(--ds-space-3);
+	display: grid;
+	gap: var(--ds-space-5);
 }
 
 .contact-layout {
@@ -42,8 +41,8 @@
 }
 
 .contact-field__label {
-	font-size: var(--ds-text-sm);
-	font-weight: 600;
+	font-size: var(--step-body);
+	font-weight: 500;
 	color: var(--ds-fg);
 }
 
@@ -51,7 +50,7 @@
 	width: 100%;
 	min-height: 44px;
 	padding: 10px 14px;
-	border: 1px solid var(--ds-border-strong);
+	border: 1px solid var(--ds-border-strong); /* taste-skill-ignore: form field */
 	border-radius: var(--ds-radius-control);
 	background: var(--ds-bg);
 	color: var(--ds-fg);
@@ -75,9 +74,9 @@ textarea.contact-field__control {
 }
 
 .contact-field__control:focus-visible {
-	outline: none;
-	border-color: var(--ds-accent);
-	box-shadow: 0 0 0 3px var(--ds-accent-soft);
+	outline: 2px solid var(--ds-accent);
+	outline-offset: 2px;
+	border-color: transparent;
 	border-radius: var(--ds-radius-control);
 }
 
@@ -86,7 +85,7 @@ textarea.contact-field__control {
 }
 
 .contact-field__control.is-invalid:focus-visible {
-	box-shadow: 0 0 0 3px color-mix(in srgb, var(--ds-danger) 20%, transparent);
+	outline-color: var(--ds-danger);
 }
 
 .contact-field__control:disabled {
@@ -190,6 +189,7 @@ textarea.contact-field__control {
 .contact-channels__list {
 	display: flex;
 	flex-direction: column;
+	gap: 2px;
 	margin: 0;
 	padding: 0;
 	list-style: none;
@@ -199,11 +199,6 @@ textarea.contact-field__control {
 	display: flex;
 	align-items: center;
 	gap: var(--ds-space-2);
-	border-top: 1px solid var(--ds-border);
-}
-
-.contact-channels__list li:first-child {
-	border-top: 0;
 }
 
 .contact-channel {
@@ -236,12 +231,12 @@ textarea.contact-field__control {
 }
 
 .contact-channel__label {
-	font-size: var(--ds-text-xs);
-	color: var(--ds-fg-subtle);
+	font-size: var(--step-small);
+	color: var(--ds-fg-muted);
 }
 
 .contact-channel__value {
-	font-size: var(--ds-text-sm);
+	font-size: var(--step-body);
 	font-weight: 500;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -261,7 +256,7 @@ textarea.contact-field__control {
 
 @media (max-width: 900px) {
 	.contact-layout {
-		grid-template-columns: 1fr;
+		grid-template-columns: minmax(0, 1fr);
 	}
 }
 
@@ -275,7 +270,7 @@ textarea.contact-field__control {
 	}
 
 	.contact-form__row {
-		grid-template-columns: 1fr;
+		grid-template-columns: minmax(0, 1fr);
 	}
 
 	.contact-form__submit {

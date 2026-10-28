@@ -37,11 +37,19 @@ export default function SkillsPage() {
     return (
         <MotionConfig reducedMotion="user">
             <main className="skills">
-                <header className="skills-intro">
+                <header className="skills-intro" data-reveal>
                     <h1 className="ds-h1">Skills</h1>
                     <p className="ds-lede">
                         What I use to build agentic AI systems and the full-stack products around them, from four years of production work.
                     </p>
+                    <div className="skills-legend" aria-hidden="true">
+                        {[3, 2, 1].map((filled) => (
+                            <span key={filled} className="skills-legend__item">
+                                <span className="skill-meter" data-filled={filled}><i /><i /><i /></span>
+                                {tier(filled === 3 ? 95 : filled === 2 ? 85 : 70).label}
+                            </span>
+                        ))}
+                    </div>
                 </header>
 
                 <div className="ds-segmented" role="group" aria-label="Filter skills by area">
@@ -70,14 +78,6 @@ export default function SkillsPage() {
                     })}
                 </div>
 
-                <div className="skills-legend" aria-hidden="true">
-                    {[3, 2, 1].map((filled) => (
-                        <span key={filled} className="skills-legend__item">
-                            <span className="skill-meter" data-filled={filled}><i /><i /><i /></span>
-                            {tier(filled === 3 ? 95 : filled === 2 ? 85 : 70).label}
-                        </span>
-                    ))}
-                </div>
 
                 <div className="skills-groups">
                     {visible.map((group) => (
@@ -90,17 +90,19 @@ export default function SkillsPage() {
                             className="skills-group"
                             aria-labelledby={`skills-${group.id}`}
                         >
-                            <h2 id={`skills-${group.id}`} className="skills-group__title">
+                            <h2 id={`skills-${group.id}`} className="skills-group__title" data-reveal>
                                 {group.label}
                                 <span className="skills-group__count">{group.skills.length}</span>
                             </h2>
-                            <ul className="skills-list" role="list">
+                            <ul className="skills-list" role="list" data-reveal style={{ '--i': 1 } as React.CSSProperties}>
                                 {group.skills.map((skill) => {
                                     const t = tier(skill.level);
                                     return (
                                         <li key={skill.name} className="skill-row">
-                                            <span className="skill-row__name">{skill.name}</span>
-                                            <span className="skill-row__tags">{skill.tags.join(', ')}</span>
+                                            <span className="skill-row__text">
+                                                <span className="skill-row__name">{skill.name}</span>{' '}
+                                                <span className="skill-row__tags">{skill.tags.join(', ')}</span>
+                                            </span>
                                             <span className="skill-row__years">{skill.experience}</span>
                                             <span className="skill-meter" data-filled={t.filled} role="img" aria-label={t.label} title={t.label}>
                                                 <i /><i /><i />

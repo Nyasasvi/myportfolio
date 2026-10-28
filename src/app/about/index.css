@@ -1,206 +1,246 @@
 .about {
 	width: 100%;
-	max-width: 960px;
-	margin: 0 auto;
 	display: flex;
 	flex-direction: column;
-	gap: var(--ds-space-8);
-	padding-top: var(--ds-space-6);
+	gap: clamp(72px, 9vw, 128px);
+	padding-top: var(--ds-space-7);
 }
 
 .about-intro {
-	display: flex;
-	flex-direction: column;
-	gap: var(--ds-space-4);
+	display: grid;
+	grid-template-columns: repeat(12, minmax(0, 1fr));
+	column-gap: var(--ds-gutter);
+	row-gap: var(--ds-space-6);
+	align-items: start;
+}
+
+.about-intro .ds-h1 {
+	grid-column: 1 / -1;
+}
+
+.about-intro__photo {
+	grid-column: 1 / span 4;
+	margin: 0;
+	aspect-ratio: 4 / 5;
+	overflow: clip;
+	background: var(--ds-surface-1);
+}
+
+.about-intro__photo img,
+.about-band img,
+.about-entry__photo img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.about-intro__text {
+	grid-column: 7 / -1;
+	display: grid;
+	justify-items: start;
+	gap: var(--ds-space-6);
 }
 
 .about-intro__summary {
 	margin: 0;
-	max-width: 66ch;
-	font-size: var(--ds-text-lg);
-	line-height: 1.6;
-	color: var(--ds-fg-muted);
+	max-width: 52ch;
+	font-size: var(--step-lead);
+	line-height: 1.4;
+	text-wrap: pretty;
 }
 
-.about-intro__actions {
-	display: flex;
-	gap: var(--ds-space-2);
-	padding-top: var(--ds-space-2);
+.about-band {
+	margin: 0;
+	aspect-ratio: 21 / 9;
+	overflow: clip;
+	background: var(--ds-surface-1);
 }
 
-/* Highlights: a quiet row of figures, divided by hairlines rather than boxed in cards */
+.about-band img {
+	object-position: 30% 60%;
+}
+
+/* Highlights: four figures on one tone step, no rules between them */
 .about-highlights {
 	display: grid;
 	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: var(--ds-gutter);
 	margin: 0;
-	border-top: 1px solid var(--ds-border);
-	border-bottom: 1px solid var(--ds-border);
+	padding: var(--ds-space-6);
+	background: var(--ds-surface-1);
 }
 
 .about-highlight {
-	display: flex;
-	flex-direction: column;
-	gap: var(--ds-space-1);
-	padding: var(--ds-space-5) var(--ds-space-4);
-	border-left: 1px solid var(--ds-border);
-}
-
-.about-highlight:first-child {
-	border-left: 0;
-	padding-left: 0;
+	display: grid;
+	align-content: start;
+	gap: var(--ds-space-2);
 }
 
 .about-highlight__value {
-	font: 600 var(--ds-text-2xl) / 1.1 var(--ds-font-display);
-	letter-spacing: -0.02em;
-	color: var(--ds-fg);
+	font: 900 clamp(2rem, 1.4rem + 1.8vw, 3rem) / 1 var(--ds-font-display);
+	letter-spacing: -0.04em;
 	font-variant-numeric: tabular-nums;
 }
 
 .about-highlight__label {
 	margin: 0;
-	font-size: var(--ds-text-xs);
-	line-height: 1.45;
+	max-width: 24ch;
+	font-size: var(--step-small);
 	color: var(--ds-fg-muted);
 }
 
 .about-section {
-	display: flex;
-	flex-direction: column;
-	gap: var(--ds-space-5);
+	display: grid;
+	gap: var(--ds-space-7);
 }
 
-/* Timeline: experience is a true sequence, so a connecting rail earns its place */
-.about-timeline {
+.about-section__title {
+	margin: 0;
+	font: 900 clamp(2rem, 1.2rem + 2.6vw, 3.25rem) / 1 var(--ds-font-display);
+	letter-spacing: -0.04em;
+}
+
+/* Each role: when and where on the margin, the work from the halfway line */
+.about-entries {
+	display: grid;
+	gap: clamp(48px, 6vw, 80px);
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
 
-.about-job {
+.about-entry {
 	display: grid;
-	grid-template-columns: 180px minmax(0, 1fr);
-	gap: var(--ds-space-6);
-	padding: var(--ds-space-6) 0;
-	border-top: 1px solid var(--ds-border);
+	grid-template-columns: repeat(12, minmax(0, 1fr));
+	grid-template-rows: auto auto 1fr;
+	column-gap: var(--ds-gutter);
+	align-items: start;
 }
 
-.about-job:first-child {
-	border-top: 0;
-	padding-top: 0;
+.about-entry__when,
+.about-entry__where,
+.about-entry__photo {
+	grid-column: 1 / span 4;
 }
 
-.about-job__meta {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: var(--ds-space-2);
-	position: sticky;
-	top: 96px;
-	align-self: start;
+.about-entry__role,
+.about-entry__org,
+.about-entry__points {
+	grid-column: 7 / -1;
 }
 
-.about-job__dates {
+.about-entry__when {
+	grid-row: 1;
 	margin: 0;
-	font-size: var(--ds-text-sm);
-	font-weight: 600;
-	color: var(--ds-fg);
+	font-weight: 500;
 	font-variant-numeric: tabular-nums;
 }
 
-.about-job__location {
+.about-entry__where {
+	grid-row: 2;
 	margin: 0;
-	font-size: var(--ds-text-xs);
-	color: var(--ds-fg-subtle);
-}
-
-.about-job__body {
-	display: flex;
-	flex-direction: column;
-	gap: var(--ds-space-1);
-	padding-left: var(--ds-space-5);
-	border-left: 2px solid color-mix(in srgb, var(--job-color, var(--ds-accent)) 55%, transparent);
-}
-
-.about-job__company {
-	margin: 0;
+	font-size: var(--step-small);
 	color: var(--ds-fg-muted);
-	font-weight: 500;
 }
 
-.about-job__points {
-	display: flex;
-	flex-direction: column;
+.about-entry__photo {
+	grid-row: 3;
+	margin: var(--ds-space-6) 0 0;
+	overflow: clip;
+	background: var(--ds-surface-1);
+}
+
+.about-entry__role {
+	grid-row: 1;
+	margin: 0;
+	font: 900 clamp(1.5rem, 1.1rem + 1.2vw, 2.125rem) / 1.05 var(--ds-font-display);
+	letter-spacing: -0.03em;
+	text-wrap: balance;
+}
+
+.about-entry__org {
+	grid-row: 2;
+	margin: var(--ds-space-1) 0 0;
+	font-size: var(--step-lead);
+	color: var(--ds-fg-muted);
+}
+
+.about-entry__points {
+	grid-row: 3;
+	display: grid;
+	align-content: start;
 	gap: var(--ds-space-3);
-	margin: var(--ds-space-4) 0 0;
+	margin: var(--ds-space-5) 0 0;
 	padding-left: 1.1em;
+	max-width: 68ch;
+	line-height: 1.6;
+}
+
+.about-entry__points li::marker {
 	color: var(--ds-fg-muted);
-	line-height: 1.65;
-	max-width: 70ch;
 }
 
-.about-job__points li::marker {
-	color: var(--ds-fg-subtle);
-}
+@media (max-width: 860px) {
+	.about-intro__photo {
+		grid-column: 1 / span 7;
+	}
 
-.about-research {
-	display: flex;
-	flex-direction: column;
-	gap: var(--ds-space-1);
-	padding: var(--ds-space-6);
-}
-
-.about-research__head {
-	display: flex;
-	justify-content: space-between;
-	align-items: flex-start;
-	gap: var(--ds-space-4);
-	flex-wrap: wrap;
-}
-
-.about-research__head > div {
-	display: flex;
-	flex-direction: column;
-	gap: var(--ds-space-1);
-}
-
-@media (max-width: 760px) {
-	.about {
-		gap: var(--ds-space-7);
-		padding-top: var(--ds-space-3);
+	.about-intro__text {
+		grid-column: 1 / -1;
 	}
 
 	.about-highlights {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
+		row-gap: var(--ds-space-6);
 	}
 
-	.about-highlight:nth-child(odd) {
-		border-left: 0;
-		padding-left: 0;
+	.about-band {
+		aspect-ratio: 4 / 3;
 	}
 
-	.about-highlight:nth-child(n + 3) {
-		border-top: 1px solid var(--ds-border);
+	.about-entry {
+		grid-template-rows: none;
 	}
 
-	.about-job {
-		grid-template-columns: 1fr;
-		gap: var(--ds-space-3);
+	.about-entry > * {
+		grid-column: 1 / -1;
+		grid-row: auto;
 	}
 
-	.about-job__meta {
-		position: static;
-		flex-direction: row;
-		flex-wrap: wrap;
-		align-items: center;
-		gap: var(--ds-space-2) var(--ds-space-3);
+	.about-entry__role {
+		order: 1;
 	}
 
-	.about-job__body {
-		padding-left: var(--ds-space-4);
+	.about-entry__org {
+		order: 2;
 	}
 
-	.about-research {
+	.about-entry__when {
+		order: 3;
+		margin-top: var(--ds-space-3);
+	}
+
+	.about-entry__where {
+		order: 4;
+	}
+
+	.about-entry__points {
+		order: 5;
+	}
+
+	.about-entry__photo {
+		order: 6;
+		max-width: 60%;
+	}
+}
+
+@media (max-width: 560px) {
+	.about {
+		padding-top: var(--ds-space-5);
+	}
+
+	.about-highlights {
 		padding: var(--ds-space-5);
 	}
 }

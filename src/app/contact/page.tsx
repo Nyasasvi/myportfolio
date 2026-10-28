@@ -140,15 +140,15 @@ export default function ContactPage() {
 
     return (
         <main className="contact">
-            <header className="contact-intro">
+            <header className="contact-intro" data-reveal>
                 <h1 className="ds-h1">Get in touch</h1>
                 <p className="ds-lede">Hiring, collaborating, or just curious about something I built? Send a note and I&apos;ll reply by email.</p>
             </header>
 
             <div className="contact-layout">
-                <form ref={formRef} onSubmit={handleSubmit} className="ds-card contact-form" noValidate>
+                <form ref={formRef} onSubmit={handleSubmit} className="ds-card contact-form" noValidate data-reveal style={{ '--i': 1 } as React.CSSProperties}>
                     <div className="contact-form__row">
-                        <div className="contact-field">
+                        <div className="contact-field" data-reveal style={{ '--i': 2 } as React.CSSProperties}>
                             <label htmlFor="name" className="contact-field__label">Name</label>
                             <input
                                 {...fieldProps('name')}
@@ -160,7 +160,7 @@ export default function ContactPage() {
                             {errors.name && <p id="name-error" className="contact-field__error">{errors.name}</p>}
                         </div>
 
-                        <div className="contact-field">
+                        <div className="contact-field" data-reveal style={{ '--i': 3 } as React.CSSProperties}>
                             <label htmlFor="email" className="contact-field__label">Email</label>
                             <input
                                 {...fieldProps('email')}
@@ -174,7 +174,7 @@ export default function ContactPage() {
                         </div>
                     </div>
 
-                    <div className="contact-field">
+                    <div className="contact-field" data-reveal style={{ '--i': 4 } as React.CSSProperties}>
                         <label htmlFor="message" className="contact-field__label">Message</label>
                         <textarea
                             {...fieldProps('message')}
@@ -215,11 +215,11 @@ export default function ContactPage() {
                     </button>
                 </form>
 
-                <aside className="contact-aside" aria-label="Other ways to reach me">
-                    <div className="ds-card contact-channels">
+                <aside className="contact-aside" aria-label="Other ways to reach me" data-reveal style={{ '--i': 2 } as React.CSSProperties}>
+                    <div className="ds-card contact-channels" data-reveal style={{ '--i': 3 } as React.CSSProperties}>
                         <h2 className="ds-h3">Other ways to reach me</h2>
                         <ul className="contact-channels__list" role="list">
-                            <li>
+                            <li data-reveal style={{ '--i': 4 } as React.CSSProperties}>
                                 <a href={`mailto:${contactLinks.email}`} className="contact-channel">
                                     <Mail aria-hidden="true" />
                                     <span>
@@ -231,7 +231,7 @@ export default function ContactPage() {
                                     {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
                                 </button>
                             </li>
-                            <li>
+                            <li data-reveal style={{ '--i': 5 } as React.CSSProperties}>
                                 <a href={contactLinks.linkedin} target="_blank" rel="noopener noreferrer" className="contact-channel">
                                     <Linkedin aria-hidden="true" />
                                     <span>
@@ -240,7 +240,7 @@ export default function ContactPage() {
                                     </span>
                                 </a>
                             </li>
-                            <li>
+                            <li data-reveal style={{ '--i': 6 } as React.CSSProperties}>
                                 <a href={contactLinks.github} target="_blank" rel="noopener noreferrer" className="contact-channel">
                                     <Github aria-hidden="true" />
                                     <span>
@@ -252,7 +252,7 @@ export default function ContactPage() {
                         </ul>
                     </div>
 
-                    <div className="ds-card contact-call">
+                    <div className="ds-card contact-call" data-reveal style={{ '--i': 5 } as React.CSSProperties}>
                         <h2 className="ds-h3">Prefer to talk?</h2>
                         <p className="ds-body-text">Book a 30-minute call at a time that works for you.</p>
                         <a href="https://calendly.com/yasasvi-nellore/30min" target="_blank" rel="noopener noreferrer" className="ds-btn">
