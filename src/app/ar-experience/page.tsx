@@ -59,11 +59,11 @@ export default function ARExperience() {
       {/* Stays mounted while the game runs, so nothing has to load or fade in again on the way back */}
       <main className="ar" hidden={playing}>
         <header className="ar-intro">
-          <h1 className="ds-h1" data-reveal>AR portfolio</h1>
-          <p className="ds-lede" data-reveal style={{ '--i': 1 } as React.CSSProperties}>
+          <h1 className="ds-h1" data-reveal="now">AR portfolio</h1>
+          <p className="ds-lede" data-reveal="now" style={{ '--i': 1 } as React.CSSProperties}>
             Me in the middle of a 3D scene, with my work orbiting around me. Spin the ring, tap a card to bring it forward, and follow it to the project or the story behind it.
           </p>
-          <div className="ar-intro__actions" data-reveal style={{ '--i': 2 } as React.CSSProperties}>
+          <div className="ar-intro__actions" data-reveal="now" style={{ '--i': 2 } as React.CSSProperties}>
             <button type="button" className="ds-btn" onClick={() => setPlaying(true)}>
               <Gamepad2 aria-hidden="true" />
               Play Bug Catcher
@@ -71,7 +71,7 @@ export default function ARExperience() {
           </div>
         </header>
 
-        <div data-reveal style={{ '--i': 3 } as React.CSSProperties}>
+        <div data-reveal="now" style={{ '--i': 3 } as React.CSSProperties}>
           <ARScene />
         </div>
 

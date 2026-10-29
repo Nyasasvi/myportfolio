@@ -557,7 +557,7 @@ a.ds-card:active,
 	transform: scale(0.99);
 }
 
-/* ---------- Segmented filter (shared sliding indicator via framer layoutId) ---------- */
+/* ---------- Segmented filter (the indicator slides between choices: useSlidingIndicator) ---------- */
 .ds-segmented {
 	display: inline-flex;
 	align-self: flex-start;
@@ -643,6 +643,24 @@ a.ds-card:active,
 	}
 
 	.js [data-reveal].is-in {
+		opacity: 1;
+		transform: none;
+	}
+
+	/* The first screen doesn't wait for scripts to load: it rises in with the first paint, so the
+	   largest text is painted at once, and again on each client-side visit */
+	.js [data-reveal="now"] {
+		animation: ds-reveal-now 800ms var(--ease-out) both;
+		animation-delay: calc(var(--i, 0) * var(--stagger-item));
+	}
+}
+
+@keyframes ds-reveal-now {
+	from {
+		opacity: 0;
+		transform: translateY(18px);
+	}
+	to {
 		opacity: 1;
 		transform: none;
 	}

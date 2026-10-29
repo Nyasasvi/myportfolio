@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react';
-import { motion, MotionConfig } from 'framer-motion';
 import { ArrowUpRight, Github } from 'lucide-react';
 import './index.css';
+import { useSlidingIndicator } from '../components/useSlidingIndicator';
 import { showcase } from "../resources/showcase";
 import type { ChapterField } from '@/app/components/field/ChapterField';
 
@@ -20,6 +20,8 @@ const inCategory = (project: (typeof showcase)[number], category: string) =>
 
 export default function Page() {
     const [activeCategory, setActiveCategory] = useState('all');
+    const filterRef = useRef<HTMLDivElement>(null);
+    useSlidingIndicator(filterRef, activeCategory);
     const [current, setCurrent] = useState<string | null>(null);
     const [ready, setReady] = useState(false);
     const chaptersRef = useRef<HTMLDivElement>(null);
@@ -85,9 +87,9 @@ export default function Page() {
     const poke = (slug: string, e: React.PointerEvent, label: string) => fieldRef.current?.poke(slug, e.clientX, e.clientY, label);
 
     return (
-        <MotionConfig reducedMotion="user">
+        <>
             <main className="projects">
-                <header className="projects-intro" data-reveal>
+                <header className="projects-intro" data-reveal="now">
                     <h1 className="ds-h1">Projects</h1>
                     <p className="ds-lede">
                         Side projects and experiments, mostly in applied AI and full-stack web. Work at Twisted X, JPMorgan Chase and the rest is on the About page.
@@ -98,7 +100,7 @@ export default function Page() {
                 </header>
 
                 <div className="projects-filter">
-                    <div className="ds-segmented" role="group" aria-label="Filter projects">
+                    <div className="ds-segmented" role="group" aria-label="Filter projects" ref={filterRef}>
                         {categories.map((category) => {
                             const active = activeCategory === category.id;
                             return (
@@ -110,11 +112,7 @@ export default function Page() {
                                     onClick={() => choose(category.id)}
                                 >
                                     {active && (
-                                        <motion.span
-                                            layoutId="projects-filter-indicator"
-                                            className="ds-segmented__indicator"
-                                            transition={{ type: 'spring', stiffness: 500, damping: 40 }}
-                                        />
+                                        <span className="ds-segmented__indicator" aria-hidden="true" />
                                     )}
                                     <span className="ds-segmented__label">{category.label}</span>
                                     <span className="ds-segmented__count">{category.count}</span>
@@ -139,7 +137,7 @@ export default function Page() {
                         <canvas ref={canvasRef} data-ready={ready || undefined} />
                     </div>
 
-                    {showcase.map((project) => {
+                    {showcase.map((project, index) => {
                         const primaryHref = project.liveDemo ?? project.repo ?? project.githubLink;
                         const id = `project-${project.slug}`;
                         return (
@@ -151,7 +149,7 @@ export default function Page() {
                                 aria-labelledby={id}
                                 onPointerDown={(e) => poke(project.slug, e, '')}
                             >
-                                <div className="project-chapter__body" data-reveal>
+                                <div className="project-chapter__body" data-reveal={index === 0 ? 'now' : ''}>
                                     <h2 id={id} className="project-chapter__title">
                                         <a href={primaryHref} target="_blank" rel="noopener noreferrer"><span>{project.name}</span></a>
                                     </h2>
@@ -198,6 +196,7 @@ export default function Page() {
                                             height={960}
                                             loading="lazy"
                                             decoding="async"
+                                            style={{ objectPosition: project.image.focus }}
                                         />
                                     </figure>
                                 </div>
@@ -213,6 +212,6 @@ export default function Page() {
                     </div>
                 )}
             </main>
-        </MotionConfig>
+        </>
     );
 }

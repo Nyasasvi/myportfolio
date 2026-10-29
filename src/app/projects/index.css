@@ -148,6 +148,14 @@
 	margin-inline: -0.08em;
 }
 
+/* On touch screens the title link's hit area grows to 44px; vertical padding on an inline link
+   doesn't move the lines around it */
+@media (pointer: coarse) {
+	.project-chapter__title a {
+		padding-block: 4px;
+	}
+}
+
 .project-chapter__title a {
 	color: inherit;
 	text-decoration: underline;

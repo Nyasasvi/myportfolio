@@ -203,7 +203,8 @@
 	display: inline-flex;
 	align-items: center;
 	gap: 8px;
-	min-height: 40px;
+	min-width: 44px;
+	min-height: 44px;
 	padding: 0 14px;
 	border: 0;
 	background: var(--ds-surface-1);
@@ -259,7 +260,7 @@
 	}
 
 	.js .chapter:not(.is-active) .chapter__title {
-		opacity: 0.55;
+		opacity: 0.7;
 		transform: translateY(12px);
 	}
 }
@@ -388,11 +389,11 @@
 /* Each figure lands in turn once its chapter is the one in view */
 @media (prefers-reduced-motion: no-preference) {
 	.js .chapter__figure {
-		transition: transform 600ms var(--ease-out), opacity 500ms ease;
+		transition: transform 600ms var(--ease-out);
 	}
 
+	/* Waiting figures keep full contrast in both themes; the lift alone says they're next */
 	.js .chapter:not(.is-active) .chapter__figure {
-		opacity: 0.4;
 		transform: translateY(10px);
 	}
 

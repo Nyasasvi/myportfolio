@@ -5,6 +5,23 @@
 	bottom: 20px;
 	right: var(--ds-margin);
 	z-index: 1000;
+	transform-origin: bottom right;
+	transition:
+		opacity 200ms var(--ease-out),
+		transform 260ms var(--ease-out),
+		visibility 0s;
+}
+
+/* Out of the way while the chat is open or display type is on screen; leaving is quicker than arriving */
+.chatbot-fab[data-hidden] {
+	opacity: 0;
+	transform: scale(0.9);
+	visibility: hidden;
+	pointer-events: none;
+	transition:
+		opacity 150ms ease,
+		transform 200ms ease,
+		visibility 0s 200ms;
 }
 
 .chatbot-fab-button {
@@ -53,6 +70,40 @@
 	background: var(--ds-glass-bg);
 	color: var(--ds-fg);
 	box-shadow: var(--ds-glass-shadow); /* taste-skill-ignore: the chat panel is a dialog */
+	transform-origin: bottom right;
+	transition:
+		opacity 220ms var(--ease-out),
+		transform 280ms var(--ease-out),
+		visibility 0s;
+}
+
+/* Closed: faded, lowered and out of the tab order and the accessibility tree */
+.chatbot-window:not([data-open]) {
+	opacity: 0;
+	transform: translateY(16px) scale(0.97);
+	visibility: hidden;
+	pointer-events: none;
+	transition:
+		opacity 160ms ease,
+		transform 200ms ease,
+		visibility 0s 200ms;
+}
+
+/* New messages and the suggestions rise in */
+.message,
+.suggested-questions {
+	animation: chat-in 260ms var(--ease-out) both;
+}
+
+.suggested-questions {
+	animation-delay: 300ms;
+}
+
+@keyframes chat-in {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
 }
 
 .chatbot-header {

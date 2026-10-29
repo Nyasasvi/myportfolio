@@ -264,8 +264,8 @@ export default function Page() {
             <BackgroundStage scene={scene} paused={paused} />
 
             <header className="about-intro">
-                <h1 className="about-intro__title" data-reveal>About</h1>
-                <figure className="about-intro__photo" data-reveal style={{ '--i': 1 } as React.CSSProperties}>
+                <h1 className="about-intro__title" data-reveal="now">About</h1>
+                <figure className="about-intro__photo" data-reveal="now" style={{ '--i': 1 } as React.CSSProperties}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                         src="/images/color/mountains-800.webp"
@@ -276,7 +276,7 @@ export default function Page() {
                         height={1000}
                     />
                 </figure>
-                <div className="about-intro__text" data-reveal style={{ '--i': 2 } as React.CSSProperties}>
+                <div className="about-intro__text" data-reveal="now" style={{ '--i': 2 } as React.CSSProperties}>
                     <p className="about-intro__summary">{aboutMe}</p>
                     <p className="about-intro__hint">
                         Scroll on: each chapter below brings its own company to life in the background.

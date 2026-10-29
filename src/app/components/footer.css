@@ -53,6 +53,13 @@
 	transition: color var(--t-hover) ease, text-decoration-color var(--t-hover) ease;
 }
 
+/* A full 44px row for a thumb */
+@media (pointer: coarse) {
+	.site-footer__link {
+		min-height: 44px;
+	}
+}
+
 @media (hover: hover) and (pointer: fine) {
 	.site-footer__link:hover {
 		color: var(--ds-fg);
@@ -91,6 +98,11 @@
 @media (max-width: 1000px) {
 	.site-footer__col {
 		grid-column: span 6;
+	}
+
+	/* The contact column wraps to its own row: give it the full width so the address stays whole */
+	.site-footer__col:last-child {
+		grid-column: 1 / -1;
 	}
 }
 

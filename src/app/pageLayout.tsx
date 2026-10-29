@@ -1,5 +1,6 @@
 'use client'
-import { Flex } from "@/once-ui/components"
+// Straight from its file: the components barrel would also pull in the icon set and react-icons
+import { Flex } from "@/once-ui/components/Flex"
 import { SiteNav } from "./components/SiteNav"
 import { CommandPalette } from "./components/CommandPalette"
 import Footer from "./components/footer"
@@ -60,7 +61,8 @@ export default function PageLayout({
 		let safety = 0;
 		// One frame later, so a page that arrived by client navigation is in the DOM
 		const frame = requestAnimationFrame(() => {
-			const targets = Array.from(document.querySelectorAll<HTMLElement>('#main-content [data-reveal]:not(.is-in)'));
+			// The first screen (data-reveal="now") animates with the first paint and needs no observer
+			const targets = Array.from(document.querySelectorAll<HTMLElement>('#main-content [data-reveal]:not(.is-in):not([data-reveal="now"])'));
 			if (!targets.length) return;
 			if (!('IntersectionObserver' in window)) {
 				targets.forEach((el) => el.classList.add('is-in'));

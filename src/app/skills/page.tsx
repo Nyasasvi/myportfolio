@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react';
-import { motion, MotionConfig } from 'framer-motion';
 import './index.css'
+import { useSlidingIndicator } from '../components/useSlidingIndicator';
 import { skillsData } from "../resources/consts"
 import type { ChapterField } from '@/app/components/field/ChapterField';
 
@@ -30,6 +30,8 @@ const groups = categories.map((category) => ({
 
 export default function SkillsPage() {
     const [activeCategory, setActiveCategory] = useState('all');
+    const filterRef = useRef<HTMLDivElement>(null);
+    useSlidingIndicator(filterRef, activeCategory);
     const [current, setCurrent] = useState<string | null>(null);
     const [ready, setReady] = useState(false);
     const chaptersRef = useRef<HTMLDivElement>(null);
@@ -90,9 +92,9 @@ export default function SkillsPage() {
     };
 
     return (
-        <MotionConfig reducedMotion="user">
+        <>
             <main className="skills">
-                <header className="skills-intro" data-reveal>
+                <header className="skills-intro" data-reveal="now">
                     <h1 className="ds-h1">Skills</h1>
                     <p className="ds-lede">
                         What I use to build agentic AI systems and the full-stack products around them, from four years of production work.
@@ -111,7 +113,7 @@ export default function SkillsPage() {
                 </header>
 
                 <div className="skills-filter">
-                    <div className="ds-segmented" role="group" aria-label="Filter skills by area">
+                    <div className="ds-segmented" role="group" aria-label="Filter skills by area" ref={filterRef}>
                         {filters.map((filter) => {
                             const active = activeCategory === filter.id;
                             const count = filter.id === 'all' ? skillsData.length : skillsData.filter((s) => s.category === filter.id).length;
@@ -125,11 +127,7 @@ export default function SkillsPage() {
                                     onClick={() => choose(filter.id)}
                                 >
                                     {active && (
-                                        <motion.span
-                                            layoutId="skills-filter-indicator"
-                                            className="ds-segmented__indicator"
-                                            transition={{ type: 'spring', stiffness: 500, damping: 40 }}
-                                        />
+                                        <span className="ds-segmented__indicator" aria-hidden="true" />
                                     )}
                                     <span className="ds-segmented__label">{filter.label}</span>
                                     <span className="ds-segmented__count">{count}</span>
@@ -144,7 +142,7 @@ export default function SkillsPage() {
                         <canvas ref={canvasRef} data-ready={ready || undefined} />
                     </div>
 
-                    {groups.map((group) => (
+                    {groups.map((group, index) => (
                         <section
                             key={group.id}
                             className="skills-chapter"
@@ -152,14 +150,14 @@ export default function SkillsPage() {
                             hidden={activeCategory !== 'all' && activeCategory !== group.id}
                             aria-labelledby={`skills-${group.id}`}
                         >
-                            <div className="skills-chapter__head" data-reveal>
+                            <div className="skills-chapter__head" data-reveal={index === 0 ? 'now' : ''}>
                                 <h2 id={`skills-${group.id}`} className="skills-chapter__title">
                                     <span>{group.label}</span>
                                 </h2>
                                 <p className="skills-chapter__count"><span>{group.skills.length} skills</span></p>
                                 <p className="skills-chapter__scene"><span>{group.scene}</span></p>
                             </div>
-                            <ul className="skills-list" role="list" data-reveal style={{ '--i': 1 } as React.CSSProperties}>
+                            <ul className="skills-list" role="list" data-reveal={index === 0 ? 'now' : ''} style={{ '--i': 1 } as React.CSSProperties}>
                                 {group.skills.map((skill) => {
                                     const t = tier(skill.level);
                                     return (
@@ -184,6 +182,6 @@ export default function SkillsPage() {
                     ))}
                 </div>
             </main>
-        </MotionConfig>
+        </>
     );
 }

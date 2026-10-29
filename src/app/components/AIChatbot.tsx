@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquareText, Send, X } from 'lucide-react';
 import './chatbot.css';
 
@@ -38,8 +37,14 @@ export default function AIChatbot({ theme = 'light' }: AIChatbotProps) {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const launcherRef = useRef<HTMLButtonElement>(null);
+  // The window only exists in the browser: it holds clock times, which would differ from the
+  // server's render, and it starts closed anyway. Mounted straight after hydration, closed, so it
+  // can transition both ways.
+  const [ready, setReady] = useState(false);
+  useEffect(() => setReady(true), []);
 
   // Step aside while a screen that holds its own action or the closing wordmark is in view
   // (the hero, the footer), so the launcher never sits on top of display type
@@ -60,17 +65,32 @@ export default function AIChatbot({ theme = 'light' }: AIChatbotProps) {
     return () => io.disconnect();
   }, [pathname]);
 
-  // Auto-scroll to bottom when new messages arrive
+  // Keep the latest message in view; scroll the conversation itself, never the page
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    const box = messagesRef.current;
+    if (!box || !isOpen) return;
+    const smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    box.scrollTo({ top: box.scrollHeight, behavior: smooth ? 'smooth' : 'auto' });
+  }, [messages, isLoading, isOpen]);
 
-  // Focus input when chat opens
+  // Focus the input when the chat opens
   useEffect(() => {
-    if (isOpen) {
-      inputRef.current?.focus();
-    }
+    if (isOpen) inputRef.current?.focus();
   }, [isOpen]);
+
+  // Closing hands focus back to the launcher; Escape closes
+  const close = useCallback(() => {
+    setIsOpen(false);
+    requestAnimationFrame(() => launcherRef.current?.focus());
+  }, []);
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [isOpen, close]);
 
   const handleSendMessage = async (messageText?: string) => {
     const text = messageText || inputValue.trim();
@@ -125,74 +145,60 @@ export default function AIChatbot({ theme = 'light' }: AIChatbotProps) {
 
   return (
     <>
-      {/* Floating Chat Button */}
-      <AnimatePresence>
-        {!isOpen && !fabHidden && (
-          <motion.div
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0, opacity: 0 }}
-            className="chatbot-fab"
-          >
-            <button
-              type="button"
-              className="chatbot-fab-button"
-              onClick={() => setIsOpen(true)}
-              aria-label="Ask about me"
-            >
-              <MessageSquareText aria-hidden="true" />
-              <span className="chatbot-fab-label">Ask about me</span>
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Launcher: stays mounted so it can fade both ways; hidden while the chat is open */}
+      <div className="chatbot-fab" data-hidden={isOpen || fabHidden || undefined}>
+        <button
+          ref={launcherRef}
+          type="button"
+          className="chatbot-fab-button"
+          onClick={() => setIsOpen(true)}
+          aria-label="Ask about me"
+          aria-expanded={isOpen}
+          aria-controls="chatbot-window"
+        >
+          <MessageSquareText aria-hidden="true" />
+          <span className="chatbot-fab-label">Ask about me</span>
+        </button>
+      </div>
 
-      {/* Chat Window */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="chatbot-window"
-            data-theme={theme}
-          >
+      {/* Chat window: a non-modal dialog that fades and rises in, and back out */}
+      {ready && (
+      <div
+        id="chatbot-window"
+        className="chatbot-window"
+        data-theme={theme}
+        data-open={isOpen || undefined}
+        role="dialog"
+        aria-modal="false"
+        aria-labelledby="chatbot-title"
+      >
             {/* Header */}
             <div className="chatbot-header">
               <div>
-                <p className="chatbot-title">Ask about Yasasvi</p>
+                <p id="chatbot-title" className="chatbot-title">Ask about Yasasvi</p>
                 <p className="chatbot-subtitle">An AI assistant that knows his resume</p>
               </div>
-              <button type="button" className="ds-icon-btn" onClick={() => setIsOpen(false)} aria-label="Close chat">
+              <button type="button" className="ds-icon-btn" onClick={close} aria-label="Close chat">
                 <X aria-hidden="true" />
               </button>
             </div>
 
             {/* Messages */}
-            <div className="chatbot-messages">
+            <div className="chatbot-messages" ref={messagesRef} role="log" aria-live="polite" aria-label="Conversation">
               {messages.map((message) => (
-                <motion.div
-                  key={message.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={`message ${message.sender}`}
-                >
+                <div key={message.id} className={`message ${message.sender}`}>
                   <div className="message-content">
                     <p>{message.text}</p>
                   </div>
                   <span className="message-time">
                     {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
-                </motion.div>
+                </div>
               ))}
 
               {/* Loading indicator */}
               {isLoading && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="message ai"
-                >
+                <div className="message ai" aria-label="Writing an answer">
                   <div className="message-content typing">
                     <div className="typing-indicator">
                       <span></span>
@@ -200,17 +206,12 @@ export default function AIChatbot({ theme = 'light' }: AIChatbotProps) {
                       <span></span>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               )}
 
               {/* Suggested Questions (only show initially) */}
               {messages.length === 1 && !isLoading && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="suggested-questions"
-                >
+                <div className="suggested-questions">
                   <p className="suggested-questions__label">Try asking</p>
                   <div className="suggested-questions__list">
                     {suggestedQuestions.slice(0, 3).map((question, index) => (
@@ -224,10 +225,8 @@ export default function AIChatbot({ theme = 'light' }: AIChatbotProps) {
                       </button>
                     ))}
                   </div>
-                </motion.div>
+                </div>
               )}
-
-              <div ref={messagesEndRef} />
             </div>
 
             {/* Input */}
@@ -262,9 +261,8 @@ export default function AIChatbot({ theme = 'light' }: AIChatbotProps) {
               </form>
               <p className="chatbot-note">Answers come from an AI model and can be wrong.</p>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </div>
+      )}
     </>
   );
 }

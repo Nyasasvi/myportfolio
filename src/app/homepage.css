@@ -537,7 +537,7 @@
 
 [data-theme="light"] .forecast {
 	--mark-base: #77726b;
-	--mark-emph: #b3290f;
+	--mark-emph: #a5250c; /* a shade deeper than the accent so small coral text clears 4.5:1 on paper */
 }
 
 .forecast__title {
@@ -1363,7 +1363,7 @@
 .stack__detail-where {
 	margin: 0 0 14px;
 	font-size: var(--step-small);
-	opacity: 0.8;
+	opacity: 0.9; /* 4.5:1 or better on the coral ground */
 }
 
 .stack__uses {
@@ -2327,5 +2327,36 @@
 	.reach__value {
 		text-align: left;
 		max-width: 100%;
+	}
+}
+
+/* ---------- Touch ---------- */
+
+/* On touch screens every control gets a 44px target. Where a bigger box would shift the layout, the
+   extra height is padding taken back with an equal negative margin, so only the hit area grows. */
+@media (pointer: coarse) {
+	.hero__resume {
+		padding-block: 8px;
+		margin-block: -8px;
+	}
+
+	.figure-row__pick {
+		padding-block: 9px;
+		margin-block: -9px;
+	}
+
+	.figure-row__how {
+		min-height: 44px;
+		margin-block: -6px;
+	}
+
+	.stack__use-go {
+		min-height: 44px;
+		margin-block: -4px;
+	}
+
+	.timeline__range {
+		height: 44px;
+		margin-block: -6px;
 	}
 }

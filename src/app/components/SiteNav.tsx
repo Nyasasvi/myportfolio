@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Menu, Moon, Search, Sun, X } from "lucide-react";
 import { primaryNav, isActivePath } from "../resources/navigation";
 import "./site-nav.css";
@@ -18,6 +18,13 @@ export function SiteNav({ theme, onThemeSwitch, onOpenPalette }: SiteNavProps) {
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const [chapter, setChapter] = useState<string>("base");
 	const [isMac, setIsMac] = useState(true);
+	const toggleRef = useRef<HTMLButtonElement>(null);
+	const sheetRef = useRef<HTMLDivElement>(null);
+
+	const closeMenu = useCallback((returnFocus: boolean) => {
+		setMobileOpen(false);
+		if (returnFocus) requestAnimationFrame(() => toggleRef.current?.focus());
+	}, []);
 
 	useEffect(() => {
 		setIsMac(/Mac|iPhone|iPad/.test(navigator.platform));
@@ -58,15 +65,35 @@ export function SiteNav({ theme, onThemeSwitch, onOpenPalette }: SiteNavProps) {
 		setMobileOpen(false);
 	}, [pathname]);
 
+	// While the menu is open: the page underneath doesn't scroll, focus moves to the first page link
+	// and Tab cycles between the toggle and the links; Escape closes and hands focus back to the toggle.
+	// Widening past the phone layout closes it, so the page is never left locked.
 	useEffect(() => {
 		document.body.style.overflow = mobileOpen ? "hidden" : "";
 		if (!mobileOpen) return;
+		const sheet = sheetRef.current;
+		sheet?.querySelector<HTMLElement>("a[href]")?.focus({ preventScroll: true });
 		const onKey = (e: KeyboardEvent) => {
-			if (e.key === "Escape") setMobileOpen(false);
+			if (e.key === "Escape") {
+				closeMenu(true);
+				return;
+			}
+			if (e.key !== "Tab" || !sheet) return;
+			const stops = [toggleRef.current, ...Array.from(sheet.querySelectorAll<HTMLElement>("a[href]"))].filter(Boolean) as HTMLElement[];
+			const at = stops.indexOf(document.activeElement as HTMLElement);
+			const next = at === -1 ? 0 : e.shiftKey ? (at - 1 + stops.length) % stops.length : (at + 1) % stops.length;
+			e.preventDefault();
+			stops[next].focus();
 		};
+		const wide = window.matchMedia("(min-width: 861px)");
+		const onWide = () => wide.matches && closeMenu(false);
 		document.addEventListener("keydown", onKey);
-		return () => document.removeEventListener("keydown", onKey);
-	}, [mobileOpen]);
+		wide.addEventListener("change", onWide);
+		return () => {
+			document.removeEventListener("keydown", onKey);
+			wide.removeEventListener("change", onWide);
+		};
+	}, [mobileOpen, closeMenu]);
 
 	const ThemeIcon = theme === "dark" ? Sun : Moon;
 
@@ -112,6 +139,7 @@ export function SiteNav({ theme, onThemeSwitch, onOpenPalette }: SiteNavProps) {
 						<ThemeIcon aria-hidden="true" />
 					</button>
 					<button
+						ref={toggleRef}
 						type="button"
 						className="site-nav__menu-toggle"
 						aria-expanded={mobileOpen}
@@ -124,8 +152,8 @@ export function SiteNav({ theme, onThemeSwitch, onOpenPalette }: SiteNavProps) {
 				</div>
 			</nav>
 
-			<div className="site-nav__sheet-backdrop" data-open={mobileOpen} onClick={() => setMobileOpen(false)} aria-hidden="true" />
-			<div id="mobile-nav" className="site-nav__sheet ds-glass" data-open={mobileOpen} hidden={!mobileOpen}>
+			<div className="site-nav__sheet-backdrop" data-open={mobileOpen} onClick={() => closeMenu(true)} aria-hidden="true" />
+			<div id="mobile-nav" ref={sheetRef} className="site-nav__sheet ds-glass" data-open={mobileOpen} hidden={!mobileOpen}>
 				<p className="site-nav__sheet-heading">Pages</p>
 				{primaryNav.map((item) => (
 					<Link

@@ -216,7 +216,7 @@ export default function ContactPage() {
 
     return (
         <main className="contact">
-            <header className="contact-intro" data-reveal>
+            <header className="contact-intro" data-reveal="now">
                 <h1 className="ds-h1">Get in touch</h1>
                 <p className="ds-lede">Hiring, collaborating, or just curious about something I built? Send a note and I&apos;ll reply by email.</p>
                 <p className="contact-intro__note">Each way of reaching me below has a live scene of how it works. The letter beside the form is yours, set as you type.</p>
@@ -238,7 +238,7 @@ export default function ContactPage() {
                 </div>
 
                 <section id="contact-message" className="contact-chapter" data-scene="message" aria-labelledby="contact-message-title">
-                    <div className="contact-chapter__body" data-reveal>
+                    <div className="contact-chapter__body" data-reveal="now">
                         <h2 id="contact-message-title" className="contact-chapter__title"><span>Send a message</span></h2>
                         <form ref={formRef} onSubmit={handleSubmit} className="contact-form" noValidate>
                             <div className="contact-form__row">

@@ -56,12 +56,14 @@ function Detail({ project, status, inline = false }: { project: ShowcaseProject;
 				<img
 					src={inline ? project.image.small : project.image.large}
 					srcSet={`${project.image.small} 480w, ${project.image.large} 960w`}
-					sizes={inline ? '100vw' : '(max-width: 900px) 100vw, 40vw'}
+					// Inline (tablet and phone) the picture shares its row with the text above 600px
+					sizes={inline ? '(max-width: 600px) 92vw, 40vw' : '(max-width: 900px) 100vw, 40vw'}
 					alt={`Cover image for ${project.name}`}
 					width={960}
 					height={960}
 					loading="lazy"
 					decoding="async"
+					style={{ objectPosition: project.image.focus }}
 				/>
 			</figure>
 			<div className="work__detail" key={`${project.slug}-text`}>
