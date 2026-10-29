@@ -41,8 +41,9 @@ A sticky chapter bar shows reading progress and has a **Pause background** contr
 ### Other pages
 
 - **Projects** (`/projects`), **Skills** (`/skills`) and **Contact** (`/contact`).
-- **AR Experience** (`/ar-experience`) — a Three.js scene and a small bug-catching game, with a QR
-  code to open it on a phone.
+- **AR Experience** (`/ar-experience`) — a 3D scene with an animated drawing of Yasasvi standing on a
+  lit platform and ten cards about the work orbiting around (drag to spin, tap to bring one
+  forward), plus a small bug-catching game and a QR code to open it on a phone.
 - Site-wide: light and dark themes, a <kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>K</kbd> command palette,
   and an "Ask about me" chatbot.
 
@@ -107,6 +108,8 @@ Most text and numbers come from data files, so the pages stay in step with each 
 | Company diagrams (sources, systems, questions, steps) | `src/app/components/signal/graph.ts` |
 | Homepage results and their charts | `src/app/components/home/Figures.tsx` |
 | About chapters, figures and scenes | `src/app/about/page.tsx`, `src/app/about/scenes.ts` |
+| AR scene cards and their text | `src/app/components/ARScene.tsx` |
+| The animated character in the AR scene | `src/app/components/ar/avatar.ts` |
 | Navigation and contact links | `src/app/resources/navigation.ts` |
 | Resume PDF | `public/assets/resume.pdf` |
 | Photos (resized WebP) | `public/images/color/` |

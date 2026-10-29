@@ -6,6 +6,11 @@
 	padding-top: var(--ds-space-6);
 }
 
+/* Kept in the page while the game runs, so the scene and what has already faded in stay put */
+.ar[hidden] {
+	display: none;
+}
+
 .ar-intro {
 	display: flex;
 	flex-direction: column;
@@ -27,6 +32,7 @@
 	gap: var(--ds-space-6);
 	align-items: center;
 	padding: var(--ds-space-6);
+	background: var(--ds-surface-1);
 }
 
 .ar-phone__steps {
@@ -41,7 +47,7 @@
 	gap: var(--ds-space-2);
 	margin: 0;
 	padding-left: 1.4em;
-	color: var(--ds-fg-muted);
+	color: var(--ds-fg);
 	line-height: 1.55;
 }
 
@@ -52,10 +58,6 @@
 
 .ar-phone__qr {
 	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: var(--ds-space-2);
-	margin: 0;
 }
 
 .ar-phone__qr img,
@@ -63,51 +65,12 @@
 	display: block;
 	width: 180px;
 	height: 180px;
-	border-radius: 14px;
+	/* Always black on white so every scanner reads it */
 	background: #fff;
-	/* The QR is always black on white for scanners, so give it a hairline frame in dark mode */
-	box-shadow: 0 0 0 1px var(--ds-border-strong);
 }
 
 .ar-phone__qr-placeholder {
 	background: var(--ds-surface-2);
-}
-
-.ar-phone__qr figcaption {
-	text-align: center;
-}
-
-.ar-features {
-	display: flex;
-	flex-direction: column;
-	gap: var(--ds-space-4);
-}
-
-.ar-features__list {
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 0 var(--ds-space-6);
-	margin: 0;
-}
-
-.ar-features__list > div {
-	display: flex;
-	flex-direction: column;
-	gap: 2px;
-	padding: var(--ds-space-4) 0;
-	border-top: 1px solid var(--ds-border);
-}
-
-.ar-features__list dt {
-	font-weight: 600;
-	color: var(--ds-fg);
-}
-
-.ar-features__list dd {
-	margin: 0;
-	font-size: var(--ds-text-sm);
-	line-height: 1.55;
-	color: var(--ds-fg-muted);
 }
 
 /* ---------- AR / game stage ---------- */
@@ -127,14 +90,12 @@
 	gap: var(--ds-space-2);
 }
 
-.ar-view-container,
 .game-container {
 	position: relative;
 	width: 100%;
 	min-height: 75vh;
 	border-radius: var(--ds-radius-card);
 	overflow: hidden;
-	border: 1px solid var(--ds-border);
 	background: var(--ds-surface-1);
 }
 
@@ -155,14 +116,6 @@
 	.ar-phone {
 		grid-template-columns: 1fr;
 		padding: var(--ds-space-5);
-	}
-
-	.ar-phone__qr {
-		align-items: flex-start;
-	}
-
-	.ar-features__list {
-		grid-template-columns: 1fr;
 	}
 
 	.ar-intro__actions,

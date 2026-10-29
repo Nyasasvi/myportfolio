@@ -1,209 +1,55 @@
-# AR Portfolio Experience 🌐
+# AR Experience
 
-An immersive Augmented Reality experience showcasing projects, skills, and interactive demonstrations using cutting-edge web technologies.
+The `/ar-experience` page has two parts: a 3D scene of me surrounded by my work, and Bug Catcher, a
+short game. A QR code on the page opens the scene on a phone; it runs in any browser with WebGL and
+needs no app or camera.
 
-## Features ✨
+## The 3D scene
 
-### 🎭 3D Hologram Avatar
-- Wireframe 3D character that introduces you
-- Animated with floating motion effects
-- Interactive hover states
-- Holographic scanning effects
+`src/app/components/ARScene.tsx`, styles in `src/app/components/ar-scene.css`.
 
-### 👆 Gesture-Controlled Navigation
-- Drag to rotate the scene
-- Pinch/scroll to zoom
-- Tap on objects to interact
-- Intuitive mobile-first controls
+- **Me, drawn and animated** (`src/app/components/ar/avatar.ts`). A flat illustration drawn from
+  my photo (swept wavy hair, brown cat-eye sunglasses, a full beard, the grey-green plaid shirt with
+  rolled sleeves, black jeans, a watch and the red thread at my neck, plus boots for Twisted X). It
+  is drawn on a 2D canvas each frame and mapped into the scene, rigged at the neck, shoulders,
+  elbows and wrists. I breathe and sway, look towards the pointer or the card under it, wave when
+  the scene opens or when tapped, and turn to present each card as it comes to the front. I always
+  face the viewer and stand on the platform with a soft shadow under my boots.
+- **Ten cards in orbit** around my waist: my current role, a result from each job (Twisted X,
+  JPMorgan Chase, Colombo AI, HCL) and four projects with their cover pictures. The ring passes in
+  front low down and slips behind my back; cards further away shrink and dim.
+- **Every card faces the viewer.** Cards are drawn into canvas textures and turned square to the
+  camera every frame, so text is never mirrored or seen edge on. They redraw when the theme changes.
+- **Moving it.** The ring rests on each card for a few seconds, then turns to the next. Drag or
+  swipe sideways to spin it, flick it to let it coast, or tap a card to bring it to the front.
+  Hovering a card stops the ring. The camera leans gently with the pointer. Tapping me
+  brings my intro card to the front.
+- **The card in front is spelled out** in the panel beside the scene (below it on phones), with its
+  links and previous/next buttons.
+- **Everything in the ring** lists all ten cards under the scene, with the project pictures; choosing
+  one turns the ring to it. Between the panel and the list, everything reads and works from the
+  keyboard, and without WebGL.
+- **Calm by request.** A Pause button stops the ring, the dust and my idle motion (a tap still gets a
+  wave); with reduced motion set, nothing moves on its own. Rendering stops while the scene is off screen or the tab is hidden.
 
-### 💻 Floating Code Snippets
-- Animated code samples orbiting in 3D space
-- Multiple programming languages
-- Glowing effects and smooth animations
-- Interactive on hover
+### Changing the cards
 
-### 🏗️ Interactive 3D Architecture
-- Multi-layered system architecture visualization
-- Frontend, API, Backend, and Database layers
-- Rotating 3D model with hover interactions
-- Educational and visually engaging
+Card content lives in the `CARDS` list at the top of `ARScene.tsx`. Project cards are built from
+`src/app/resources/showcase.ts` by name with `projectCard('…')`; figure cards take a big number, a
+line under it and a footer, plus the `detail` shown in the panel.
 
-### 🐛 Bug Catcher Mini Game
-- Test your debugging skills
-- Catch different types of bugs (Syntax, Logic, Runtime, Performance)
-- Time-based challenge with scoring system
-- Different point values for different bug types
-- Leaderboard-ready
+### Changing how I look
 
-### 📱 Mobile Ready
-- Fully responsive design
-- Touch-optimized controls
-- WebXR support detection
-- Fallback mode for unsupported devices
-- No app installation required
+The colours are in the `C` table at the top of `avatar.ts`, and every shape is an SVG path string in
+`buildPaths()`, drawn in a 400 × 1000 space centred on x = 200 (the canvas is wider so a wave fits).
+Poses are angles for each joint; `ARM_L_WAVE` and `ARM_R_PRESENT` are the two gestures.
 
-## Tech Stack 🛠️
+## Bug Catcher
 
-- **Three.js** - 3D graphics rendering
-- **React Three Fiber** - React renderer for Three.js
-- **React Three Drei** - Useful helpers for R3F
-- **AR.js** - Marker-based AR tracking
-- **WebXR API** - Web-based AR/VR capabilities
-- **QRCode.js** - QR code generation
-- **Next.js 14** - React framework with App Router
-- **TypeScript** - Type safety
+`src/app/components/BugCatcherGame.tsx`. Catch as many bugs as you can in 60 seconds. Fifteen bugs
+start on the board and a new one appears for each one caught. Bugs are worth different points:
+syntax errors 10, logic bugs 15, runtime errors 20 and performance issues 25.
 
-## How It Works 🔧
+## Built with
 
-### QR Code Flow
-1. QR code is generated with the AR experience URL
-2. Users scan the QR code with their smartphone
-3. Opens directly in the browser (no app needed)
-4. WebXR/AR.js initializes the AR experience
-5. 3D content overlays on the camera view
-
-### Scene Architecture
-```
-ARScene
-├── 3D Hologram Avatar (animated wireframe)
-├── Floating Code Snippets (orbiting)
-├── Architecture Diagrams (rotating layers)
-├── Project Panels (interactive cards)
-└── Environment (lighting, grid, effects)
-```
-
-### Game Mechanics
-- **Spawn System**: 15 initial bugs, new ones spawn when caught
-- **Bug Types**: 4 types with different point values
-- **Timer**: 60-second countdown
-- **Scoring**: Points based on bug type difficulty
-- **Physics**: Bugs move with velocity and boundary collision
-
-## Browser Support 🌍
-
-### Full AR Support
-- Chrome/Edge (Android)
-- Safari (iOS 13+)
-
-### Fallback 3D View
-- All modern browsers
-- Desktop and mobile
-- Mouse/touch controls
-
-## Performance Optimizations ⚡
-
-- Dynamic imports to reduce initial bundle size
-- Suspense boundaries for loading states
-- Efficient render loops with useFrame
-- Object pooling for game entities
-- CSS animations offloaded to GPU
-- Responsive asset loading
-
-## Usage 📖
-
-### Basic Navigation
-```tsx
-// Navigate to AR Experience
-/ar-experience
-
-// Direct AR mode
-/ar-experience?mode=ar
-
-// Launch game directly
-Click "Play Bug Catcher Game" button
-```
-
-### Integration
-```tsx
-import ARScene from '@/app/components/ARScene';
-import BugCatcherGame from '@/app/components/BugCatcherGame';
-
-// Use in your component
-<ARScene />
-<BugCatcherGame onExit={() => handleExit()} />
-```
-
-## Customization 🎨
-
-### Adding New Projects
-Edit `ARScene.tsx` and update the `projects` array:
-
-```tsx
-const projects = [
-  {
-    title: 'Your Project',
-    description: 'Project description',
-    tech: ['React', 'Node.js', 'MongoDB'],
-  },
-  // ... more projects
-];
-```
-
-### Adjusting Game Difficulty
-Edit `BugCatcherGame.tsx`:
-
-```tsx
-// Change initial bug count
-spawnBugs(20); // default: 15
-
-// Adjust time limit
-setTimeLeft(90); // default: 60
-
-// Modify bug speeds
-velocity: new THREE.Vector3(
-  (Math.random() - 0.5) * 0.2, // increase for faster
-  (Math.random() - 0.5) * 0.2,
-  (Math.random() - 0.5) * 0.2
-)
-```
-
-### Styling
-Customize colors in CSS files:
-- `ar-experience.css` - Main page styles
-- `ar-scene.css` - 3D scene UI elements
-- `bug-catcher.css` - Game interface
-
-## Future Enhancements 🚀
-
-- [ ] AR marker-based object placement
-- [ ] Multi-player bug catching
-- [ ] Voice commands
-- [ ] Hand tracking gestures
-- [ ] AR filters and effects
-- [ ] Social media sharing
-- [ ] Achievement system
-- [ ] Persistent leaderboards
-
-## Troubleshooting 🔍
-
-### Camera not working
-- Check browser permissions
-- Ensure HTTPS connection (required for camera access)
-- Try different browsers
-
-### 3D not rendering
-- Update graphics drivers
-- Enable hardware acceleration in browser
-- Check WebGL support: `https://get.webgl.org/`
-
-### Performance issues
-- Close other browser tabs
-- Reduce graphics quality settings
-- Use a more powerful device
-
-## Credits 💝
-
-Built with ❤️ using free and open-source technologies:
-- Three.js community
-- React Three Fiber team
-- AR.js contributors
-- Open source community
-
-## License 📄
-
-Free to use and modify for personal portfolios.
-
----
-
-**Note**: This AR experience works on any modern smartphone without requiring app installation. Simply scan the QR code and start exploring!
-
+Three.js and React Three Fiber for the scene, `qrcode` for the QR code, Next.js 14 and TypeScript.
