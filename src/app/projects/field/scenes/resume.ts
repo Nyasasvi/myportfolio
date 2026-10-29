@@ -1,5 +1,5 @@
 import { approach, clamp, easeInOut, easeOut, rng, type Frame, type Palette, type Scene, type Zone } from '@/app/components/field/types';
-import { arc, stageFor, tag, text, type Stage } from '../stage';
+import { arc, stageFor, tag, text, type Stage } from '@/app/components/field/stage';
 
 /*
  * AI Resume Editor: a job description on the left, a resume on the right. The editor reads the

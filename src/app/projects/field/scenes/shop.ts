@@ -1,5 +1,5 @@
 import { clamp, easeInOut, easeOut, rng, type Frame, type Palette, type Scene, type Zone } from '@/app/components/field/types';
-import { arc, stageFor, tag, text, type Stage } from '../stage';
+import { arc, stageFor, tag, text, type Stage } from '@/app/components/field/stage';
 
 /*
  * E-Commerce Shopping Platform: a shop from catalog to doorstep. Products are picked into the cart;

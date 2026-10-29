@@ -1,21 +1,194 @@
+/* The contact page composes its own full-bleed chapters, so the field behind them reaches both edges */
+.ds-main:has(> .contact) {
+	max-width: none;
+	padding: 0;
+}
+
 .contact {
+	/* The page's usual margins, measured from a full-width box */
+	--contact-pad: max(var(--ds-margin), calc((100% - var(--ds-layout-max)) / 2 + var(--ds-margin)));
+	--bar-h: 0px;
+	--field-top: calc(var(--nav-h) + var(--bar-h));
 	width: 100%;
 	display: flex;
 	flex-direction: column;
-	gap: var(--ds-space-7);
-	padding-top: var(--ds-space-7);
 }
 
 .contact-intro {
 	display: grid;
 	gap: var(--ds-space-5);
+	padding: calc(var(--ds-space-6) + var(--ds-space-7)) var(--contact-pad) var(--ds-space-6);
 }
 
-.contact-layout {
+.contact-intro__note {
+	margin: 0;
+	max-width: 52ch;
+	color: var(--ds-fg-muted);
+}
+
+/* ---------- The ways to reach me, with the one being read marked ---------- */
+
+.contact-bar {
+	position: relative;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	padding: 0 var(--contact-pad) var(--ds-space-5);
+	background: var(--ds-bg);
+}
+
+.contact-bar ul {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0;
+	margin: 0;
+	padding: 4px;
+	list-style: none;
+	background: var(--ds-surface-1);
+}
+
+.contact-bar a {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	min-height: 44px;
+	padding: 0 18px;
+	color: var(--ds-fg-muted);
+	font: 500 var(--step-small) / 1 var(--ds-font-body);
+	text-decoration: none;
+	transition: color var(--t-hover) ease;
+}
+
+.contact-bar a:hover,
+.contact-bar a[aria-current] {
+	color: var(--ds-fg);
+}
+
+.contact-bar a[aria-current]::after {
+	content: "";
+	position: absolute;
+	left: 18px;
+	right: 18px;
+	bottom: 7px;
+	height: 2px;
+	background: var(--ds-accent);
+}
+
+@media (min-width: 1100px) {
+	.contact {
+		--bar-h: 72px;
+	}
+
+	.contact-bar {
+		position: sticky;
+		top: var(--nav-h);
+		height: var(--bar-h);
+		padding-bottom: 0;
+	}
+}
+
+/* ---------- Chapters over the field ---------- */
+
+.contact-chapters {
+	position: relative;
+}
+
+/* One canvas for all five scenes, held to the screen below the bars while the chapters pass */
+.contact-scenes {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+}
+
+.contact-scenes canvas {
+	position: sticky;
+	top: var(--field-top);
+	display: block;
+	width: 100%;
+	height: calc(100vh - var(--field-top));
+	height: calc(100lvh - var(--field-top));
+	opacity: 0;
+	transition: opacity 700ms var(--ease-out);
+}
+
+.contact-scenes canvas[data-ready] {
+	opacity: 1;
+}
+
+/* Each way in fills the field once: its words on the left, its scene on the right */
+.contact-chapter {
+	position: relative;
+	z-index: 1;
 	display: grid;
-	grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+	grid-template-columns: repeat(12, minmax(0, 1fr));
+	column-gap: var(--ds-gutter);
+	align-items: center;
+	min-height: calc(100vh - var(--field-top));
+	min-height: calc(100lvh - var(--field-top));
+	padding: clamp(48px, 8vh, 96px) var(--contact-pad);
+	/* The page already keeps 88px clear for the bar (scroll-padding-top); land each chapter under both bars */
+	scroll-margin-top: calc(var(--field-top) - 88px);
+}
+
+.contact-chapter__body {
+	grid-column: 1 / span 6;
+	display: grid;
 	gap: var(--ds-space-5);
-	align-items: start;
+	align-content: start;
+	min-width: 0;
+}
+
+/* Words sit on strips of the ground, so a scene behind them never runs through them */
+.contact-chapter__title span,
+.contact-chapter__address span,
+.contact-chapter__text span {
+	background: var(--ds-bg);
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
+}
+
+.contact-chapter__title {
+	margin: 0;
+	font: 900 clamp(2.5rem, 1.4rem + 3vw, 4.5rem) / 0.98 var(--ds-font-display);
+	letter-spacing: -0.04em;
+}
+
+.contact-chapter__title span {
+	padding: 0 0.08em;
+	margin-inline: -0.08em;
+}
+
+.contact-chapter__address {
+	margin: 0;
+	font: 700 clamp(1.375rem, 0.9rem + 1.5vw, 2.25rem) / 1.2 var(--ds-font-display);
+	letter-spacing: -0.02em;
+	overflow-wrap: anywhere;
+}
+
+.contact-chapter__address a {
+	color: inherit;
+	text-decoration: underline;
+	text-decoration-thickness: 2px;
+	text-underline-offset: 0.18em;
+	text-decoration-color: var(--ds-accent);
+}
+
+.contact-chapter__address a:hover {
+	color: var(--ds-accent);
+}
+
+.contact-chapter__text {
+	margin: 0;
+	max-width: 40ch;
+	font-size: var(--step-lead);
+	line-height: 1.38;
+}
+
+.contact-chapter__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--ds-space-2);
 }
 
 /* ---------- Form ---------- */
@@ -24,7 +197,6 @@
 	display: flex;
 	flex-direction: column;
 	gap: var(--ds-space-5);
-	padding: var(--ds-space-6);
 }
 
 .contact-form__row {
@@ -171,102 +343,31 @@ textarea.contact-field__control {
 	}
 }
 
-/* ---------- Aside ---------- */
-
-.contact-aside {
-	display: flex;
-	flex-direction: column;
-	gap: var(--ds-space-4);
-}
-
-.contact-channels,
-.contact-call {
-	display: flex;
-	flex-direction: column;
-	gap: var(--ds-space-3);
-}
-
-.contact-channels__list {
-	display: flex;
-	flex-direction: column;
-	gap: 2px;
-	margin: 0;
-	padding: 0;
-	list-style: none;
-}
-
-.contact-channels__list li {
-	display: flex;
-	align-items: center;
-	gap: var(--ds-space-2);
-}
-
-.contact-channel {
-	flex: 1;
-	min-width: 0;
-	display: flex;
-	align-items: center;
-	gap: var(--ds-space-3);
-	padding: var(--ds-space-3) 0;
-	color: var(--ds-fg);
-	text-decoration: none;
-}
-
-.contact-channel > svg {
-	width: 18px;
-	height: 18px;
-	flex-shrink: 0;
-	color: var(--ds-fg-subtle);
-	transition: color var(--ds-dur-fast) var(--ds-ease);
-}
-
-.contact-channel:hover > svg {
-	color: var(--ds-accent);
-}
-
-.contact-channel > span {
-	display: flex;
-	flex-direction: column;
-	min-width: 0;
-}
-
-.contact-channel__label {
-	font-size: var(--step-small);
-	color: var(--ds-fg-muted);
-}
-
-.contact-channel__value {
-	font-size: var(--step-body);
-	font-weight: 500;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
-.contact-channel:hover .contact-channel__value {
-	text-decoration: underline;
-	text-underline-offset: 3px;
-}
-
-.contact-call .ds-btn {
-	align-self: flex-start;
-}
-
-/* ---------- Responsive ---------- */
+/* ---------- Narrow screens: each way in opens on a window of its scene, then its words ---------- */
 
 @media (max-width: 900px) {
-	.contact-layout {
+	.contact-chapter {
 		grid-template-columns: minmax(0, 1fr);
+		align-items: start;
+		min-height: 0;
+		padding-top: max(42svh, 280px);
+		padding-bottom: var(--ds-space-8);
+	}
+
+	.contact-chapter__body {
+		grid-column: 1;
+	}
+
+	/* The last chapter holds the field to the end, so its scene is not pushed up off the screen */
+	.contact-chapter:last-child {
+		min-height: calc(100vh - var(--field-top));
+		min-height: calc(100lvh - var(--field-top));
 	}
 }
 
 @media (max-width: 560px) {
-	.contact {
-		padding-top: var(--ds-space-3);
-	}
-
-	.contact-form {
-		padding: var(--ds-space-5);
+	.contact-intro {
+		padding-top: var(--ds-space-7);
 	}
 
 	.contact-form__row {

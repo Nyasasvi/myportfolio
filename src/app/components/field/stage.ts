@@ -1,11 +1,11 @@
 import type { Palette, Zone } from '@/app/components/field/types';
 
-/** The part of the field a project scene composes in */
+/** The part of the field a scene composes in, for pages whose chapters set their words in a left column */
 export type Stage = { x: number; y: number; w: number; h: number };
 
 /**
- * Wide screens: the project's words hold the left columns, so the scene takes the rest of the row.
- * Narrow screens: the words run full width under a window of open field at the top of each project,
+ * Wide screens: the chapter's words hold the left columns, so the scene takes the rest of the row.
+ * Narrow screens: the words run full width under a window of open field at the top of each chapter,
  * so the scene composes in the top of the field, where that window first shows it.
  */
 export const stageFor = (w: number, h: number, zone: Zone): Stage => {

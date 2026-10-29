@@ -1,5 +1,5 @@
 import { clamp, rng, type Frame, type Palette, type Scene, type Zone } from '@/app/components/field/types';
-import { stageFor, tag, text, type Stage } from '../stage';
+import { stageFor, tag, text, type Stage } from '@/app/components/field/stage';
 
 /*
  * Diffusion Model Face Generator: a portrait drawn out of noise. The model starts from pure static

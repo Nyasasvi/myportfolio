@@ -1,5 +1,5 @@
 import { clamp, easeInOut, rng, type Frame, type Palette, type Scene, type Zone } from '@/app/components/field/types';
-import { stageFor, tag, text, type Stage } from '../stage';
+import { stageFor, tag, text, type Stage } from '@/app/components/field/stage';
 
 /*
  * Chess Bellator: a board and the Monte Carlo search behind each move. Before every move the engine

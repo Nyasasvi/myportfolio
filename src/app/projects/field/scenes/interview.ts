@@ -1,5 +1,5 @@
 import { approach, clamp, rng, type Frame, type Palette, type Scene, type Zone } from '@/app/components/field/types';
-import { stageFor, tag, text, type Stage } from '../stage';
+import { stageFor, tag, text, type Stage } from '@/app/components/field/stage';
 
 /*
  * AI Mock Interview Platform: a voice interview drawn as its recording. The interviewer (in the

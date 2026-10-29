@@ -1,5 +1,5 @@
 import { approach, clamp, easeInOut, rng, type Frame, type Palette, type Scene, type Zone } from '@/app/components/field/types';
-import { arc, stageFor, tag, text, type Stage } from '../stage';
+import { arc, stageFor, tag, text, type Stage } from '@/app/components/field/stage';
 
 /*
  * Diet AI Agent: a day of eating, logged and analysed. Meals are logged into breakfast, lunch, a snack

@@ -306,6 +306,11 @@ export class ChapterField {
 		}
 	}
 
+	/** The scene of one chapter, for a page that feeds it state of its own (a form being typed, say) */
+	scene(id: string) {
+		return this.chapters.find((c) => c.id === id)?.scene;
+	}
+
 	/** A visitor pointed at something in a chapter: let that chapter's scene answer, if it is moving */
 	poke(id: string, clientX: number, clientY: number, label: string) {
 		if (!this.raf) return;

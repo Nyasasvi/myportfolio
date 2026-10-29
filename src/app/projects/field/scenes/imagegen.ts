@@ -1,5 +1,5 @@
 import { clamp, easeInOut, easeOut, type Frame, type Palette, type Scene, type Zone } from '@/app/components/field/types';
-import { stageFor, tag, type Stage } from '../stage';
+import { stageFor, tag, type Stage } from '@/app/components/field/stage';
 
 /*
  * AI Image Generation Platform: a prompt arrives and its picture resolves in the frame, coarse blocks
