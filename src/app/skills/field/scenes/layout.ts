@@ -1,4 +1,4 @@
-import { approach, clamp, rng, type Frame, type Palette, type Scene } from '../types';
+import { approach, clamp, rng, type Frame, type Palette, type Scene } from '@/app/components/field/types';
 
 /*
  * Frontend: a page of interface blocks on a twelve-column grid (the red columns of a design tool,

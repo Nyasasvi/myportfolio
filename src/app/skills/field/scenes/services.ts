@@ -1,4 +1,4 @@
-import { approach, clamp, rng, type Frame, type Palette, type Scene } from '../types';
+import { approach, clamp, rng, type Frame, type Palette, type Scene } from '@/app/components/field/types';
 
 /*
  * Backend: requests enter a gateway, pass through two tiers of services to a data store and come

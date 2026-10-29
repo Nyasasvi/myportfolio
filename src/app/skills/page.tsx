@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, MotionConfig } from 'framer-motion';
 import './index.css'
 import { skillsData } from "../resources/consts"
-import type { SkillField } from './field/SkillField';
+import type { ChapterField } from '@/app/components/field/ChapterField';
 
 // Each area has a live scene of that kind of work behind it (./field); the line under its title says what the scene shows
 const categories = [
@@ -34,20 +34,20 @@ export default function SkillsPage() {
     const [ready, setReady] = useState(false);
     const chaptersRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const fieldRef = useRef<SkillField | null>(null);
+    const fieldRef = useRef<ChapterField | null>(null);
 
     // The field is loaded in idle time, so it never competes with the first paint; it fades in when drawn
     useEffect(() => {
         const canvas = canvasRef.current;
         const host = chaptersRef.current;
         if (!canvas || !host) return;
-        let field: SkillField | null = null;
+        let field: ChapterField | null = null;
         let cancelled = false;
         const start = () => {
-            import('./field/SkillField').then(({ SkillField }) => {
+            import('./field').then(({ createField }) => {
                 if (cancelled) return;
                 try {
-                    field = new SkillField(canvas, Array.from(host.querySelectorAll<HTMLElement>('[data-group]')), () => setReady(true));
+                    field = createField(canvas, Array.from(host.querySelectorAll<HTMLElement>('[data-scene]')), () => setReady(true));
                     fieldRef.current = field;
                 } catch {
                     // No canvas: the chapters read the same without their scenes
@@ -71,11 +71,11 @@ export default function SkillsPage() {
         if (!host || !('IntersectionObserver' in window)) return;
         const io = new IntersectionObserver(
             (entries) => {
-                for (const entry of entries) if (entry.isIntersecting) setCurrent((entry.target as HTMLElement).dataset.group ?? null);
+                for (const entry of entries) if (entry.isIntersecting) setCurrent((entry.target as HTMLElement).dataset.scene ?? null);
             },
             { rootMargin: '-50% 0px -50% 0px' },
         );
-        host.querySelectorAll('[data-group]').forEach((el) => io.observe(el));
+        host.querySelectorAll('[data-scene]').forEach((el) => io.observe(el));
         return () => io.disconnect();
     }, []);
 
@@ -148,7 +148,7 @@ export default function SkillsPage() {
                         <section
                             key={group.id}
                             className="skills-chapter"
-                            data-group={group.id}
+                            data-scene={group.id}
                             hidden={activeCategory !== 'all' && activeCategory !== group.id}
                             aria-labelledby={`skills-${group.id}`}
                         >

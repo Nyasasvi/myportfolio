@@ -1,4 +1,4 @@
-import { clamp, rng, type Frame, type Palette, type Scene } from '../types';
+import { clamp, rng, type Frame, type Palette, type Scene } from '@/app/components/field/types';
 
 /*
  * Tools & testing: a git history moving right to left. Branches leave main, collect commits and merge

@@ -1,4 +1,4 @@
-import { approach, clamp, easeInOut, type Frame, type Palette, type Scene } from '../types';
+import { approach, clamp, easeInOut, type Frame, type Palette, type Scene, type Zone } from '@/app/components/field/types';
 
 /*
  * Languages: one small function, a rolling average over the last twelve months of sales, written in
@@ -114,7 +114,7 @@ export class CodeScene implements Scene {
 		this.live = PARSED[0].map((t) => ({ ...t, fromCol: t.col, fromLine: t.line, matched: true }));
 	}
 
-	resize(w: number, h: number, quiet: number) {
+	resize(w: number, h: number, { quiet }: Zone) {
 		this.w = w;
 		this.h = h;
 		this.quiet = quiet;

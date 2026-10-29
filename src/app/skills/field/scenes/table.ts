@@ -1,4 +1,4 @@
-import { clamp, easeInOut, rng, type Frame, type Palette, type Scene } from '../types';
+import { clamp, easeInOut, rng, type Frame, type Palette, type Scene, type Zone } from '@/app/components/field/types';
 
 /*
  * Data: a table of numbers, each cell drawn as a bar, with the query that runs against it written
@@ -29,7 +29,7 @@ export class TableScene implements Scene {
 	private hoverRow = -1;
 	private hoverCol = -1;
 
-	resize(w: number, h: number, quiet: number) {
+	resize(w: number, h: number, { quiet }: Zone) {
 		const narrow = w < 700;
 		this.x0 = w * 0.04;
 		const span = w * 0.92;

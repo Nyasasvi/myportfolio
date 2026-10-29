@@ -1,6 +1,6 @@
 /*
- * SkillField: one canvas behind the skills chapters, held to the viewport with position: sticky. Each
- * chapter owns a scene; every frame the field finds which chapters are on screen and draws each
+ * ChapterField: one canvas behind a page's chapters, held to the viewport with position: sticky. Each
+ * chapter (an element with data-scene) owns a scene; every frame the field finds which chapters are on screen and draws each
  * scene clipped to its chapter's part of the screen, so scrolling into a chapter uncovers its scene
  * and the cut between two scenes moves with the edge between their chapters. A scene builds itself
  * when its chapter is reached, and only scenes on screen are updated.
@@ -13,22 +13,13 @@
  */
 
 import { clamp, type Frame, type Ink, type Palette, type Pointer, type Scene } from './types';
-import { NetworkScene } from './scenes/network';
-import { CodeScene } from './scenes/code';
-import { ServicesScene } from './scenes/services';
-import { LayoutScene } from './scenes/layout';
-import { ContainersScene } from './scenes/containers';
-import { TableScene } from './scenes/table';
-import { CommitsScene } from './scenes/commits';
 
-const SCENES: Record<string, () => Scene> = {
-	aiml: () => new NetworkScene(),
-	languages: () => new CodeScene(),
-	backend: () => new ServicesScene(),
-	frontend: () => new LayoutScene(),
-	cloud: () => new ContainersScene(),
-	database: () => new TableScene(),
-	tools: () => new CommitsScene(),
+export type FieldOptions = {
+	/** Scene makers, keyed by each chapter's data-scene */
+	scenes: Record<string, () => Scene>;
+	/** Selector for the block of words inside a chapter that scenes keep clear of */
+	head: string;
+	onReady?: () => void;
 };
 
 type Chapter = { id: string; el: HTMLElement; scene: Scene; seen: boolean; since: number; settled: boolean };
@@ -59,7 +50,7 @@ const tone = (value: string): Ink => {
 	};
 };
 
-export class SkillField {
+export class ChapterField {
 	private ctx: CanvasRenderingContext2D;
 	private chapters: Chapter[];
 	private palette: Palette;
@@ -84,13 +75,13 @@ export class SkillField {
 	private ready = false;
 	private teardown: (() => void)[] = [];
 
-	constructor(private canvas: HTMLCanvasElement, sections: HTMLElement[], private onReady?: () => void) {
+	constructor(private canvas: HTMLCanvasElement, sections: HTMLElement[], private options: FieldOptions) {
 		const ctx = canvas.getContext('2d');
 		if (!ctx) throw new Error('Canvas 2D is unavailable');
 		this.ctx = ctx;
 		this.chapters = sections.flatMap((el) => {
-			const make = SCENES[el.dataset.group ?? ''];
-			return make ? [{ id: el.dataset.group!, el, scene: make(), seen: false, since: 0, settled: false }] : [];
+			const make = options.scenes[el.dataset.scene ?? ''];
+			return make ? [{ id: el.dataset.scene!, el, scene: make(), seen: false, since: 0, settled: false }] : [];
 		});
 		this.palette = this.readPalette();
 		this.listen();
@@ -156,14 +147,18 @@ export class SkillField {
 		this.requestStill();
 	}
 
-	/** Lay every scene out again, below its chapter's held title where there is one */
+	/** Lay every scene out again, clear of its chapter's words: below them where they are held, beside them where they share the row */
 	private layout() {
 		const fieldTop = parseFloat(getComputedStyle(this.canvas).top) || 0;
+		const left = this.canvas.getBoundingClientRect().left;
 		for (const c of this.chapters) {
-			const head = c.el.querySelector<HTMLElement>('.skills-chapter__head');
+			const head = c.el.querySelector<HTMLElement>(this.options.head);
 			const cs = head ? getComputedStyle(head) : null;
 			const quiet = head && cs && cs.position === 'sticky' ? (parseFloat(cs.top) || 0) - fieldTop + head.offsetHeight : 0;
-			c.scene.resize(this.w, this.h, Math.max(0, Math.round(quiet)));
+			const box = head?.getBoundingClientRect();
+			// Words in a column of their own leave the rest of the row to the scene
+			const beside = box && box.width < this.w * 0.62 ? box.right - left : 0;
+			c.scene.resize(this.w, this.h, { quiet: Math.max(0, Math.round(quiet)), left: Math.max(0, Math.round(beside)) });
 			c.settled = false;
 		}
 	}
@@ -307,11 +302,11 @@ export class SkillField {
 		}
 		if (!this.ready) {
 			this.ready = true;
-			this.onReady?.();
+			this.options.onReady?.();
 		}
 	}
 
-	/** A visitor pointed at a skill: let that chapter's scene answer, if it is moving */
+	/** A visitor pointed at something in a chapter: let that chapter's scene answer, if it is moving */
 	poke(id: string, clientX: number, clientY: number, label: string) {
 		if (!this.raf) return;
 		const ch = this.chapters.find((c) => c.id === id);

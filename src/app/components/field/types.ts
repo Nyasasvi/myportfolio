@@ -1,4 +1,4 @@
-/** Shared shapes for the skills field: one canvas, one scene per skill group. */
+/** Shared shapes for chapter fields: one canvas behind a page, one scene per chapter. */
 
 export type Pointer = { x: number; y: number; active: boolean };
 
@@ -30,15 +30,19 @@ export type Frame = {
 	intro: number;
 };
 
+/**
+ * Where a chapter's words sit, so a scene can keep its focus clear of them.
+ * quiet: the words are held at the top left of the field down to this y (0 when they scroll).
+ * left: the words have a column of their own ending at this x, leaving the rest of the row (0 when
+ * they span the screen).
+ */
+export type Zone = { quiet: number; left: number };
+
 export interface Scene {
-	/**
-	 * quiet: on wide screens the chapter's title holds the top left of the field down to this y;
-	 * scenes that carry words or a single focus keep below it. 0 where the title is not held.
-	 */
-	resize(w: number, h: number, quiet: number): void;
+	resize(w: number, h: number, zone: Zone): void;
 	update(f: Frame): void;
 	draw(ctx: CanvasRenderingContext2D, p: Palette, f: Frame): void;
-	/** A visitor pointed at a skill in this chapter: answer near (x, y), using the skill's name if it means something here */
+	/** A visitor pointed at something in this chapter: answer near (x, y), using its name if it means something here */
 	poke(x: number, y: number, label: string): void;
 }
 

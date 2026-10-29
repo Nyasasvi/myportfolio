@@ -1,71 +1,154 @@
+/* The projects page composes its own full-bleed chapters, so the field behind them reaches both edges */
+.ds-main:has(> .projects) {
+	max-width: none;
+	padding: 0;
+}
+
 .projects {
+	/* The page's usual margins, measured from a full-width box */
+	--projects-pad: max(var(--ds-margin), calc((100% - var(--ds-layout-max)) / 2 + var(--ds-margin)));
+	--filter-h: 0px;
+	--field-top: calc(var(--nav-h) + var(--filter-h));
 	width: 100%;
 	display: flex;
 	flex-direction: column;
-	gap: var(--ds-space-6);
-	padding-top: var(--ds-space-7);
 }
 
 .projects-intro {
 	display: grid;
 	gap: var(--ds-space-5);
-	margin-bottom: var(--ds-space-3);
+	padding: calc(var(--ds-space-6) + var(--ds-space-7)) var(--projects-pad) var(--ds-space-6);
 }
 
-/* An archive, so one module repeats: the cover on the left, the case on the right */
-.projects-list {
-	display: grid;
-	gap: clamp(64px, 8vw, 112px);
-	margin: var(--ds-space-6) 0 0;
-	padding: 0;
-	list-style: none;
+.projects-intro__note {
+	margin: 0;
+	max-width: 52ch;
+	color: var(--ds-fg-muted);
 }
 
-.project-row {
+/* ---------- Filter, and which project is being read ---------- */
+
+.projects-filter {
+	position: relative;
+	z-index: 2;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--ds-space-3) var(--ds-space-6);
+	padding: 0 var(--projects-pad) var(--ds-space-5);
+	background: var(--ds-bg);
+}
+
+.projects-filter__where {
+	display: flex;
+	align-items: baseline;
+	gap: var(--ds-space-3);
+	margin: 0;
+	color: var(--ds-fg-muted);
+	font-variant-numeric: tabular-nums;
+}
+
+.projects-filter__where span {
+	color: var(--ds-fg);
+	font-weight: 500;
+}
+
+@media (min-width: 1100px) {
+	.projects {
+		--filter-h: 72px;
+	}
+
+	.projects-filter {
+		position: sticky;
+		top: var(--nav-h);
+		height: var(--filter-h);
+		padding-bottom: 0;
+	}
+}
+
+@media (max-width: 1099px) {
+	.projects-filter__where {
+		display: none;
+	}
+}
+
+/* ---------- Chapters over the field ---------- */
+
+.projects-chapters {
+	position: relative;
+	scroll-margin-top: var(--field-top);
+}
+
+/* One canvas for all eight scenes, held to the screen below the bars while the chapters pass */
+.projects-field {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+}
+
+.projects-field canvas {
+	position: sticky;
+	top: var(--field-top);
+	display: block;
+	width: 100%;
+	height: calc(100vh - var(--field-top));
+	height: calc(100lvh - var(--field-top));
+	opacity: 0;
+	transition: opacity 700ms var(--ease-out);
+}
+
+.projects-field canvas[data-ready] {
+	opacity: 1;
+}
+
+/* Each project fills the field once: its words and cover on the left, its scene on the right */
+.project-chapter {
+	position: relative;
+	z-index: 1;
 	display: grid;
 	grid-template-columns: repeat(12, minmax(0, 1fr));
 	column-gap: var(--ds-gutter);
 	align-items: start;
+	min-height: calc(100vh - var(--field-top));
+	min-height: calc(100lvh - var(--field-top));
+	padding: clamp(48px, 8vh, 96px) var(--projects-pad);
 }
 
-.project-row__media {
-	grid-column: 1 / span 5;
-	margin: 0;
-	aspect-ratio: 1;
-	overflow: clip;
-	background: var(--ds-surface-1);
+.project-chapter[hidden] {
+	display: none;
 }
 
-.project-row__media img {
-	display: block;
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	transition: transform 700ms var(--ease-expo);
-}
-
-@media (hover: hover) and (pointer: fine) {
-	.project-row:hover .project-row__media img {
-		transform: scale(1.03);
-	}
-}
-
-.project-row__body {
-	grid-column: 7 / -1;
+.project-chapter__body {
+	grid-column: 1 / span 6;
 	display: grid;
 	gap: var(--ds-space-5);
 	align-content: start;
-	padding-top: var(--ds-space-2);
 }
 
-.project-row__title {
+/* Words sit on strips of the ground, so a scene behind them never runs through them */
+.project-chapter__title span,
+.project-chapter__why span,
+.project-chapter__facts span {
+	background: var(--ds-bg);
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
+}
+
+.project-chapter__title {
 	margin: 0;
-	font: 900 clamp(1.75rem, 1.2rem + 1.8vw, 2.75rem) / 1 var(--ds-font-display);
-	letter-spacing: -0.035em;
+	font: 900 clamp(2.25rem, 1.2rem + 2.4vw, 3.6rem) / 0.98 var(--ds-font-display);
+	letter-spacing: -0.04em;
 	text-wrap: balance;
 }
 
-.project-row__title a {
+.project-chapter__title span {
+	padding: 0 0.08em;
+	margin-inline: -0.08em;
+}
+
+.project-chapter__title a {
 	color: inherit;
 	text-decoration: underline;
 	text-decoration-thickness: 0.06em;
@@ -75,12 +158,12 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-	.project-row__title a:hover {
+	.project-chapter__title a:hover {
 		text-decoration-color: currentColor;
 	}
 }
 
-.project-row__why {
+.project-chapter__why {
 	margin: 0;
 	max-width: 44ch;
 	font-size: var(--step-lead);
@@ -88,35 +171,78 @@
 	text-wrap: pretty;
 }
 
-.project-row__facts {
+.project-chapter__why span {
+	padding: 2px 6px;
+	margin-inline: -6px;
+}
+
+.project-chapter__facts {
 	display: grid;
 	gap: var(--ds-space-3);
 	margin: 0;
 	max-width: 62ch;
 }
 
-.project-row__facts div {
+.project-chapter__facts div {
 	display: grid;
 	grid-template-columns: 7.5rem minmax(0, 1fr);
 	gap: var(--ds-space-4);
 }
 
-.project-row__facts dt {
+.project-chapter__facts dt {
 	color: var(--ds-fg-muted);
 }
 
-.project-row__facts dd {
+.project-chapter__facts dd {
 	margin: 0;
 }
 
-.project-row__actions {
+/* Each tool answers in the scene when pointed at */
+.project-chapter__tech {
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.2em;
+	text-decoration-color: color-mix(in srgb, var(--ds-fg) 30%, transparent);
+	transition: color var(--t-hover) ease, text-decoration-color var(--t-hover) ease;
+	cursor: default;
+}
+
+@media (hover: hover) and (pointer: fine) {
+	.project-chapter__tech:hover {
+		color: var(--ds-accent);
+		text-decoration-color: var(--ds-accent);
+	}
+}
+
+.project-chapter__actions {
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--ds-space-2);
 }
 
-.project-row__actions:empty {
+.project-chapter__actions:empty {
 	display: none;
+}
+
+.project-chapter__media {
+	margin: var(--ds-space-2) 0 0;
+	aspect-ratio: 16 / 9;
+	overflow: clip;
+	background: var(--ds-surface-1);
+}
+
+.project-chapter__media img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 700ms var(--ease-expo);
+}
+
+@media (hover: hover) and (pointer: fine) {
+	.project-chapter:hover .project-chapter__media img {
+		transform: scale(1.03);
+	}
 }
 
 .projects-empty {
@@ -124,7 +250,7 @@
 	flex-direction: column;
 	align-items: flex-start;
 	gap: var(--ds-space-3);
-	padding: var(--ds-space-8) 0;
+	padding: var(--ds-space-8) var(--projects-pad);
 	color: var(--ds-fg-muted);
 }
 
@@ -132,31 +258,26 @@
 	margin: 0;
 }
 
-@media (max-width: 860px) {
-	.project-row__media {
-		grid-column: 1 / span 5;
+/* Narrow screens: each project opens on a window of its scene, then its words in one column */
+@media (max-width: 900px) {
+	.project-chapter {
+		grid-template-columns: minmax(0, 1fr);
+		min-height: 0;
+		padding-top: max(42svh, 280px);
+		padding-bottom: var(--ds-space-8);
 	}
 
-	.project-row__body {
-		grid-column: 6 / -1;
+	.project-chapter__body {
+		grid-column: 1;
 	}
 }
 
 @media (max-width: 640px) {
-	.projects {
-		padding-top: var(--ds-space-5);
+	.projects-intro {
+		padding-top: var(--ds-space-7);
 	}
 
-	.project-row__media,
-	.project-row__body {
-		grid-column: 1 / -1;
-	}
-
-	.project-row__body {
-		padding-top: var(--ds-space-5);
-	}
-
-	.project-row__facts div {
+	.project-chapter__facts div {
 		grid-template-columns: 1fr;
 		gap: 2px;
 	}

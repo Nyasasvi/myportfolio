@@ -1,4 +1,4 @@
-import { clamp, rng, type Frame, type Palette, type Scene } from '../types';
+import { clamp, rng, type Frame, type Palette, type Scene } from '@/app/components/field/types';
 
 /*
  * AI & ML: a small feed-forward network. Input nodes fire on their own every second or so; each

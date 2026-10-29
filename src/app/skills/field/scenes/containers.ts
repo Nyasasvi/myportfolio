@@ -1,4 +1,4 @@
-import { approach, clamp, easeInOut, type Frame, type Palette, type Scene } from '../types';
+import { approach, clamp, easeInOut, type Frame, type Palette, type Scene, type Zone } from '@/app/components/field/types';
 
 /*
  * Cloud & DevOps: a build pipeline above a row of nodes. Load on each node rises and falls, and the
@@ -34,7 +34,7 @@ export class ContainersScene implements Scene {
 	private idle = 0;
 	private clock = 0;
 
-	resize(w: number, h: number, quiet: number) {
+	resize(w: number, h: number, { quiet }: Zone) {
 		this.k = clamp(Math.floor(w / 190), 3, 7);
 		const x0 = w * 0.05;
 		const span = w * 0.9;
