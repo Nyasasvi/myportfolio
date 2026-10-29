@@ -13,8 +13,13 @@ needs no app or camera.
   rolled sleeves, black jeans, a watch and the red thread at my neck, plus boots for Twisted X). It
   is drawn on a 2D canvas each frame and mapped into the scene, rigged at the neck, shoulders,
   elbows and wrists. I breathe and sway, look towards the pointer or the card under it, wave when
-  the scene opens or when tapped, and turn to present each card as it comes to the front. I always
-  face the viewer and stand on the platform with a soft shadow under my boots.
+  the scene opens, and turn to present each card as it comes to the front. I always face the
+  viewer and stand on the platform with a soft shadow under my boots.
+- **Moves.** Under the scene, "Make me" has a button for each: wave, jump, spin (a full turn,
+  showing my back halfway), flip (head over heels in mid-air), thumbs up, flex and dance. Tapping
+  me plays them in turn, and every so often I do one on my own. A move cuts in on the one before,
+  except mid-air, where it waits for the landing. Jumps, spins and flips move the whole figure in
+  3D; the rest are poses of the arms, hands, head and face.
 - **Ten cards in orbit** around my waist: my current role, a result from each job (Twisted X,
   JPMorgan Chase, Colombo AI, HCL) and four projects with their cover pictures. The ring passes in
   front low down and slips behind my back; cards further away shrink and dim.
@@ -22,15 +27,15 @@ needs no app or camera.
   camera every frame, so text is never mirrored or seen edge on. They redraw when the theme changes.
 - **Moving it.** The ring rests on each card for a few seconds, then turns to the next. Drag or
   swipe sideways to spin it, flick it to let it coast, or tap a card to bring it to the front.
-  Hovering a card stops the ring. The camera leans gently with the pointer. Tapping me
-  brings my intro card to the front.
+  Hovering a card stops the ring. The camera leans gently with the pointer.
 - **The card in front is spelled out** in the panel beside the scene (below it on phones), with its
   links and previous/next buttons.
 - **Everything in the ring** lists all ten cards under the scene, with the project pictures; choosing
   one turns the ring to it. Between the panel and the list, everything reads and works from the
   keyboard, and without WebGL.
-- **Calm by request.** A Pause button stops the ring, the dust and my idle motion (a tap still gets a
-  wave); with reduced motion set, nothing moves on its own. Rendering stops while the scene is off screen or the tab is hidden.
+- **Calm by request.** A Pause button stops the ring, the dust, my idle motion and the moves I pick
+  myself (one you ask for still plays); with reduced motion set, nothing moves and the move buttons
+  are hidden. Rendering stops while the scene is off screen or the tab is hidden.
 
 ### Changing the cards
 
@@ -42,7 +47,9 @@ line under it and a footer, plus the `detail` shown in the panel.
 
 The colours are in the `C` table at the top of `avatar.ts`, and every shape is an SVG path string in
 `buildPaths()`, drawn in a 400 × 1000 space centred on x = 200 (the canvas is wider so a wave fits).
-Poses are angles for each joint; `ARM_L_WAVE` and `ARM_R_PRESENT` are the two gestures.
+Each move in `MOVES` is a list of keyframes: a time plus only the channels it sets (joint angles,
+hand shape, head, brows, mouth, and the body's lift, spin, roll and squash). Each channel eases
+between the keys that set it, so a new move is a new entry there and a name in `SHOW_MOVES`.
 
 ## Bug Catcher
 

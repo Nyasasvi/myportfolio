@@ -43,7 +43,8 @@ A sticky chapter bar shows reading progress and has a **Pause background** contr
 - **Projects** (`/projects`), **Skills** (`/skills`) and **Contact** (`/contact`).
 - **AR Experience** (`/ar-experience`) — a 3D scene with an animated drawing of Yasasvi standing on a
   lit platform and ten cards about the work orbiting around (drag to spin, tap to bring one
-  forward), plus a small bug-catching game and a QR code to open it on a phone.
+  forward). The drawing waves, jumps, spins, flips, gives a thumbs up, flexes and dances, on request
+  or on its own. Plus a small bug-catching game and a QR code to open it on a phone.
 - Site-wide: light and dark themes, a <kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>K</kbd> command palette,
   and an "Ask about me" chatbot.
 

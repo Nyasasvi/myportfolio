@@ -43,6 +43,7 @@ const C = {
 };
 
 type Arm = [number, number, number]; // shoulder, elbow, wrist, in radians
+export type Hand = 'open' | 'fist' | 'thumb';
 
 export type Pose = {
 	sway: number; // px, the upper body side to side
@@ -56,13 +57,19 @@ export type Pose = {
 	hairLag: number; // px
 	armL: Arm; // my right arm, on the viewer's left
 	armR: Arm; // my left arm, with the watch
+	handL: Hand;
+	handR: Hand;
+	back: boolean; // turned away, mid-spin
 };
+
+/** How the whole figure moves in the 3D scene: lifted (world units), turned, rolled about the waist, squashed */
+export type Body = { lift: number; spin: number; roll: number; squash: number };
+
+export const REST_BODY: Body = { lift: 0, spin: 0, roll: 0, squash: 0 };
 
 // Hands by the front pockets, elbows a little out, as in the photo
 const ARM_L_REST: Arm = [0.09, -0.44, 0.12];
 const ARM_R_REST: Arm = [-0.09, 0.44, -0.12];
-const ARM_L_WAVE: Arm = [2.1, 0.95, 0];
-const ARM_R_PRESENT: Arm = [-0.2, -0.93, -0.52];
 
 export const REST_POSE: Pose = {
 	sway: 0,
@@ -76,6 +83,9 @@ export const REST_POSE: Pose = {
 	hairLag: 0,
 	armL: [...ARM_L_REST],
 	armR: [...ARM_R_REST],
+	handL: 'open',
+	handR: 'open',
+	back: false,
 };
 
 // ---------- Shapes ----------
@@ -139,6 +149,13 @@ function buildPaths() {
 		forearm: p('M-17,26 C-18,60 -16,100 -14,130 L14,130 C16,100 18,60 17,26 Z'),
 		forearmShade: p('M6,26 C8,60 8,100 7,130 L14,130 C16,100 18,60 17,26 Z'),
 		hand: p('M-15,-2 C-19,18 -17,40 -6,52 C2,57 12,52 15,42 C19,28 17,12 15,-2 Z'),
+		fist: p('M-15,-2 C-19,12 -18,30 -12,37 C-4,43 8,43 14,37 C19,29 18,12 15,-2 Z'),
+		fistThumb: p('M-13,14 C-6,9 7,11 13,17 C7,22 -6,22 -13,18 Z'),
+		thumbUp: p('M10,4 C24,0 40,4 44,12 C46,19 36,22 14,22 Z'),
+		bicep: p('M-6,34 C-38,36 -52,66 -46,96 C-40,114 -16,116 -6,108 Z'),
+		shirtBack: p(
+			'M150,250 C172,262 228,262 250,250 C268,256 294,270 312,290 C320,334 308,432 298,500 C294,540 292,570 290,586 C252,604 148,604 110,586 C108,570 106,540 102,500 C92,432 80,334 88,290 C106,270 132,256 150,250 Z',
+		),
 		thumb: p('M12,6 C22,12 24,26 16,32 C12,26 10,16 12,6 Z'),
 		watchBand: p('M-16,-4 L16,-4 L16,9 L-16,9 Z'),
 	};
@@ -245,7 +262,25 @@ function drawLegs(ctx: CanvasRenderingContext2D, P: Paths) {
 	ctx.stroke();
 }
 
-function drawTorso(ctx: CanvasRenderingContext2D, P: Paths, check: string | CanvasPattern) {
+function drawTorso(ctx: CanvasRenderingContext2D, P: Paths, check: string | CanvasPattern, back: boolean) {
+	if (back) {
+		// From behind: the nape, the collar band and a plain back with a yoke seam
+		shape(ctx, P.neck, C.skin, false);
+		tint(ctx, P.neckShade, C.skinShade);
+		shape(ctx, P.shirtBack, check);
+		tint(ctx, P.shirtShade, 'rgba(18, 28, 22, 0.3)');
+		tint(ctx, P.hemShade, 'rgba(18, 28, 22, 0.25)');
+		shape(ctx, P.collarBack, check);
+		ctx.strokeStyle = 'rgba(18, 28, 22, 0.4)';
+		ctx.lineWidth = 2;
+		ctx.beginPath();
+		ctx.moveTo(92, 318);
+		ctx.bezierCurveTo(150, 332, 250, 332, 308, 318);
+		ctx.moveTo(200, 330);
+		ctx.lineTo(200, 344);
+		ctx.stroke();
+		return;
+	}
 	shape(ctx, P.neck, C.skin, false);
 	tint(ctx, P.neckShade, C.skinShade);
 	tint(ctx, P.chest, C.skin);
@@ -307,6 +342,24 @@ function drawHead(ctx: CanvasRenderingContext2D, P: Paths, pose: Pose) {
 		ctx.ellipse(x, 151, 4, 10, 0, 0, Math.PI * 2);
 		ctx.fill();
 		ctx.fillStyle = C.skin;
+	}
+
+	if (pose.back) {
+		shape(ctx, P.face, C.hair);
+		ctx.fillStyle = C.hair;
+		ctx.fill(P.hair);
+		ctx.strokeStyle = C.hairLight;
+		ctx.lineWidth = 3;
+		ctx.lineCap = 'round';
+		for (const d of strands()) ctx.stroke(d);
+		ctx.beginPath();
+		ctx.moveTo(160, 150);
+		ctx.quadraticCurveTo(200, 170, 240, 150);
+		ctx.moveTo(170, 196);
+		ctx.quadraticCurveTo(200, 210, 230, 196);
+		ctx.stroke();
+		ctx.restore();
+		return;
 	}
 
 	shape(ctx, P.face, C.skin);
@@ -414,7 +467,17 @@ function drawHead(ctx: CanvasRenderingContext2D, P: Paths, pose: Pose) {
 	ctx.restore();
 }
 
-function drawArm(ctx: CanvasRenderingContext2D, P: Paths, check: string | CanvasPattern, x: number, y: number, a: Arm, inner: 1 | -1, watch: boolean) {
+function drawArm(
+	ctx: CanvasRenderingContext2D,
+	P: Paths,
+	check: string | CanvasPattern,
+	x: number,
+	y: number,
+	a: Arm,
+	hand: Hand,
+	inner: 1 | -1,
+	watch: boolean,
+) {
 	ctx.save();
 	ctx.translate(x, y);
 	ctx.rotate(a[0]);
@@ -432,21 +495,41 @@ function drawArm(ctx: CanvasRenderingContext2D, P: Paths, check: string | Canvas
 	ctx.save();
 	ctx.translate(0, 128);
 	ctx.rotate(a[2]);
-	ctx.save();
-	ctx.scale(inner, 1);
-	shape(ctx, P.thumb, C.skin);
-	ctx.restore();
-	shape(ctx, P.hand, C.skin);
-	ctx.strokeStyle = 'rgba(60, 30, 18, 0.35)';
-	ctx.lineWidth = 1.6;
-	ctx.beginPath();
-	ctx.moveTo(-7, 36);
-	ctx.lineTo(-6, 50);
-	ctx.moveTo(1, 38);
-	ctx.lineTo(2, 53);
-	ctx.moveTo(8, 36);
-	ctx.lineTo(9, 48);
-	ctx.stroke();
+	if (hand === 'open') {
+		ctx.save();
+		ctx.scale(inner, 1);
+		shape(ctx, P.thumb, C.skin);
+		ctx.restore();
+		shape(ctx, P.hand, C.skin);
+		ctx.strokeStyle = 'rgba(60, 30, 18, 0.35)';
+		ctx.lineWidth = 1.6;
+		ctx.beginPath();
+		ctx.moveTo(-7, 36);
+		ctx.lineTo(-6, 50);
+		ctx.moveTo(1, 38);
+		ctx.lineTo(2, 53);
+		ctx.moveTo(8, 36);
+		ctx.lineTo(9, 48);
+		ctx.stroke();
+	} else {
+		// A fist, its knuckles toward the viewer; a thumbs-up adds the thumb out of its side
+		shape(ctx, P.fist, C.skin);
+		if (hand === 'thumb') {
+			ctx.save();
+			ctx.scale(inner, 1);
+			shape(ctx, P.thumbUp, C.skin);
+			ctx.restore();
+		}
+		ctx.strokeStyle = 'rgba(60, 30, 18, 0.35)';
+		ctx.lineWidth = 1.6;
+		ctx.beginPath();
+		for (const kx of [-8, 0, 8]) {
+			ctx.moveTo(kx, 28);
+			ctx.lineTo(kx, 38);
+		}
+		ctx.stroke();
+		if (hand === 'fist') tint(ctx, P.fistThumb, C.skinShade);
+	}
 	if (watch) {
 		ctx.fillStyle = C.watchBand;
 		ctx.fill(P.watchBand);
@@ -470,6 +553,13 @@ function drawArm(ctx: CanvasRenderingContext2D, P: Paths, check: string | Canvas
 	ctx.stroke();
 	ctx.restore();
 
+	// Fists mean a flex: the sleeve bulges on the upper side of the arm
+	if (hand === 'fist') {
+		ctx.save();
+		ctx.scale(inner, 1);
+		shape(ctx, P.bicep, check);
+		ctx.restore();
+	}
 	shape(ctx, P.upperArm, check);
 	ctx.save();
 	ctx.scale(inner, 1);
@@ -493,82 +583,345 @@ export function drawAvatar(ctx: CanvasRenderingContext2D, pose: Pose, scale = 1)
 	// Everything above the waist sways and rises a little with each breath
 	ctx.save();
 	ctx.translate(pose.sway, -pose.breath * 3);
-	drawTorso(ctx, P, check);
+	drawTorso(ctx, P, check, pose.back);
 	drawHead(ctx, P, pose);
-	drawArm(ctx, P, check, 100, 300, pose.armL, 1, false);
-	drawArm(ctx, P, check, 300, 300, pose.armR, -1, true);
+	drawArm(ctx, P, check, 100, 300, pose.armL, pose.handL, 1, false);
+	drawArm(ctx, P, check, 300, 300, pose.armR, pose.handR, -1, !pose.back);
 	ctx.restore();
 	ctx.restore();
 }
 
 // ---------- Motion ----------
 
+const TAU = Math.PI * 2;
 const smooth = (k: number) => k * k * (3 - 2 * k);
+const clamp1 = (v: number) => Math.max(-1, Math.min(1, v));
 
-/** 0 outside [start, start + dur], easing up to 1 and back down inside it */
-function envelope(t: number, start: number, dur: number, rise: number, fall: number) {
-	const u = t - start;
-	if (u <= 0 || u >= dur) return 0;
-	return smooth(Math.min(1, u / rise, (dur - u) / fall));
+// Arm poses; R() mirrors a left-arm pose onto the right arm
+const L = (a: number, b: number, c = 0): Arm => [a, b, c];
+const R = (a: number, b: number, c = 0): Arm => [-a, -b, -c];
+
+type Channels = {
+	armL: Arm;
+	armR: Arm;
+	handL: Hand;
+	handR: Hand;
+	headTilt: number;
+	lookX: number;
+	lookY: number;
+	brow: number;
+	mouth: number;
+	sway: number;
+	lift: number;
+	spin: number;
+	roll: number;
+	squash: number;
+};
+
+const REST: Channels = {
+	armL: ARM_L_REST,
+	armR: ARM_R_REST,
+	handL: 'open',
+	handR: 'open',
+	headTilt: 0,
+	lookX: 0,
+	lookY: 0,
+	brow: 0,
+	mouth: 0,
+	sway: 0,
+	lift: 0,
+	spin: 0,
+	roll: 0,
+	squash: 0,
+};
+
+/** A keyframe sets only the channels it names; each channel eases between the keys that set it */
+type Key = { at: number } & Partial<Channels>;
+type Move = { dur: number; keys: Key[]; talk?: [number, number]; glint?: number };
+
+export type MoveName = 'wave' | 'present' | 'jump' | 'spin' | 'flip' | 'thumbs' | 'flex' | 'dance';
+
+function waveKeys(): Key[] {
+	const keys: Key[] = [{ at: 0.35, armL: L(2.1, 0.7), brow: 0.9, headTilt: 0.06, mouth: 0.2 }];
+	for (let i = 0; i < 5; i++) keys.push({ at: 0.6 + i * 0.25, armL: i % 2 ? L(2.1, 0.65, -0.2) : L(2.1, 1.25, 0.2) });
+	keys.push({ at: 1.85, armL: L(2.1, 0.95), brow: 0.5, headTilt: 0.03, mouth: 0.2 });
+	return keys;
 }
 
-const mix = (a: Arm, b: Arm, k: number): Arm => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, a[2] + (b[2] - a[2]) * k];
+function danceKeys(): Key[] {
+	// Raise the roof: hands up, pumping on alternate beats, hips and head going the other way
+	const a: Partial<Channels> = { armL: L(1.0, 1.9, 0.3), armR: R(1.25, 1.7, -0.3), roll: 0.07, headTilt: -0.09, squash: 0.05, lift: 0, mouth: 0.55, sway: 6 };
+	const b: Partial<Channels> = { armL: L(1.25, 1.7, -0.3), armR: R(1.0, 1.9, 0.3), roll: -0.07, headTilt: 0.09, squash: -0.03, lift: 0.08, mouth: 0.15, sway: -6 };
+	const keys: Key[] = [];
+	for (let i = 0; i < 10; i++) keys.push({ at: 0.3 + i * 0.3, ...(i % 2 ? b : a) });
+	return keys;
+}
+
+export const MOVES: Record<MoveName, Move> = {
+	wave: { dur: 2.4, talk: [0.2, 1.5], keys: waveKeys() },
+	// Turn to the card that just came to the front and offer it with an open hand
+	present: {
+		dur: 1.9,
+		talk: [0.15, 1.45],
+		keys: [
+			{ at: 0.4, armR: [-0.2, -0.93, -0.52], lookY: 0.8, brow: 0.5, headTilt: -0.04 },
+			{ at: 1.3, armR: [-0.2, -0.93, -0.62], lookY: 0.8, brow: 0.4, headTilt: -0.04 },
+		],
+	},
+	// Crouch, spring up with both arms high, land with a squash
+	jump: {
+		dur: 1.5,
+		keys: [
+			{ at: 0.22, squash: 0.12, armL: L(0.5, -0.3), armR: R(0.5, -0.3), lookY: 0.3, brow: 0.2 },
+			{ at: 0.5, lift: 0.3, squash: -0.07, armL: L(2.45, 0.15), armR: R(2.45, 0.15), brow: 1, mouth: 0.9, lookY: -0.4 },
+			{ at: 0.62, lift: 0.4, squash: -0.05, armL: L(2.5, 0.1), armR: R(2.5, 0.1), brow: 1, mouth: 0.9, lookY: -0.5 },
+			{ at: 0.85, lift: 0.1, squash: -0.02, armL: L(1.6, 0.2), armR: R(1.6, 0.2), mouth: 0.5, brow: 0.6 },
+			{ at: 0.97, lift: 0, squash: 0.14, armL: L(0.6, -0.2), armR: R(0.6, -0.2), mouth: 0.2 },
+			{ at: 1.2, squash: -0.02 },
+		],
+	},
+	// A full turn on the spot with a little hop, arms out
+	spin: {
+		dur: 1.4,
+		keys: [
+			{ at: 0.18, squash: 0.06, armL: L(0.5, -0.2), armR: R(0.5, -0.2) },
+			{ at: 0.35, lift: 0.15, squash: -0.03, spin: 0, armL: L(1.3, -0.1), armR: R(1.3, -0.1) },
+			{ at: 0.95, lift: 0.22, spin: TAU, armL: L(1.3, -0.1), armR: R(1.3, -0.1), brow: 0.6, mouth: 0.4 },
+			{ at: 1.1, lift: 0, squash: 0.08 },
+			{ at: 1.4, spin: TAU },
+		],
+	},
+	// Hop, flip head over heels in the air, land and throw the arms up
+	flip: {
+		dur: 1.75,
+		keys: [
+			{ at: 0.2, squash: 0.1, armL: L(2.4, 0), armR: R(2.4, 0), lookY: -0.3, brow: 0.5 },
+			{ at: 0.45, lift: 0.35, squash: -0.06, roll: 0, brow: 1, mouth: 0.8 },
+			{ at: 0.7, lift: 0.78, armL: L(1.9, 0), armR: R(1.9, 0), mouth: 0.9 },
+			{ at: 0.95, lift: 0.35, roll: -TAU, armL: L(2.2, 0), armR: R(2.2, 0), brow: 1 },
+			{ at: 1.12, lift: 0, squash: 0.13, armL: L(0.9, -0.2), armR: R(0.9, -0.2), mouth: 0.3 },
+			{ at: 1.4, squash: -0.02, armL: L(1.7, 0.3), armR: R(1.7, 0.3), mouth: 0.6, brow: 0.6, lookY: 0 },
+			{ at: 1.75, roll: -TAU },
+		],
+	},
+	// A raised thumbs-up, with a glint off the sunglasses
+	thumbs: {
+		dur: 2.1,
+		glint: 0.45,
+		keys: [
+			{ at: 0.35, armL: L(0.15, -2.07, 0.2), handL: 'thumb', brow: 0.7, headTilt: 0.08, mouth: 0.15 },
+			{ at: 0.7, armL: L(0.18, -2.2, 0.3) },
+			{ at: 1.0, armL: L(0.15, -2.07, 0.15) },
+			{ at: 1.6, armL: L(0.15, -2.07, 0.2), handL: 'thumb', brow: 0.6, headTilt: 0.08, mouth: 0.15 },
+		],
+	},
+	// Double biceps, then a look at each arm in turn
+	flex: {
+		dur: 2.3,
+		keys: [
+			{ at: 0.35, armL: L(1.6, 1.85), armR: R(1.6, 1.85), handL: 'fist', handR: 'fist', brow: 0.6, mouth: 0.1, squash: 0.03 },
+			{ at: 0.65, armL: L(1.7, 2.1), armR: R(1.6, 1.85), lookX: -0.9, headTilt: -0.06 },
+			{ at: 0.95, armL: L(1.6, 1.85), armR: R(1.7, 2.1), lookX: 0.9, headTilt: 0.06 },
+			{ at: 1.25, armL: L(1.7, 2.1), armR: R(1.7, 2.1), lookX: 0, headTilt: 0, mouth: 0.5 },
+			{ at: 1.75, armL: L(1.6, 1.85), armR: R(1.6, 1.85), handL: 'fist', handR: 'fist', brow: 0.6, mouth: 0.1, squash: 0.03 },
+		],
+	},
+	dance: { dur: 3.35, keys: danceKeys() },
+};
+
+/** The moves a visitor can ask for, in the order a tap on me goes through them */
+export const SHOW_MOVES: MoveName[] = ['wave', 'jump', 'spin', 'flip', 'thumbs', 'flex', 'dance'];
+const IDLE_MOVES: MoveName[] = ['jump', 'spin', 'flip', 'thumbs', 'flex', 'dance'];
+// Moves that leave the ground or turn me round finish before anything else starts
+const AIRBORNE: MoveName[] = ['jump', 'spin', 'flip'];
+const BLEND = 0.25; // seconds to ease from wherever I was into a move that cut in
+
+function channel<T>(move: Move, name: keyof Channels, u: number, lerp: (a: T, b: T, p: number) => T): T {
+	let prevAt = 0;
+	let prev = REST[name] as T;
+	let nextAt = move.dur;
+	let next = REST[name] as T;
+	for (const key of move.keys) {
+		const v = key[name] as T | undefined;
+		if (v === undefined) continue;
+		if (key.at <= u) {
+			prevAt = key.at;
+			prev = v;
+		} else {
+			nextAt = key.at;
+			next = v;
+			break;
+		}
+	}
+	const p = nextAt > prevAt ? smooth(Math.min(1, Math.max(0, (u - prevAt) / (nextAt - prevAt)))) : 1;
+	return lerp(prev, next, p);
+}
+
+const num = (a: number, b: number, p: number) => a + (b - a) * p;
+const arm = (a: Arm, b: Arm, p: number): Arm => [num(a[0], b[0], p), num(a[1], b[1], p), num(a[2], b[2], p)];
+const pick = <T,>(a: T, b: T, p: number) => (p < 0.5 ? a : b);
+
+function sample(move: Move, u: number): Channels {
+	const n = (k: keyof Channels) => channel<number>(move, k, u, num);
+	return {
+		armL: channel<Arm>(move, 'armL', u, arm),
+		armR: channel<Arm>(move, 'armR', u, arm),
+		handL: channel<Hand>(move, 'handL', u, pick),
+		handR: channel<Hand>(move, 'handR', u, pick),
+		headTilt: n('headTilt'),
+		lookX: n('lookX'),
+		lookY: n('lookY'),
+		brow: n('brow'),
+		mouth: n('mouth'),
+		sway: n('sway'),
+		lift: n('lift'),
+		spin: n('spin'),
+		roll: n('roll'),
+		squash: n('squash'),
+	};
+}
+
+function blend(a: Channels, b: Channels, p: number): Channels {
+	return {
+		armL: arm(a.armL, b.armL, p),
+		armR: arm(a.armR, b.armR, p),
+		handL: pick(a.handL, b.handL, p),
+		handR: pick(a.handR, b.handR, p),
+		headTilt: num(a.headTilt, b.headTilt, p),
+		lookX: num(a.lookX, b.lookX, p),
+		lookY: num(a.lookY, b.lookY, p),
+		brow: num(a.brow, b.brow, p),
+		mouth: num(a.mouth, b.mouth, p),
+		sway: num(a.sway, b.sway, p),
+		lift: num(a.lift, b.lift, p),
+		spin: num(a.spin, b.spin, p),
+		roll: num(a.roll, b.roll, p),
+		squash: num(a.squash, b.squash, p),
+	};
+}
+
+function envelope(t: number, start: number, end: number, rise: number, fall: number) {
+	if (t <= start || t >= end) return 0;
+	return smooth(Math.min(1, (t - start) / rise, (end - t) / fall));
+}
 
 export type AvatarRig = ReturnType<typeof createAvatarRig>;
 
-/** Turns events (a wave, a new card in front, where the pointer is) into a pose for each frame */
+/** Turns requests (a move, a new card in front, where the pointer is) into a pose and a body each frame */
 export function createAvatarRig() {
-	const s = { wave: -99, present: -99, talk: -99, glint: 2.5, lookX: 0, lookY: 0, tx: 0, ty: 0 };
+	const s = {
+		current: null as { name: MoveName; start: number; from: Channels | null } | null,
+		last: REST,
+		queued: null as MoveName | null,
+		lookX: 0,
+		lookY: 0,
+		tx: 0,
+		ty: 0,
+		glint: 2.5,
+		nextIdle: 0,
+		lastIdle: '' as MoveName | '',
+		tapIndex: 0,
+		lift: 0,
+	};
+	const busy = (t: number) => s.current !== null && t < s.current.start + MOVES[s.current.name].dur;
+	const start = (name: MoveName, t: number, from: Channels | null = null) => {
+		const move = MOVES[name];
+		s.current = { name, start: t, from };
+		if (move.glint !== undefined) s.glint = t + move.glint;
+		// Leave a good gap before I do something on my own again
+		s.nextIdle = Math.max(s.nextIdle, t + move.dur + 10);
+	};
+	const play = (name: MoveName, t: number) => {
+		if (!busy(t)) start(name, t);
+		// Mid-air, the new move waits for the landing; otherwise it cuts in from wherever I am
+		else if (s.current && AIRBORNE.includes(s.current.name)) s.queued = name;
+		else start(name, t, s.last);
+	};
+
 	return {
-		wave(t: number) {
-			if (t - s.wave < 2.6) return;
-			s.wave = t;
-			s.talk = t + 0.2;
+		/** Play a move now, or straight after the one in progress */
+		play,
+		/** Each tap on me plays the next move in the list */
+		next(t: number) {
+			play(SHOW_MOVES[s.tapIndex % SHOW_MOVES.length], t);
+			s.tapIndex++;
 		},
+		/** Offer the card in front, unless I'm in the middle of something */
 		present(t: number) {
-			s.present = t;
-			s.talk = t + 0.15;
+			if (!busy(t)) start('present', t);
 		},
 		lookAt(x: number, y: number) {
-			s.tx = Math.max(-1, Math.min(1, x));
-			s.ty = Math.max(-1, Math.min(1, y));
+			s.tx = clamp1(x);
+			s.ty = clamp1(y);
 		},
-		/** `still` (reduced motion) holds the rest pose; `calm` (paused) drops the idle motion but still
-		 * plays a wave or a present that the visitor asked for */
-		pose(t: number, dt: number, still: boolean, calm = false): Pose {
-			if (still) return REST_POSE;
-			const idle = calm ? 0 : 1;
+		playing(t: number): MoveName | null {
+			return busy(t) && s.current ? s.current.name : s.queued;
+		},
+		/**
+		 * `still` (reduced motion) holds the rest pose. `calm` (paused) drops the idle motion and my own
+		 * picks but still plays what the visitor asks for. `idleOk` says nobody is busy with the ring.
+		 */
+		frame(t: number, dt: number, opts: { still: boolean; calm: boolean; idleOk: boolean }): { pose: Pose; body: Body } {
+			if (opts.still) return { pose: REST_POSE, body: REST_BODY };
 			const k = 1 - Math.exp(-dt * 4);
 			s.lookX += (s.tx - s.lookX) * k;
 			s.lookY += (s.ty - s.lookY) * k;
-			const wave = envelope(t, s.wave, 2.4, 0.45, 0.55);
-			const present = envelope(t, s.present, 1.9, 0.4, 0.6);
-			const talk = envelope(t, s.talk, 1.3, 0.1, 0.3);
-			if (t > s.glint + 0.8) s.glint = t + 5 + Math.random() * 4;
+
+			if (s.current && !busy(t) && t >= s.current.start) s.current = null;
+			if (!s.current && s.queued) {
+				start(s.queued, t);
+				s.queued = null;
+			}
+			if (s.nextIdle === 0) s.nextIdle = t + 12;
+			if (!s.current && !opts.calm && opts.idleOk && t >= s.nextIdle) {
+				const choices = IDLE_MOVES.filter((m) => m !== s.lastIdle);
+				const name = choices[Math.floor(Math.random() * choices.length)];
+				s.lastIdle = name;
+				start(name, t);
+			}
+
+			let c = REST;
+			let talk = 0;
+			let talkStart = 0;
+			if (s.current && t >= s.current.start) {
+				const move = MOVES[s.current.name];
+				const u = t - s.current.start;
+				c = sample(move, u);
+				if (s.current.from && u < BLEND) c = blend(s.current.from, c, smooth(u / BLEND));
+				if (move.talk) {
+					talkStart = s.current.start + move.talk[0];
+					talk = envelope(t, talkStart, s.current.start + move.talk[1], 0.1, 0.3);
+				}
+			}
+
+			s.last = c;
+			const idle = opts.calm ? 0 : 1;
+			if (!opts.calm && t > s.glint + 0.8) s.glint = t + 5 + Math.random() * 4;
 			const g = (t - s.glint) / 0.8;
-			const flap = Math.sin((t - s.wave) * 10);
+			// Hair trails a jump: it lags down on the way up and lifts on the way down
+			const rise = (c.lift - s.lift) / Math.max(dt, 1 / 120);
+			s.lift = c.lift;
 
-			const armL = mix(ARM_L_REST, ARM_L_WAVE, wave);
-			armL[0] += Math.sin(t * 1.25) * 0.015 * idle;
-			armL[1] += flap * 0.3 * wave;
-			armL[2] += Math.sin((t - s.wave) * 10 - 0.6) * 0.25 * wave;
-			const armR = mix(ARM_R_REST, ARM_R_PRESENT, present);
-			armR[0] -= Math.sin(t * 1.25) * 0.015 * idle;
-			armR[2] += Math.sin((t - s.present) * 3) * 0.08 * present;
-
+			const armL: Arm = [c.armL[0] + Math.sin(t * 1.25) * 0.015 * idle, c.armL[1], c.armL[2]];
+			const armR: Arm = [c.armR[0] - Math.sin(t * 1.25) * 0.015 * idle, c.armR[1], c.armR[2]];
 			return {
-				sway: Math.sin(t * 0.45) * 2 * idle,
-				breath: 0.5 + 0.5 * Math.sin(t * 1.25) * idle,
-				headTilt: Math.sin(t * 0.7) * 0.03 * idle + s.lookX * 0.05 + wave * 0.06 - present * 0.04,
-				// While presenting, I look down at the card in front
-				lookX: Math.max(-1, Math.min(1, s.lookX * (1 - present))),
-				lookY: Math.max(-1, Math.min(1, s.lookY + present * 0.8)),
-				brow: Math.max(wave * 0.9, present * 0.5),
-				mouth: talk * (0.45 + 0.45 * Math.sin((t - s.talk) * 17)),
-				glint: idle && g >= 0 && g <= 1 ? g : -1,
-				hairLag: Math.sin(t * 1.25 - 0.7) * 1.2 * idle + wave * flap * 1.5,
-				armL,
-				armR,
+				pose: {
+					sway: Math.sin(t * 0.45) * 2 * idle + c.sway,
+					breath: 0.5 + 0.5 * Math.sin(t * 1.25) * idle,
+					headTilt: Math.sin(t * 0.7) * 0.03 * idle + s.lookX * 0.05 + c.headTilt,
+					lookX: clamp1(s.lookX + c.lookX),
+					lookY: clamp1(s.lookY + c.lookY),
+					brow: c.brow,
+					mouth: Math.max(c.mouth, talk * (0.45 + 0.45 * Math.sin((t - talkStart) * 17))),
+					glint: g >= 0 && g <= 1 ? g : -1,
+					hairLag: Math.sin(t * 1.25 - 0.7) * 1.2 * idle + Math.max(-8, Math.min(8, rise * 5)),
+					armL,
+					armR,
+					handL: c.handL,
+					handR: c.handR,
+					back: Math.cos(c.spin) < 0,
+				},
+				body: { lift: c.lift, spin: c.spin, roll: c.roll, squash: c.squash },
 			};
 		},
 	};

@@ -4,10 +4,10 @@ import { useCallback, useEffect, useMemo, useRef, useState, type MutableRefObjec
 import Link from 'next/link';
 import { Canvas, useFrame, useThree, type ThreeEvent } from '@react-three/fiber';
 import * as THREE from 'three';
-import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
+import { ArrowBigUp, ChevronLeft, ChevronRight, Dumbbell, Hand, Music, Pause, Play, RefreshCcw, RotateCw, ThumbsUp, type LucideIcon } from 'lucide-react';
 import { experience } from '../resources/consts';
 import { showcase } from '../resources/showcase';
-import { AVATAR_FOOT, AVATAR_H, AVATAR_W, REST_POSE, createAvatarRig, drawAvatar, type AvatarRig } from './ar/avatar';
+import { AVATAR_FOOT, AVATAR_H, AVATAR_W, REST_POSE, SHOW_MOVES, createAvatarRig, drawAvatar, type AvatarRig, type MoveName } from './ar/avatar';
 import './ar-scene.css';
 
 // ---------- What orbits ----------
@@ -123,6 +123,19 @@ const CARDS: Card[] = [
 		},
 	},
 ];
+
+// ---------- My moves ----------
+
+const MOVE_LABELS: Record<MoveName, { label: string; Icon: LucideIcon }> = {
+	wave: { label: 'Wave', Icon: Hand },
+	jump: { label: 'Jump', Icon: ArrowBigUp },
+	spin: { label: 'Spin', Icon: RotateCw },
+	flip: { label: 'Flip', Icon: RefreshCcw },
+	thumbs: { label: 'Thumbs up', Icon: ThumbsUp },
+	flex: { label: 'Flex', Icon: Dumbbell },
+	dance: { label: 'Dance', Icon: Music },
+	present: { label: 'Present', Icon: Hand },
+};
 
 // ---------- Theme ----------
 
@@ -395,7 +408,8 @@ function layoutFor(w: number, h: number) {
 	// Far enough back that the whole figure stays in view, and on wider stages the ring's sides too;
 	// on a phone the sides run off the edge so I stay large
 	const sideFit = (radius + CARD_W * 0.42 * card) / (tanH * aspect) + 0.3;
-	const heightFit = 2.65 / tanH;
+	// Tall enough for my jumps and flips too
+	const heightFit = 2.8 / tanH;
 	return {
 		narrow,
 		radius,
@@ -434,10 +448,14 @@ type AvatarProps = {
 	rig: MutableRefObject<AvatarRig>;
 	onHover: (on: boolean) => void;
 	onTap: () => void;
+	onMove: (move: MoveName | null) => void;
 };
 
-/** The drawn me, redrawn into a texture up to 30 times a second as the rig moves */
-function Avatar({ layout, ring, rig, onHover, onTap }: AvatarProps) {
+/**
+ * The drawn me. Poses are redrawn into a texture up to 30 times a second; jumps, spins and flips move
+ * the whole figure in the scene: lifted from the feet, turned about the vertical, rolled about the waist.
+ */
+function Avatar({ layout, ring, rig, onHover, onTap, onMove }: AvatarProps) {
 	const scale = layout.narrow ? 0.7 : 1;
 	const art = useMemo(() => {
 		const canvas = document.createElement('canvas');
@@ -450,63 +468,85 @@ function Avatar({ layout, ring, rig, onHover, onTap }: AvatarProps) {
 	}, [scale]);
 	useEffect(() => () => art.texture.dispose(), [art]);
 
-	const group = useRef<THREE.Group>(null);
-	const clock = useRef({ since: 1, drawnStill: false, greeted: false });
+	const body = useRef<THREE.Group>(null);
+	const hips = useRef<THREE.Group>(null);
+	const clock = useRef({ since: 1, drawnStill: false, greeted: false, back: false, move: null as MoveName | null });
 	const h = layout.personH;
 	const w = h * (AVATAR_W / AVATAR_H);
+	const foot = (1 - AVATAR_FOOT) * h; // the transparent strip under my soles
+	const waist = (AVATAR_FOOT - 0.585) * h; // from the soles up to the shirt hem
 
 	useFrame(({ camera }, delta) => {
-		const g = group.current;
+		const g = body.current;
+		const hp = hips.current;
 		const ctx = art.ctx;
-		if (!g || !ctx) return;
-		// Turn to face the viewer around the vertical axis only, so I always stand upright and face on
-		g.rotation.y = Math.atan2(camera.position.x, camera.position.z);
-
+		if (!g || !hp || !ctx) return;
 		const r = ring.current;
 		const a = rig.current;
 		const c = clock.current;
-		const still = r.reduced;
+		const t = now();
 		if (!c.greeted) {
 			c.greeted = true;
-			a.wave(now() + 0.6);
+			a.play('wave', t + 0.6);
 		}
 		// Look at the card under the pointer, or else towards the pointer itself
 		if (r.hovered !== null) a.lookAt(Math.sin(r.phi + r.hovered * STEP), 0.3);
 		else a.lookAt(r.pointer.x, r.pointer.y * 0.6);
 
+		const { pose, body: b } = a.frame(t, Math.min(delta, 0.1), {
+			still: r.reduced,
+			calm: r.paused,
+			idleOk: !r.dragging && r.hovered === null,
+		});
+		// Face the viewer around the vertical axis (so I stay upright), plus any spin
+		g.rotation.y = Math.atan2(camera.position.x, camera.position.z) + b.spin;
+		g.position.y = layout.floor + b.lift;
+		g.scale.set(1 + b.squash * 0.6, 1 - b.squash, 1);
+		hp.rotation.z = b.roll;
+
+		const move = a.playing(t);
+		if (move !== c.move) {
+			c.move = move;
+			onMove(move);
+		}
+
 		c.since += delta;
-		if (still ? c.drawnStill : c.since < 1 / 30) return;
-		const pose = a.pose(now(), Math.min(c.since, 0.1), still, r.paused);
+		const turned = pose.back !== c.back;
+		if (r.reduced ? c.drawnStill : c.since < 1 / 30 && !turned) return;
 		c.since = 0;
-		c.drawnStill = still;
+		c.drawnStill = r.reduced;
+		c.back = pose.back;
 		ctx.clearRect(0, 0, art.canvas.width, art.canvas.height);
 		drawAvatar(ctx, pose, scale);
 		art.texture.needsUpdate = true;
 	});
 
 	return (
-		<group ref={group} position={[0, layout.floor - (1 - AVATAR_FOOT) * h, 0]}>
-			<mesh position={[0, h / 2, 0]} raycast={() => null}>
-				<planeGeometry args={[w, h]} />
-				<meshBasicMaterial map={art.texture} transparent alphaTest={0.02} toneMapped={false} />
-			</mesh>
-			{/* A tighter, invisible target over my body, for a tap to say hi */}
-			<mesh
-				position={[0, h * 0.5, 0.01]}
-				onPointerOver={(e: ThreeEvent<PointerEvent>) => {
-					e.stopPropagation();
-					onHover(true);
-				}}
-				onPointerOut={() => onHover(false)}
-				onClick={(e: ThreeEvent<MouseEvent>) => {
-					e.stopPropagation();
-					if (e.delta > 8) return;
-					onTap();
-				}}
-			>
-				<planeGeometry args={[w * 0.42, h * 0.95]} />
-				<meshBasicMaterial transparent opacity={0} depthWrite={false} colorWrite={false} />
-			</mesh>
+		<group ref={body} position={[0, layout.floor, 0]}>
+			<group ref={hips} position={[0, waist, 0]}>
+				<mesh position={[0, h / 2 - foot - waist, 0]} raycast={() => null}>
+					<planeGeometry args={[w, h]} />
+					{/* Two-sided, so the back of me shows halfway through a spin */}
+					<meshBasicMaterial map={art.texture} transparent alphaTest={0.02} side={THREE.DoubleSide} toneMapped={false} />
+				</mesh>
+				{/* A tighter, invisible target over my body, for a tap */}
+				<mesh
+					position={[0, h / 2 - foot - waist, 0.01]}
+					onPointerOver={(e: ThreeEvent<PointerEvent>) => {
+						e.stopPropagation();
+						onHover(true);
+					}}
+					onPointerOut={() => onHover(false)}
+					onClick={(e: ThreeEvent<MouseEvent>) => {
+						e.stopPropagation();
+						if (e.delta > 8) return;
+						onTap();
+					}}
+				>
+					<planeGeometry args={[w * 0.42, h * 0.95]} />
+					<meshBasicMaterial transparent opacity={0} depthWrite={false} colorWrite={false} />
+				</mesh>
+			</group>
 		</group>
 	);
 }
@@ -653,6 +693,7 @@ type RingProps = {
 	onHover: (on: boolean) => void;
 	onPick: (i: number) => void;
 	onTapMe: () => void;
+	onMove: (move: MoveName | null) => void;
 };
 
 function CardRing({ layout, ink, ring, rig, onShown, onHover, onPick }: RingProps) {
@@ -760,7 +801,7 @@ function Scene(props: Omit<RingProps, 'layout'>) {
 			<Platform layout={layout} ink={ink} />
 			<Orbit layout={layout} ink={ink} />
 			<Dust layout={layout} ink={ink} ring={ring} />
-			<Avatar layout={layout} ring={ring} rig={rig} onHover={props.onHover} onTap={props.onTapMe} />
+			<Avatar layout={layout} ring={ring} rig={rig} onHover={props.onHover} onTap={props.onTapMe} onMove={props.onMove} />
 			<CardRing {...props} layout={layout} />
 		</>
 	);
@@ -818,6 +859,7 @@ export default function ARScene() {
 	const [paused, setPaused] = useState(false);
 	const [reduced, setReduced] = useState(false);
 	const [running, setRunning] = useState(true);
+	const [move, setMove] = useState<MoveName | null>(null);
 	const index = useRef<HTMLElement>(null);
 	const [indexIn, setIndexIn] = useState(false);
 
@@ -884,10 +926,9 @@ export default function ARScene() {
 		[steer],
 	);
 
-	const sayHi = useCallback(() => {
-		rig.current.wave(now());
-		pick(0);
-	}, [pick]);
+	// Each tap on me plays the next move; the buttons play one by name
+	const tapMe = useCallback(() => rig.current.next(now()), []);
+	const playMove = useCallback((move: MoveName) => rig.current.play(move, now()), []);
 
 	const shownCard = CARDS[shown];
 
@@ -985,14 +1026,38 @@ export default function ARScene() {
 							onShown={setShown}
 							onHover={setHovering}
 							onPick={pick}
-							onTapMe={sayHi}
+							onTapMe={tapMe}
+							onMove={setMove}
 						/>
 					</Canvas>
 				)}
 				<p className="ar-scene__hint" data-gone={steered || undefined}>
-					Drag to spin the ring, tap a card to bring it forward, or tap me to say hi.
+					Drag to spin the ring, tap a card to bring it forward, or tap me for a move.
 				</p>
 			</div>
+
+			{!reduced && (
+				<div className="ar-moves" role="group" aria-label="Make me move">
+					<span className="ar-moves__lead" aria-hidden="true">
+						Make me
+					</span>
+					{SHOW_MOVES.map((name) => {
+						const { label, Icon } = MOVE_LABELS[name];
+						return (
+							<button
+								key={name}
+								type="button"
+								className="ar-moves__btn"
+								data-active={move === name || undefined}
+								onClick={() => playMove(name)}
+							>
+								<Icon aria-hidden="true" />
+								{label}
+							</button>
+						);
+					})}
+				</div>
+			)}
 
 			<section className="ar-scene__panel" aria-label="The card in front" aria-live={steered ? 'polite' : 'off'}>
 				<div className="ar-scene__detail" key={shownCard.id}>
